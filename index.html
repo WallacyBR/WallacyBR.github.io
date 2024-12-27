@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfólio de Wallacy - Desenvolvedor, entusiasta de cyberpunk e líder de projetos de tecnologia">
-    <title>Wallacy - Cyberpunk Portfolio</title>
+    <meta name="description" content="Currículo e Portfólio de Wallacy Rodrigo da Silva">
+    <title>Olá, eu sou Wallacy Silva</title>
+    <link rel="icon" href="https://em-content.zobj.net/thumbs/240/microsoft/319/cyberpunk_1f9d9-200d-1f4bb.png" type="image/png">
     <style>
-        /* Estilo base */
         body {
             font-family: 'Courier New', monospace;
             margin: 0;
@@ -18,7 +18,7 @@
 
         header {
             background-color: #111;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
             border-bottom: 2px solid #0ff;
         }
@@ -26,6 +26,7 @@
         header h1 {
             margin: 0;
             font-size: 2.5em;
+            color: #0ff;
             animation: neon 1.5s infinite alternate;
         }
 
@@ -76,6 +77,7 @@
 
         section p, li {
             font-size: 1.2em;
+            line-height: 1.6;
         }
 
         footer {
@@ -88,7 +90,14 @@
             font-size: 1em;
         }
 
-        /* Animações de neon */
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
         @keyframes neon {
             from {
                 text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
@@ -98,25 +107,12 @@
             }
         }
 
-        /* Efeito de flicker */
         @keyframes flicker {
             0% { opacity: 1; }
             50% { opacity: 0.8; }
             100% { opacity: 1; }
         }
 
-        /* Efeito de "código hackeado" */
-        @keyframes glitch {
-            0% { text-shadow: 2px 0 red, -2px 0 blue; }
-            50% { text-shadow: -2px 0 red, 2px 0 blue; }
-            100% { text-shadow: 2px 0 red, -2px 0 blue; }
-        }
-
-        h1, nav a {
-            animation: glitch 1.5s infinite alternate;
-        }
-
-        /* Links */
         a {
             color: #0ff;
         }
@@ -128,11 +124,14 @@
 </head>
 <body>
     <header>
-        <h1>Olá, sou Wallacy! 👾</h1>
-        <p>Bem-vindo ao meu portfólio! 🚀</p>
+        <h1>Wallacy Rodrigo da Silva</h1>
+        <p>Desenvolvedor Web e Mobile | IA e Ciência de Dados</p>
+        <p>Bauru, SP | <a href="mailto:wallacyrodrigo@gmail.com">wallacyrodrigo@gmail.com</a> | +55 14 99140 9140</p>
     </header>
     <nav>
         <a href="#about">Sobre Mim</a>
+        <a href="#experience">Experiência</a>
+        <a href="#skills">Habilidades</a>
         <a href="#projects">Projetos</a>
         <a href="#contact">Contato</a>
     </nav>
@@ -142,28 +141,44 @@
             <p>Sou um entusiasta de cyberpunk e acredito no poder da tecnologia para transformar o mundo. Tenho uma sólida carreira como desenvolvedor, com experiência em Web, Mobile, Inteligência Artificial e Ciência de Dados.</p>
             <p>Atualmente trabalho na Polícia Militar de São Paulo, onde lidero projetos inovadores de tecnologia. Sou fascinado pela evolução humana e tecnológica e busco sempre novos desafios. 🚀</p>
         </section>
-        <section id="projects">
-            <h2>Meus Projetos</h2>
+
+        <section id="experience">
+            <h2>Experiência</h2>
+            <p><strong>2º Sargento - Head Dev | Polícia Militar do Estado de São Paulo</strong> (2009 - Atualmente)</p>
             <ul>
-                <li>✨ <strong>Aithera:</strong> Meu projeto que visa integrar inteligência artificial com evolução humana. <a href="https://aithera.com.br" target="_blank">Confira aqui!</a></li>
+                <li>Idealizei o SGO - Sistema de Gestão Operacional, que modernizou a coleta de dados operacionais e melhorou processos administrativos.</li>
+                <li>Resultados notáveis: economia de milhões em custos de impressão e expansão para 20 unidades em 2023.</li>
+                <li>Atuo como líder de equipe em projetos estratégicos que unem tecnologia e gestão.</li>
             </ul>
         </section>
-        <section id="tech">
-            <h2>Tecnologias</h2>
-            <p>💻 <strong>Linguagens:</strong> Python, Dart (Flutter), JavaScript, PHP, MySQL</p>
-            <p>🧠 <strong>Ferramentas de IA:</strong> TensorFlow, Keras, DialogFlow, Watson IBM</p>
-            <p>🌐 <strong>Web:</strong> React, React Native, Laravel, Vue.js</p>
-            <p>🛠️ <strong>Ferramentas Dev:</strong> Git, Docker, Kubernetes</p>
-            <p>📊 <strong>Ciência de Dados:</strong> Pandas, NumPy, Matplotlib, Power BI</p>
+
+        <section id="skills">
+            <h2>Habilidades e Conhecimentos</h2>
+            <ul>
+                <li><strong>Desenvolvimento:</strong> Python, Dart (Flutter), JavaScript, PHP, MySQL</li>
+                <li><strong>IA:</strong> TensorFlow, Watson IBM, DialogFlow</li>
+                <li><strong>Data Science:</strong> Pandas, NumPy, Matplotlib, Power BI</li>
+                <li><strong>Gestão:</strong> Estratégia de negócios, liderança e recuperação financeira</li>
+                <li><strong>DevOps:</strong> Docker, Kubernetes, Git</li>
+            </ul>
         </section>
+
+        <section id="projects">
+            <h2>Projetos de Destaque</h2>
+            <ul>
+                <li><strong>SGO - Sistema de Gestão Operacional:</strong> PWA em Laravel com coleta de dados georreferenciados em tempo real. Impacto direto na eficiência administrativa e sustentabilidade.</li>
+                <li><strong>Aithera:</strong> Plataforma de integração de IA com evolução humana, usando tecnologias como React Native e Python.</li>
+            </ul>
+        </section>
+
         <section id="contact">
             <h2>Contato</h2>
-            <p>Entre em contato pelo e-mail: <a href="mailto:contato@aithera.com.br">contato@aithera.com.br</a></p>
-            <p>Ou visite o site da minha startup: <a href="https://aithera.com.br" target="_blank">aithera.com.br</a></p>
+            <p>E-mail: <a href="mailto:contato@aithera.com.br">contato@aithera.com.br</a></p>
+            <p>Telefone: +55 14 99140 9140</p>
         </section>
     </main>
     <footer>
-        &copy; 2024 Wallacy. Todos os direitos reservados. 🚀
+        &copy; 2024 Wallacy Rodrigo da Silva. Todos os direitos reservados.
     </footer>
 </body>
 </html>
