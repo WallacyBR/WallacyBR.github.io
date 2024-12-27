@@ -4,71 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Portfólio de Wallacy - Desenvolvedor, entusiasta de cyberpunk e líder de projetos de tecnologia">
-    <title>Wallacy - Portfólio</title>
+    <title>Wallacy - Cyberpunk Portfolio</title>
     <style>
+        /* Estilo base */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', monospace;
             margin: 0;
             padding: 0;
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: #000;
+            color: #0ff;
+            overflow-x: hidden;
         }
+
         header {
-            background-color: #1f1f1f;
+            background-color: #111;
             padding: 20px;
             text-align: center;
+            border-bottom: 2px solid #0ff;
         }
+
         header h1 {
             margin: 0;
-            color: #00c4ff;
+            font-size: 2.5em;
+            animation: neon 1.5s infinite alternate;
         }
+
         header p {
             margin: 10px 0 0;
+            font-size: 1.2em;
         }
+
         nav {
             text-align: center;
             margin: 20px 0;
         }
+
         nav a {
             margin: 0 15px;
             text-decoration: none;
-            color: #00c4ff;
+            color: #0ff;
             font-weight: bold;
+            font-size: 1.2em;
+            animation: flicker 2s infinite alternate;
         }
+
         nav a:hover {
             text-decoration: underline;
+            color: #ff0;
         }
+
         main {
             max-width: 900px;
             margin: 20px auto;
             padding: 20px;
-            background: #1f1f1f;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            background: #111;
+            border: 1px solid #0ff;
+            box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
+            border-radius: 10px;
         }
+
         section {
             margin-bottom: 40px;
         }
+
         section h2 {
-            color: #00c4ff;
-            border-bottom: 2px solid #00c4ff;
+            color: #0ff;
+            border-bottom: 1px dashed #0ff;
             padding-bottom: 5px;
+            font-size: 1.8em;
         }
+
+        section p, li {
+            font-size: 1.2em;
+        }
+
         footer {
             text-align: center;
-            background-color: #1f1f1f;
-            color: #e0e0e0;
+            background-color: #111;
+            color: #0ff;
             padding: 10px;
             margin-top: 20px;
+            border-top: 2px solid #0ff;
+            font-size: 1em;
         }
+
+        /* Animações de neon */
+        @keyframes neon {
+            from {
+                text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
+            }
+            to {
+                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
+            }
+        }
+
+        /* Efeito de flicker */
+        @keyframes flicker {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+
+        /* Efeito de "código hackeado" */
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 red, -2px 0 blue; }
+            50% { text-shadow: -2px 0 red, 2px 0 blue; }
+            100% { text-shadow: 2px 0 red, -2px 0 blue; }
+        }
+
+        h1, nav a {
+            animation: glitch 1.5s infinite alternate;
+        }
+
+        /* Links */
         a {
-            color: #00c4ff;
+            color: #0ff;
+        }
+
+        a:hover {
+            color: #ff0;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Olá, sou Wallacy! 👋</h1>
+        <h1>Olá, sou Wallacy! 👾</h1>
         <p>Bem-vindo ao meu portfólio! 🚀</p>
     </header>
     <nav>
@@ -86,7 +146,6 @@
             <h2>Meus Projetos</h2>
             <ul>
                 <li>✨ <strong>Aithera:</strong> Meu projeto que visa integrar inteligência artificial com evolução humana. <a href="https://aithera.com.br" target="_blank">Confira aqui!</a></li>
-                <!-- Adicione mais projetos conforme necessário -->
             </ul>
         </section>
         <section id="tech">
@@ -99,7 +158,7 @@
         </section>
         <section id="contact">
             <h2>Contato</h2>
-            <p>Entre em contato pelo e-mail: <a href="mailto:wallacy@aithera.com.br">wallacy@aithera.com.br</a></p>
+            <p>Entre em contato pelo e-mail: <a href="mailto:contato@aithera.com.br">contato@aithera.com.br</a></p>
             <p>Ou visite o site da minha startup: <a href="https://aithera.com.br" target="_blank">aithera.com.br</a></p>
         </section>
     </main>
