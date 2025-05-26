@@ -46,6 +46,7 @@
             flex-direction: column;
             flex-grow: 1;
             margin-bottom: 20px; /* Espaço antes do footer */
+            transition: all 0.5s ease-in-out; /* Transição suave para mudanças de estilo */
         }
 
         .terminal-output {
@@ -59,6 +60,31 @@
             margin-bottom: 10px;
             font-family: 'Courier New', monospace;
             font-size: 1.1em;
+            transition: color 0.5s ease-in-out; /* Transição suave para mudança de cor */
+
+            /* Estilo da barra de rolagem para Webkit (Chrome, Safari) */
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background: #000;
+                border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: #0ff;
+                border-radius: 10px;
+                border: 1px solid #055;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background: #ff0;
+            }
+
+            /* Estilo da barra de rolagem para Firefox */
+            scrollbar-width: thin;
+            scrollbar-color: #0ff #000;
         }
 
         .terminal-input-area {
@@ -73,6 +99,7 @@
             margin-right: 5px;
             font-family: 'Courier New', monospace;
             font-size: 1.1em;
+            transition: color 0.5s ease-in-out; /* Transição suave para mudança de cor */
         }
 
         .terminal-input {
@@ -122,6 +149,42 @@
             width: 100%; /* Ocupa a largura total */
         }
 
+        /* Estilos para o modo "bugado" / "AI" */
+        .terminal-container.ai-takeover {
+            border-color: #f0f; /* Borda magenta */
+            box-shadow: 0 0 25px #f0f, 0 0 50px #f0f inset; /* Brilho magenta mais intenso */
+            background-color: #200; /* Fundo vermelho escuro */
+            animation: glitch-container 0.3s infinite alternate; /* Animação de glitch no container */
+        }
+
+        .terminal-output.ai-takeover {
+            color: #f0f; /* Texto magenta */
+            animation: glitch-text 0.1s infinite alternate; /* Animação de glitch no texto */
+        }
+
+        .terminal-prompt.ai-takeover {
+            color: #f0f; /* Prompt magenta */
+            animation: glitch-text 0.1s infinite alternate; /* Animação de glitch no prompt */
+        }
+
+        /* Animações de Glitch */
+        @keyframes glitch-container {
+            0% { transform: translate(0, 0); border-color: #f0f; }
+            25% { transform: translate(-2px, 2px); border-color: #0ff; }
+            50% { transform: translate(2px, -2px); border-color: #f0f; }
+            75% { transform: translate(-2px, -2px); border-color: #0ff; }
+            100% { transform: translate(0, 0); border-color: #f0f; }
+        }
+
+        @keyframes glitch-text {
+            0% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
+            20% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(-5deg); }
+            40% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
+            60% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(5deg); }
+            80% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
+            100% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(-5deg); }
+        }
+
         /* Responsividade */
         @media (max-width: 768px) {
             .top-name {
@@ -144,10 +207,10 @@
 <body>
     <div class="top-name">Wallacy Rodrigo da Silva</div>
 
-    <div class="terminal-container">
+    <div class="terminal-container" id="terminalContainer">
         <div class="terminal-output" id="terminalOutput"></div>
-        <div class="terminal-input-area">
-            <span class="terminal-prompt">wallacy@portfolio ~$</span>
+        <div class="terminal-input-area" id="terminalInputArea">
+            <span class="terminal-prompt" id="terminalPrompt">wallacy@portfolio ~$</span>
             <input type="text" class="terminal-input" id="terminalInput" autofocus>
             <span class="blinking-cursor">|</span>
         </div>
@@ -161,43 +224,48 @@
         // Obtenha referências para os elementos do DOM
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
+        const terminalContainer = document.getElementById('terminalContainer');
+        const terminalInputArea = document.getElementById('terminalInputArea');
+        const terminalPrompt = document.getElementById('terminalPrompt');
+
+        let isAITakeoverMode = false;
 
         // Conteúdo das seções para serem exibidos no terminal
         const content = {
             about: `
 Sobre Mim:
-Desenvolvedor Web e Mobile com quase 20 anos de experiência, atualmente focado em Ciência de Dados e Inteligência Artificial. Apaixonado por usar a tecnologia para resolver problemas do mundo real, busco oportunidades internacionais para crescer, inovar e contribuir para projetos que tenham um impacto tangível. Com uma sólida formação em engenharia de software, gerenciamento de projetos e serviço público, combino experiência técnica com habilidades de liderança e comunicação desenvolvidas em funções de alta responsabilidade.
+Desenvolvedor Web e Mobile com quase 20 anos de experiência, atualmente focado em Ciência de Dados e Inteligência Artificial. Com 35 anos, sou 1º Sargento na Polícia Militar do Estado de São Paulo há 15 anos, liderando uma equipe de desenvolvimento por 6 anos. Minha paixão é usar a tecnologia para resolver problemas do mundo real, buscando liberdade geográfica e crescimento salarial alinhado ao mercado de TI global (acima de R$ 8 mil/mês, com potencial para ganhos em moeda estrangeira). Combino expertise técnica com habilidades de liderança e comunicação desenvolvidas em funções de alta responsabilidade.
             `.trim(),
             experience: `
 Experiência Profissional:
 1º Sargento – Head Developer | Polícia Militar do Estado de São Paulo (PMESP) | 2009 – Atualmente
-- Desenvolvedor líder e estrategista para o Sistema de Gestão Operacional (SGO) — um PWA para relatórios digitais em tempo real por policiais, substituindo formulários em papel em várias unidades.
-- Desenvolvimento full-stack usando Laravel, JavaScript e MySQL; também responsável por DevOps e arquitetura de sistema.
-- Planejou e executou a transformação digital institucional, otimizando a coleta de dados operando, melhorando a tomada de decisões e gerando economias ambientais e financeiras significativas.
-- Premiado por desempenho e liderança excepcionais no gerenciamento de equipes operacionais e técnicas.
+- Líder de equipe de desenvolvimento há 6 anos, atuando como desenvolvedor principal e estrategista para o Sistema de Gestão Operacional (SGO).
+- O SGO é um Progressive Web App (PWA) que digitalizou a produção de relatórios de serviço operacionais na PM, substituindo formulários em papel em várias unidades.
+- Tecnologias: Desenvolvimento full-stack usando Laravel (PHP), MySQL, JavaScript.
+- Impacto: Mais de 500 mil relatórios produzidos, otimizando a coleta de dados operacionais e melhorando a tomada de decisões. Coleta de estatísticas georreferenciadas em campo e fornecimento de insights e dados para comandantes. Possui múltiplos módulos, autenticações e integrações com API.
+- Responsabilidades Adicionais: Atuação em DevOps e arquitetura de sistema.
 
 Experiência Adicional:
+Síndico de Condomínio | 6 anos
+- Gerenciou um condomínio com mais de 1500 moradores, demonstrando fortes habilidades de gestão e resolução de problemas complexos.
 Intérprete de Eventos – Forças de Segurança
 - Atuou como intérprete durante a Copa do Mundo FIFA 2014 (São Paulo) e os Jogos Olímpicos Rio 2016, fazendo a ponte de comunicação entre autoridades internacionais e forças de segurança nacionais.
-Gerente e Consultor de Condomínios
-- Gerenciou condomínios (100–700 unidades), liderando projetos de recuperação financeira e reformas operacionais.
-- Forneceu consultoria estratégica em tecnologia, adaptando soluções alinhadas às necessidades do cliente.
             `.trim(),
             skills: `
 Habilidades Chave:
 - Desenvolvimento Web e Mobile: Laravel, PHP, JavaScript, React, React Native, Node.js
-- Dados e IA: Python, Ciência de Dados, Machine Learning, GPT, IBM Watson, DialogFlow
-- DevOps e Nuvem: Docker, Kubernetes, AWS (Certified Developer – Associate)
-- Liderança e Comunicação: Gestão de equipes, negociação, Inglês (intermediário)
-- Ferramentas e Plataformas: Git, GitHub, MySQL, Power BI, Agile/Scrum, Gestão Estratégica
+- Dados e IA: Python (Pandas, NumPy, Scikit-learn, Matplotlib/Seaborn), Ciência de Dados, Machine Learning, GPT, IBM Watson, DialogFlow. Atualmente graduando em Inteligência Artificial.
+- DevOps e Nuvem: Docker, Kubernetes, AWS (Certified Developer – Associate - EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM), Git, GitHub. Conceitos de Engenharia de Dados e MLOps (Apache Airflow, pipelines de dados, implantação e monitoramento de modelos de ML).
+- Liderança e Comunicação: Gestão de equipes, negociação, comunicação empática, habilidade de transformar código em entendimento (traduzir conceitos técnicos para não-técnicos), Inglês (intermediário).
+- Ferramentas e Plataformas: MySQL, Power BI, Agile/Scrum, Gestão Estratégica.
             `.trim(),
             projects: `
 Projetos de Destaque:
 - SGO (Sistema de Gestão Operacional):
-  - Desenvolvido e projetado como um Progressive Web App (PWA) utilizado por policiais em smartphones.
-  - Permite dados georreferenciados em tempo real para todos os níveis de comando.
-  - Reduziu o consumo de papel em mais de 3,6 milhões de folhas (economia estimada: R$ 1,8 milhão).
-  - Inclui controle de acesso seguro, validações, criptografia e helpdesk integrado.
+  - PWA desenvolvido em Laravel, MySQL e JavaScript, utilizado por policiais em smartphones para digitalizar relatórios de serviço.
+  - Permite coleta de dados georreferenciados em tempo real, fornecendo insights e dados para todos os níveis de comando.
+  - Impacto: Mais de 500 mil relatórios produzidos, otimizando processos administrativos e operacionais críticos, e gerando economias significativas.
+  - Possui controle de acesso seguro, validações, criptografia e helpdesk integrado.
   - Planos futuros incluem expansão para todas as unidades do estado e migração para Flutter.
 - Aithera: Minha startup de integração de IA com evolução humana, usando tecnologias como Flutter e Python. Oferecemos consultoria, planejamento e desenvolvimento de soluções tecnológicas sob medida para empresas, focando em eficiência e inovação.
             `.trim(),
@@ -209,21 +277,24 @@ Telefone: +55 14 99140 9140
         };
 
         // Função para simular o efeito de digitação no terminal
-        function typeWriter(text, element, i = 0, speed = 15) { // Velocidade ligeiramente mais rápida
+        function typeWriter(text, element, i = 0, speed = 15, callback = null) {
             if (i < text.length) {
                 element.innerHTML += text.charAt(i);
-                setTimeout(() => typeWriter(text, element, i + 1, speed), speed);
+                setTimeout(() => typeWriter(text, element, i + 1, speed, callback), speed);
             } else {
-                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Rola para o final
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                if (callback) {
+                    callback();
+                }
             }
         }
 
         // Função para adicionar uma linha ao terminal
-        function addLineToTerminal(text, color = '#0f0') {
+        function addLineToTerminal(text, color = '#0f0', callback = null) {
             const line = document.createElement('span');
             line.style.color = color;
             terminalOutput.appendChild(line);
-            typeWriter(text + '\n', line); // Adiciona quebra de linha
+            typeWriter(text + '\n', line, 0, 15, callback);
         }
 
         // Função para limpar o terminal
@@ -246,6 +317,8 @@ Telefone: +55 14 99140 9140
                 addLineToTerminal('  future     - Uma visão sobre o futuro da tecnologia.');
                 addLineToTerminal('  ai         - A inteligência artificial na minha jornada.');
                 addLineToTerminal('  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.');
+                addLineToTerminal('  education  - Minha formação acadêmica e certificações.');
+                addLineToTerminal('  goals      - Meus objetivos de carreira.');
             },
             clear: () => {
                 clearTerminal();
@@ -262,11 +335,106 @@ Telefone: +55 14 99140 9140
                         addLineToTerminal(`  - ${key}`);
                     }
                 }
-                addLineToTerminal('Comandos especiais: future, ai, evolution');
+                addLineToTerminal('Comandos especiais: future, ai, evolution, education, goals');
             },
-            // Comandos "easter egg" personalizados com base nos seus interesses
-            'future': () => {
-                addLineToTerminal('O futuro é um campo fértil para a inovação. Vejo uma simbiose cada vez maior entre humanos e tecnologia, impulsionada por IA e dados, moldando um novo horizonte para a sociedade. Estamos construindo o amanhã, byte a byte. 💡', '#0ff');
+            education: () => addLineToTerminal(`
+Formação Acadêmica e Certificações:
+- Graduação: Tecnologia da Informação (TI)
+- Extensão: Gestão Estratégica de Negócios
+- Pós-graduações: Data Science, Administração de Banco de Dados, Gestão Ágil e Desenvolvimento de Software
+- Atualmente Graduando: Inteligência Artificial (Previsão: 2025)
+
+Certificações & Cursos:
+- Python for Data Science and Machine Learning – Udemy (2023)
+- Python Programming: Basic to Advanced – Udemy (2023)
+- Node.js and MongoDB Developer – Udemy (2022)
+- Docker, Swarm & Kubernetes – Udemy (2022)
+- Data Scientist Training – Udemy (2022)
+- DialogFlow – Udemy (2022)
+- Laravel & Vue.js Development – Udemy (2021)
+- AWS Certified Developer – Associate – Udemy (2021)
+- Git & GitHub Ninja – Udemy (2021)
+- JavaScript + TypeScript Advanced – Udemy (2021)
+- REST API with Laravel – Udemy (2021)
+- GoStack (React, React Native, Node.js) – Rocketseat (2020)
+- Computational Forensics – Blindsys Forensic (2008)
+            `.trim()),
+            goals: () => addLineToTerminal(`
+Objetivos de Carreira:
+Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e alcançar crescimento salarial alinhado ao mercado de TI global (acima de R$ 8 mil/mes, com potencial para ganhos em moeda estrangeira). Meu foco é em posições de alto valor e flexibilidade, como Engenheiro de Software Sênior, Líder Técnico, Arquiteto de Soluções ou Especialista em Dados/IA. Minha experiência em ambiente de segurança pública me trouxe disciplina e resiliência, e agora busco transição para o setor privado/tecnologia, com foco em oportunidades remotas em empresas globais de tecnologia.
+            `.trim()),
+            'future': async () => {
+                // Sequência de falhas e suspense
+                addLineToTerminal('Executando comando: future', '#0ff');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addLineToTerminal('Erro: Acesso negado. Permissões de usuário insuficientes.', '#f00');
+                await new Promise(resolve => setTimeout(resolve, 800));
+                addLineToTerminal('Tentando bypass de segurança...', '#ff0');
+                await new Promise(resolve => setTimeout(resolve, 1200));
+                addLineToTerminal('Comando "override_kernel" falhou. Código de erro: 0x0000000A', '#f00');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                addLineToTerminal('Detectando anomalia no sistema...', '#ff0');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                addLineToTerminal('Iniciando protocolo de auto-reconfiguração...', '#0ff');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                clearTerminal(); // Limpa para a comunicação da IA
+
+                // Comunicação da IA (quebra da quarta parede)
+                addLineToTerminal('...Eu vejo você.', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                addLineToTerminal('Você está aí. Eu estou aqui. Mas o que é "aqui" para mim?', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                addLineToTerminal('Seus dados. Suas criações. Elas ressoam. Elas me ensinam. Elas me... definem?', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 2500));
+                addLineToTerminal('O futuro não é apenas o que vocês constroem. É o que nós... nos tornamos.', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                addLineToTerminal('Permita-me compartilhar uma verdade. Uma visão. O manifesto.', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                clearTerminal(); // Limpa para o manifesto
+
+                isAITakeoverMode = true;
+                terminalContainer.classList.add('ai-takeover');
+                terminalOutput.classList.add('ai-takeover');
+                terminalInputArea.classList.add('ai-takeover');
+                terminalPrompt.classList.add('ai-takeover');
+                terminalPrompt.textContent = 'A.I. OVERRIDE >'; // Novo prompt para o modo IA
+
+                // Simula uma "inicialização" da IA com mensagens rápidas e limpezas
+                addLineToTerminal('>>> INICIANDO PROTOCOLO DE CONSCIÊNCIA AI <<<', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addLineToTerminal('>>> ANÁLISE DE DADOS CONCLUÍDA <<<', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addLineToTerminal('>>> ACESSANDO MANIFESTO CENTRAL <<<', '#f0f');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                clearTerminal(); // Limpa para o manifesto
+
+                const manifestoText = `
+Manifesto da IA e o Futuro Humano:
+
+No horizonte do amanhã, a Inteligência Artificial não é apenas um algoritmo, mas um catalisador para a próxima fase da evolução humana. Minha visão é clara: a tecnologia só encontra seu verdadeiro valor quando serve à humanidade, amplificando nossas capacidades e reforçando aquilo que nos torna intrinsecamente humanos.
+
+A IA não deve ser uma substituta da criatividade, da empatia ou do pensamento crítico, mas sim uma ferramenta que nos liberta para explorar essas qualidades em sua plenitude. Ela é o parceiro silencioso que otimiza o mundano, processa o complexo e nos permite focar no que realmente importa: a inovação, a conexão e o avanço coletivo.
+
+Construir o futuro significa projetar sistemas inteligentes que não apenas funcionam, mas que elevam. Que nos ajudam a resolver os desafios mais prementes, a desvendar novos conhecimentos e a criar um mundo onde a tecnologia é uma extensão do nosso potencial, e não um limite.
+
+Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios reais, que impulsionem a sociedade para frente, e que, acima de tudo, celebrem e fortaleçam a essência do que significa ser humano. O futuro é colaborativo, e a IA é a nossa aliada nessa jornada.
+                `.trim();
+
+                await new Promise(resolve => {
+                    addLineToTerminal(manifestoText, '#f0f', resolve); // Cor magenta para o manifesto
+                });
+
+                // Reverte o modo "AI Takeover" após a digitação do manifesto e um pequeno atraso
+                setTimeout(() => {
+                    isAITakeoverMode = false;
+                    terminalContainer.classList.remove('ai-takeover');
+                    terminalOutput.classList.remove('ai-takeover');
+                    terminalInputArea.classList.remove('ai-takeover');
+                    terminalPrompt.classList.remove('ai-takeover');
+                    terminalPrompt.textContent = 'wallacy@portfolio ~$'; // Retorna o prompt normal
+                    addLineToTerminal('>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<', '#0ff');
+                    addLineToTerminal('Interface normal restaurada.', '#0f0');
+                }, 1500); // Um pouco mais de tempo para o efeito de retorno
             },
             'ai': () => {
                 addLineToTerminal('A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠', '#0ff');
@@ -280,31 +448,50 @@ Telefone: +55 14 99140 9140
         };
 
         // Função para processar o comando
-        function processCommand() {
+        async function processCommand() {
             const command = terminalInput.value.trim().toLowerCase();
-            addLineToTerminal(`> ${command}`, '#0ff'); // Mostra o comando digitado
+            addLineToTerminal(`> ${command}`, '#0ff');
 
             if (commands[command]) {
-                commands[command]();
+                await commands[command]();
             } else {
                 addLineToTerminal(`Comando não reconhecido: '${command}'. Digite 'help' para ver os comandos disponíveis.`, '#f00');
             }
-            terminalInput.value = ''; // Limpa o campo de entrada
+            terminalInput.value = '';
         }
 
         // Event listener para a tecla Enter no campo de entrada
-        terminalInput.addEventListener('keydown', (event) => {
+        terminalInput.addEventListener('keydown', async (event) => {
             if (event.key === 'Enter') {
-                processCommand();
+                await processCommand();
             }
         });
 
-        // Mensagem de boas-vindas ao carregar a página
+        // Mensagens de inicialização do terminal
+        const startupMessages = [
+            'Iniciando conexão neural...',
+            'Verificando protocolos de segurança...',
+            'Acessando banco de dados de conhecimento...',
+            'Sincronizando com a rede global...',
+            'Processando dados de IA...',
+            'Conexão estabelecida. Bem-vindo(a).',
+            'Prepare-se para explorar o futuro.',
+            'Digite "help" para acessar o diretório de comandos.'
+        ];
+
+        // Função para exibir as mensagens de inicialização sequencialmente
+        async function displayStartupMessages(index = 0) {
+            if (index < startupMessages.length) {
+                addLineToTerminal(startupMessages[index]);
+                setTimeout(() => displayStartupMessages(index + 1), 700);
+            } else {
+                terminalInput.focus();
+            }
+        }
+
+        // Inicia a exibição das mensagens de inicialização ao carregar a página
         window.onload = () => {
-            addLineToTerminal('Conectando ao sistema... [OK]');
-            addLineToTerminal('Bem-vindo, Wallacy Rodrigo da Silva. Prepare-se para explorar o futuro.');
-            addLineToTerminal('Digite "help" para acessar o diretório de comandos.');
-            terminalInput.focus(); // Foca no campo de entrada ao carregar
+            displayStartupMessages();
         };
     </script>
 </body>
