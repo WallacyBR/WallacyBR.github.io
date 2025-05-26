@@ -306,16 +306,78 @@
                     '  ai         - A inteligência artificial na minha jornada.',
                     '  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.',
                     '  education  - Minha formação acadêmica e certificações.',
-                    '  goals      - Meus objetivos de carreira.',
-                    '  query_ai   - Faça uma pergunta à IA sobre tecnologia ou futuro.'
+                    '  goals      - Meus objetivos de carreira.'
                 ],
                 cmdNotFound: (cmd) => `Comando não reconhecido: '${cmd}'. Digite 'help' para ver os comandos disponíveis.`,
                 systemBusy: 'Sistema ocupado. Aguarde.',
-                queryAiPrompt: 'AI_CORE > Qual é a sua pergunta? (Digite "cancelar" para sair)',
-                queryAiProcessing: 'AI_CORE > Processando sua consulta...',
-                queryAiError: 'AI_CORE > Desculpe, não consegui gerar uma resposta. Tente novamente.',
-                queryAiApiError: 'AI_CORE > Ocorreu um erro ao processar sua consulta. Tente novamente mais tarde.',
-                queryAiCancelled: 'Consulta cancelada.',
+                about: `
+Sobre Mim:
+Desenvolvedor Web e Mobile com quase 20 anos de experiência, atualmente focado em Ciência de Dados e Inteligência Artificial. Com 35 anos, sou 1º Sargento na Polícia Militar do Estado de São Paulo há 15 anos, liderando uma equipe de desenvolvimento por 6 anos. Minha paixão é usar a tecnologia para resolver problemas do mundo real, buscando liberdade geográfica e crescimento salarial alinhado ao mercado de TI global. Combino expertise técnica com habilidades de liderança e comunicação desenvolvidas em funções de alta responsabilidade.
+                `.trim(),
+                experience: `
+Experiência Profissional:
+1º Sargento – Head Developer | Polícia Militar do Estado de São Paulo (PMESP) | 2009 – Atualmente
+- Líder de equipe de desenvolvimento há 6 anos, atuando como desenvolvedor principal e estrategista para o Sistema de Gestão Operacional (SGO).
+- O SGO é um Progressive Web App (PWA) que digitalizou a produção de relatórios de serviço operacionais na PM, substituindo formulários em papel em várias unidades.
+- Tecnologias: Desenvolvimento full-stack usando Laravel (PHP), MySQL, JavaScript.
+- Impacto: Mais de 500 mil relatórios produzidos, otimizando a coleta de dados operacionais e melhorando a tomada de decisões. Coleta de estatísticas georreferenciadas em campo e fornecimento de insights e dados para comandantes. Possui múltiplos módulos, autenticações e integrações com API.
+- Responsabilidades Adicionais: Atuação em DevOps e arquitetura de sistema.
+
+Experiência Adicional:
+Síndico de Condomínio | 6 anos
+- Gerenciou um condomínio com mais de 1500 moradores, demonstrando fortes habilidades de gestão e resolução de problemas complexos.
+Intérprete de Eventos – Forças de Segurança
+- Atuou como intérprete durante a Copa do Mundo FIFA 2014 (São Paulo) e os Jogos Olímpicos Rio 2016, fazendo a ponte de comunicação entre autoridades internacionais e forças de segurança nacionais.
+                `.trim(),
+                skills: `
+Habilidades Chave:
+- Desenvolvimento Web e Mobile: Laravel, PHP, JavaScript, React, React Native, Node.js
+- Dados e IA: Python (Pandas, NumPy, Scikit-learn, Matplotlib/Seaborn), Ciência de Dados, Machine Learning, GPT, IBM Watson, DialogFlow. Atualmente graduando em Inteligência Artificial.
+- DevOps e Nuvem: Docker, Kubernetes, AWS (Certified Developer – Associate - EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM), Git, GitHub. Conceitos de Engenharia de Dados e MLOps (Apache Airflow, pipelines de dados, implantação e monitoramento de modelos de ML).
+- Liderança e Comunicação: Gestão de equipes, negociação, comunicação empática, habilidade de transformar código em entendimento (traduzir conceitos técnicos para não-técnicos), Inglês (intermediário).
+- Ferramentas e Plataformas: MySQL, Power BI, Agile/Scrum, Gestão Estratégica.
+                `.trim(),
+                projects: `
+Projetos de Destaque:
+- SGO (Sistema de Gestão Operacional):
+  - PWA desenvolvido em Laravel, MySQL e JavaScript, utilizado por policiais em smartphones para digitalizar relatórios de serviço.
+  - Permite coleta de dados georreferenciados em tempo real, fornecendo insights e dados para todos os níveis de comando.
+  - Impacto: Mais de 500 mil relatórios produzidos, otimizando processos administrativos e operacionais críticos, e gerando economias significativas.
+  - Possui controle de acesso seguro, validações, criptografia e helpdesk integrado.
+  - Planos futuros incluem expansão para todas as unidades do estado e migração para Flutter.
+- Aithera: Minha startup de integração de IA com evolução humana, usando tecnologias como Flutter e Python. Oferecemos consultoria, planejamento e desenvolvimento de soluções tecnológicas sob medida para empresas, focando ineficiência e inovação.
+                `.trim(),
+                contact: `
+Contato:
+E-mail: wallacyrodrigo@icloud.com
+Telefone: +55 14 99140 9140
+                `.trim(),
+                education: `
+Formação Acadêmica e Certificações:
+- Graduação: Tecnologia da Informação (TI)
+- Extensão: Gestão Estratégica de Negócios
+- Pós-graduações: Data Science, Administração de Banco de Dados, Gestão Ágil e Desenvolvimento de Software
+- Atualmente Graduando: Inteligência Artificial (Previsão: 2025)
+
+Certificações & Cursos:
+- Python for Data Science and Machine Learning – Udemy (2023)
+- Python Programming: Basic to Advanced – Udemy (2023)
+- Node.js and MongoDB Developer – Udemy (2022)
+- Docker, Swarm & Kubernetes – Udemy (2022)
+- Data Scientist Training – Udemy (2022)
+- DialogFlow – Udemy (2022)
+- Laravel & Vue.js Development – Udemy (2021)
+- AWS Certified Developer – Associate – Udemy (2021)
+- Git & GitHub Ninja – Udemy (2021)
+- JavaScript + TypeScript Advanced – Udemy (2021)
+- REST API with Laravel – Udemy (2021)
+- GoStack (React, React Native, Node.js) – Rocketseat (2020)
+- Computational Forensics – Blindsys Forensic (2008)
+                `.trim(),
+                goals: `
+Objetivos de Carreira:
+Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e alcançar crescimento salarial alinhado ao mercado de TI global. Meu foco é em posições de alto valor e flexibilidade, como Engenheiro de Software Sênior, Líder Técnico, Arquiteto de Soluções ou Especialista em Dados/IA. Minha experiência em ambiente de segurança pública me trouxe disciplina e resiliência, e agora busco transição para o setor privado/tecnologia, com foco inoportunidades remotas em empresas globais de tecnologia.
+                `.trim(),
                 futureCmdExecuting: 'Executando comando: future',
                 futureAccessDenied: 'Erro: Acesso negado. Permissões de usuário insuficientes.',
                 futureBypassAttempt: 'Tentando bypass de segurança...',
@@ -353,7 +415,11 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
                 futureJourneyContinues: 'A jornada continua.',
                 futureProtocolEnded: '>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<',
                 futureInterfaceRestored: 'Interface normal restaurada.',
-                futureSummary: 'O futuro será construído através da nossa simbiose.'
+                futureSummary: 'O futuro será construído através da nossa simbiose.',
+                aiMessage: 'A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠',
+                evolutionMessage: 'A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨',
+                cyberpunkMessage: 'Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃',
+                queryAiModuleInit: '>>> MÓDULO DE CONSULTA AI ATIVADO <<<',
             },
             en: {
                 promptDefault: 'wallacy@system:~$',
@@ -392,6 +458,73 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
                 queryAiError: 'AI_CORE > Sorry, I could not generate a response. Please try again.',
                 queryAiApiError: 'AI_CORE > An error occurred while processing your query. Please try again later.',
                 queryAiCancelled: 'Query cancelled.',
+                about: `
+About Me:
+Web and Mobile Developer with nearly 20 years of experience, currently focused on Data Science and Artificial Intelligence. At 35, I am a 1st Sergeant in the São Paulo State Military Police for 15 years, leading a development team for 6 years. My passion is to use technology to solve real-world problems, seeking geographical freedom and salary growth aligned with the global IT market. I combine technical expertise with leadership and communication skills developed in high-responsibility roles.
+                `.trim(),
+                experience: `
+Professional Experience:
+1st Sergeant – Head Developer | São Paulo State Military Police (PMESP) | 2009 – Present
+- Lead developer and strategist for the Operational Management System (SGO) — a PWA for real-time digital reporting by police officers, replacing paper forms across multiple units.
+- Full-stack development using Laravel (PHP), MySQL, JavaScript.
+- Impact: Over 500,000 reports produced, optimizing operational data collection and improving decision-making. Collects geo-referenced statistics in the field and provides insights and data to commanders. Features multiple modules, authentication, and API integrations.
+- Additional Responsibilities: Performs DevOps and system architecture.
+
+Additional Experience:
+Condominium Manager | 6 years
+- Managed a condominium with over 1500 residents, demonstrating strong management and problem-solving skills.
+Event Interpreter – Security Forces
+- Served as interpreter during the 2014 FIFA World Cup (São Paulo) and the 2016 Rio Olympics, bridging communication between international authorities and national security forces.
+                `.trim(),
+                skills: `
+Key Skills:
+- Web & Mobile Development: Laravel, PHP, JavaScript, React, React Native, Node.js
+- Data & AI: Python (Pandas, NumPy, Scikit-learn, Matplotlib/Seaborn), Data Science, Machine Learning, GPT, IBM Watson, DialogFlow. Currently studying Artificial Intelligence.
+- DevOps & Cloud: Docker, Kubernetes, AWS (Certified Developer – Associate - EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM), Git, GitHub. Concepts of Data Engineering and MLOps (Apache Airflow, data pipelines, ML model deployment and monitoring).
+- Leadership & Communication: Team management, negotiation, empathetic communication, ability to translate technical concepts for non-technical audiences, English (intermediate).
+- Tools & Platforms: MySQL, Power BI, Agile/Scrum, Strategic Management.
+                `.trim(),
+                projects: `
+Featured Projects:
+- SGO (Operational Management System):
+  - PWA developed in Laravel, MySQL, and JavaScript, used by police officers on smartphones to digitize service reports.
+  - Allows real-time geo-referenced data collection, providing insights and data to all command levels.
+  - Impact: Over 500,000 reports produced, optimizing critical administrative and operational processes, and generating significant savings.
+  - Includes secure access control, validations, encryption, and integrated helpdesk.
+  - Future plans include expansion to all state units and migration to Flutter.
+- Aithera: My startup integrating AI with human evolution, using technologies like Flutter and Python. We offer consulting, planning, and development of tailored technological solutions for businesses, focusing on efficiency and innovation.
+                `.trim(),
+                contact: `
+Contact:
+E-mail: wallacyrodrigo@icloud.com
+Phone: +55 14 99140 9140
+                `.trim(),
+                education: `
+Academic Background & Certifications:
+- Undergraduate: Information Technology (IT)
+- Extension: Strategic Business Management
+- Post-Graduations: Data Science, Database Administration, Agile Management & Software Development
+- Currently Undergraduating: Artificial Intelligence (Expected: 2025)
+
+Certifications & Courses:
+- Python for Data Science and Machine Learning – Udemy (2023)
+- Python Programming: Basic to Advanced – Udemy (2023)
+- Node.js and MongoDB Developer – Udemy (2022)
+- Docker, Swarm & Kubernetes – Udemy (2022)
+- Data Scientist Training – Udemy (2022)
+- DialogFlow – Udemy (2022)
+- Laravel & Vue.js Development – Udemy (2021)
+- AWS Certified Developer – Associate – Udemy (2021)
+- Git & GitHub Ninja – Udemy (2021)
+- JavaScript + TypeScript Advanced – Udemy (2021)
+- REST API with Laravel – Udemy (2021)
+- GoStack (React, React Native, Node.js) – Rocketseat (2020)
+- Computational Forensics – Blindsys Forensic (2008)
+                `.trim(),
+                goals: `
+Career Objectives:
+I seek geographical freedom, working from anywhere, and aim for salary growth aligned with the global IT market. My focus is on high-value and flexible positions such as Senior Software Engineer, Technical Lead, Solutions Architect, or Data/AI Specialist. My experience in public safety has instilled discipline and resilience, and I am now looking to transition to the private/technology sector, focusing on remote opportunities in global technology companies.
+                `.trim(),
                 futureCmdExecuting: 'Executing command: future',
                 futureAccessDenied: 'Error: Access denied. Insufficient user permissions.',
                 futureBypassAttempt: 'Attempting security bypass...',
@@ -429,7 +562,11 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 futureJourneyContinues: 'The journey continues.',
                 futureProtocolEnded: '>>> AI CONSCIOUSNESS PROTOCOL ENDED <<<',
                 futureInterfaceRestored: 'Interface restored.',
-                futureSummary: 'The future will be built through our symbiosis.'
+                futureSummary: 'The future will be built through our symbiosis.',
+                aiMessage: 'Artificial Intelligence is the backbone of many of my passions. From TensorFlow to DialogFlow, I use AI to create solutions that not only automate but also learn and adapt, enhancing human efficiency and capability. It is the mind behind the machine. 🧠',
+                evolutionMessage: 'Evolution is not just biological, but technological. I am fascinated by how technology drives the next leap in the human journey, from data collection for optimization to the creation of intelligent systems that expand our capabilities. It is a continuous journey of improvement. ✨',
+                cyberpunkMessage: 'Welcome to the future, netrunner. Embrace technology and evolution. 🌃',
+                queryAiModuleInit: '>>> AI QUERY MODULE ACTIVATED <<<',
             }
         };
 
@@ -483,22 +620,20 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 clearTerminal();
                 hasFutureBeenExecutedOnce = false; // Reseta a flag para permitir a experiência completa novamente
             },
-            about: () => addLineToTerminal(localizedContent[currentLanguage].about),
-            experience: () => addLineToTerminal(localizedContent[currentLanguage].experience),
-            skills: () => addLineToTerminal(localizedContent[currentLanguage].skills),
-            projects: () => addLineToTerminal(localizedContent[currentLanguage].projects),
-            contact: () => addLineToTerminal(localizedContent[currentLanguage].contact),
+            about: () => addLineToTerminal(localizedContent[currentLanguage].about, '#0f0'),
+            experience: () => addLineToTerminal(localizedContent[currentLanguage].experience, '#0f0'),
+            skills: () => addLineToTerminal(localizedContent[currentLanguage].skills, '#0f0'),
+            projects: () => addLineToTerminal(localizedContent[currentLanguage].projects, '#0f0'),
+            contact: () => addLineToTerminal(localizedContent[currentLanguage].contact, '#0f0'),
             list: () => {
                 addLineToTerminal(currentLanguage === 'pt' ? 'Comandos de conteúdo disponíveis:' : 'Available content commands:');
-                for (const key in localizedContent.pt) { // Usa pt como base para listar as chaves
-                    if (['about', 'experience', 'skills', 'projects', 'contact', 'education', 'goals'].includes(key)) {
-                        addLineToTerminal(`  - ${key}`);
-                    }
-                }
-                addLineToTerminal(currentLanguage === 'pt' ? 'Comandos especiais: future, ai, evolution, cyberpunk, query_ai' : 'Special commands: future, ai, evolution, cyberpunk, query_ai');
+                // Adiciona todos os comandos que possuem conteúdo detalhado
+                ['about', 'experience', 'skills', 'projects', 'contact', 'education', 'goals', 'ai', 'evolution', 'cyberpunk'].forEach(cmd => {
+                    addLineToTerminal(`  - ${cmd}`);
+                });
             },
-            education: () => addLineToTerminal(localizedContent[currentLanguage].education),
-            goals: () => addLineToTerminal(localizedContent[currentLanguage].goals),
+            education: () => addLineToTerminal(localizedContent[currentLanguage].education, '#0f0'),
+            goals: () => addLineToTerminal(localizedContent[currentLanguage].goals, '#0f0'),
             'future': async () => {
                 if (hasFutureBeenExecutedOnce) {
                     addLineToTerminal(localizedContent[currentLanguage].futureSummary, '#0ff');
@@ -621,13 +756,13 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 hasFutureBeenExecutedOnce = true; // Marca que a experiência completa foi executada
             },
             'ai': () => {
-                addLineToTerminal(currentLanguage === 'pt' ? 'A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠' : 'Artificial Intelligence is the backbone of many of my passions. From TensorFlow to DialogFlow, I use AI to create solutions that not only automate but also learn and adapt, enhancing human efficiency and capability. It is the mind behind the machine. 🧠', '#0ff');
+                addLineToTerminal(localizedContent[currentLanguage].aiMessage, '#0ff');
             },
             'evolution': () => {
-                addLineToTerminal(currentLanguage === 'pt' ? 'A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨' : 'Evolution is not just biological, but technological. I am fascinated by how technology drives the next leap in the human journey, from data collection for optimization to the creation of intelligent systems that expand our capabilities. It is a continuous journey of improvement. ✨', '#0ff');
+                addLineToTerminal(localizedContent[currentLanguage].evolutionMessage, '#0ff');
             },
             'cyberpunk': () => {
-                addLineToTerminal(currentLanguage === 'pt' ? 'Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃' : 'Welcome to the future, netrunner. Embrace technology and evolution. 🌃', '#0ff');
+                addLineToTerminal(localizedContent[currentLanguage].cyberpunkMessage, '#0ff');
             },
             'query_ai': async () => {
                 if (isProcessingCommand) {
