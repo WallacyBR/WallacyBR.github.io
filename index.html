@@ -5,97 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Currículo e Portfólio de Wallacy Rodrigo da Silva">
     <title>Olá, eu sou Wallacy Silva</title>
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            font-family: 'Courier New', monospace;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
             background-color: #000;
             color: #0ff;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center; /* Centraliza o conteúdo horizontalmente */
+            justify-content: center; /* Centraliza o conteúdo verticalmente */
         }
 
-        header {
-            background-color: #111;
-            padding: 30px;
-            text-align: center;
-            border-bottom: 2px solid #0ff;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
+        .top-name {
+            font-family: 'Courier New', monospace;
+            font-size: 3em;
             color: #0ff;
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
             animation: neon 1.5s infinite alternate;
         }
 
-        header p {
-            margin: 10px 0 0;
-            font-size: 1.2em;
+        /* Novos estilos para o terminal */
+        .terminal-container {
+            background-color: #111; /* Fundo mais escuro para o terminal */
+            border: 1px solid #0ff;
+            box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; /* Efeito de brilho mais forte */
+            border-radius: 10px;
+            padding: 20px;
+            width: 90%; /* Ocupa mais largura */
+            max-width: 900px;
+            height: 70vh; /* Ocupa uma boa parte da altura da viewport */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            margin-bottom: 20px; /* Espaço antes do footer */
         }
 
-        nav {
-            text-align: center;
-            margin: 20px 0;
+        .terminal-output {
+            flex-grow: 1; /* Permite que a saída ocupe o espaço restante */
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #0f0;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #055;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
         }
 
-        nav a {
-            margin: 0 15px;
-            text-decoration: none;
+        .terminal-input-area {
+            display: flex;
+            align-items: center;
+            padding-top: 10px;
+        }
+
+        .terminal-prompt {
             color: #0ff;
             font-weight: bold;
-            font-size: 1.2em;
-            animation: flicker 2s infinite alternate;
+            margin-right: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
         }
 
-        nav a:hover {
-            text-decoration: underline;
-            color: #ff0;
+        .terminal-input {
+            flex-grow: 1;
+            background-color: #111; /* Cor de fundo do input igual ao do terminal */
+            border: none;
+            outline: none;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            padding: 5px;
         }
 
-        main {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #111;
-            border: 1px solid #0ff;
-            box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset;
-            border-radius: 10px;
+        .terminal-input::selection {
+            background-color: #0ff;
+            color: #000;
         }
 
-        section {
-            margin-bottom: 40px;
+        .blinking-cursor {
+            font-weight: 100;
+            color: #0f0;
+            animation: blink-caret .75s step-end infinite;
         }
 
-        section h2 {
-            color: #0ff;
-            border-bottom: 1px dashed #0ff;
-            padding-bottom: 5px;
-            font-size: 1.8em;
-        }
-
-        section p, li {
-            font-size: 1.2em;
-            line-height: 1.6;
-        }
-
-        footer {
-            text-align: center;
-            background-color: #111;
-            color: #0ff;
-            padding: 10px;
-            margin-top: 20px;
-            border-top: 2px solid #0ff;
-            font-size: 1em;
-        }
-
-        ul {
-            padding-left: 20px;
-        }
-
-        li {
-            margin-bottom: 10px;
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #0f0; }
         }
 
         @keyframes neon {
@@ -107,78 +111,190 @@
             }
         }
 
-        @keyframes flicker {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 1; }
-        }
-
-        a {
+        /* Estilo para o footer */
+        footer {
+            text-align: center;
+            background-color: #000; /* Fundo do footer preto */
             color: #0ff;
+            padding: 10px;
+            border-top: 2px solid #0ff;
+            font-size: 1em;
+            width: 100%; /* Ocupa a largura total */
         }
 
-        a:hover {
-            color: #ff0;
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .top-name {
+                font-size: 2em;
+            }
+            .terminal-container {
+                width: 95%;
+                height: 80vh; /* Mais altura em telas menores */
+                padding: 15px;
+            }
+            .terminal-output {
+                font-size: 1em;
+            }
+            .terminal-input, .terminal-prompt {
+                font-size: 1em;
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Wallacy Rodrigo da Silva</h1>
-        <p>Desenvolvedor Web e Mobile | IA e Ciência de Dados</p>
-        <p>Bauru, SP | <a href="mailto:contato@aithera.com.br">contato@aithera.com.br</a> | +55 14 99140 9140</p>
-    </header>
-    <nav>
-        <a href="#about">Sobre Mim</a>
-        <a href="#experience">Experiência</a>
-        <a href="#skills">Habilidades</a>
-        <a href="#projects">Projetos</a>
-        <a href="#contact">Contato</a>
-    </nav>
-    <main>
-        <section id="about">
-            <h2>Sobre Mim</h2>
-            <p>Sou um entusiasta de cyberpunk e acredito no poder da tecnologia para transformar o mundo. Tenho uma sólida carreira como desenvolvedor, com experiência em Web, Mobile, Inteligência Artificial e Ciência de Dados.</p>
-            <p>Atualmente trabalho na Polícia Militar de São Paulo, onde lidero projetos inovadores de tecnologia. Sou fascinado pela evolução humana e tecnológica e busco sempre novos desafios. 🚀</p>
-        </section>
+    <div class="top-name">Wallacy Rodrigo da Silva</div>
 
-        <section id="experience">
-            <h2>Experiência</h2>
-            <p><strong>1º Sargento - Head Dev | Polícia Militar do Estado de São Paulo</strong> (2009 - Atualmente)</p>
-            <ul>
-                <li>Um dos idealizadores do SGO - Sistema de Gestão Operacional, que modernizou a coleta de dados operacionais e melhorou processos administrativos e operacionais críticos.</li>
-                <li>Resultados notáveis: nossa equipe promoveu a economia de milhões em custos de impressão com mais de 400 mil relatórios de serviço operacional digitais. Digitalização total da coleta de estatísticas baseadas no trabalho policial operacional, fiscalização das unidades de serviço, coleta de informações críticas em operações especiais, e criação de relatórios qualitativos e quantitativos em tempo real, disponíveis 24/7 em qualquer dispositivo com tela.</li>
-                <li>Atuo como líder de equipe em projetos estratégicos que unem tecnologia e gestão.</li>
-            </ul>
-        </section>
+    <div class="terminal-container">
+        <div class="terminal-output" id="terminalOutput"></div>
+        <div class="terminal-input-area">
+            <span class="terminal-prompt">wallacy@portfolio ~$</span>
+            <input type="text" class="terminal-input" id="terminalInput" autofocus>
+            <span class="blinking-cursor">|</span>
+        </div>
+    </div>
 
-        <section id="skills">
-            <h2>Habilidades e Conhecimentos</h2>
-            <ul>
-                <li><strong>Desenvolvimento:</strong> Python, Dart (Flutter), JavaScript, PHP, MySQL</li>
-                <li><strong>IA:</strong> TensorFlow, Watson IBM, DialogFlow</li>
-                <li><strong>Data Science:</strong> Pandas, NumPy, Matplotlib, Power BI</li>
-                <li><strong>Gestão:</strong> Estratégia de negócios, liderança e recuperação financeira</li>
-                <li><strong>DevOps:</strong> Docker, Kubernetes, Git</li>
-            </ul>
-        </section>
-
-        <section id="projects">
-            <h2>Projetos de Destaque</h2>
-            <ul>
-                <li><strong>SGO - Sistema de Gestão Operacional:</strong> PWA em Laravel com coleta de dados georreferenciados em tempo real. Impacto direto na eficiência administrativa e sustentabilidade.</li>
-                <li><strong>Aithera:</strong> Minha startup de integração de IA com evolução humana, usando tecnologias como Flutter e Python. Oferecemos consultoria, planejamento e desenvolvimento de soluções tecnológicas sob medida para empresas, focando em eficiência e inovação.</li>
-            </ul>
-        </section>
-
-        <section id="contact">
-            <h2>Contato</h2>
-            <p>E-mail: <a href="mailto:contato@aithera.com.br">contato@aithera.com.br</a></p>
-            <p>Telefone: +55 14 99140 9140</p>
-        </section>
-    </main>
     <footer>
         &copy; 2024 Wallacy Rodrigo da Silva. Todos os direitos reservados.
     </footer>
+
+    <script>
+        // Obtenha referências para os elementos do DOM
+        const terminalOutput = document.getElementById('terminalOutput');
+        const terminalInput = document.getElementById('terminalInput');
+
+        // Conteúdo das seções para serem exibidos no terminal
+        const content = {
+            about: `
+Sobre Mim:
+Sou um entusiasta de cyberpunk e acredito no poder da tecnologia para transformar o mundo. Tenho uma sólida carreira como desenvolvedor, com experiência em Web, Mobile, Inteligência Artificial e Ciência de Dados.
+
+Atualmente trabalho na Polícia Militar de São Paulo, onde lidero projetos inovadores de tecnologia. Sou fascinado pela evolução humana e tecnológica e busco sempre novos desafios. 🚀
+            `.trim(),
+            experience: `
+Experiência:
+1º Sargento - Head Dev | Polícia Militar do Estado de São Paulo (2009 - Atualmente)
+- Um dos idealizadores do SGO - Sistema de Gestão Operacional, que modernizou a coleta de dados operacionais e melhorou processos administrativos e operacionais críticos.
+- Resultados notáveis: nossa equipe promoveu a economia de milhões em custos de impressão com mais de 400 mil relatórios de serviço operacional digitais. Digitalização total da coleta de estatísticas baseadas no trabalho policial operacional, fiscalização das unidades de serviço, coleta de informações críticas em operações especiais, e criação de relatórios qualitativos e quantitativos em tempo real, disponíveis 24/7 em qualquer dispositivo com tela.
+- Atuo como líder de equipe em projetos estratégicos que unem tecnologia e gestão.
+            `.trim(),
+            skills: `
+Habilidades e Conhecimentos:
+- Desenvolvimento: Python, Dart (Flutter), JavaScript, PHP, MySQL
+- IA: TensorFlow, Watson IBM, DialogFlow
+- Data Science: Pandas, NumPy, Matplotlib, Power BI
+- Gestão: Estratégia de negócios, liderança e recuperação financeira
+- DevOps: Docker, Kubernetes, Git
+            `.trim(),
+            projects: `
+Projetos de Destaque:
+- SGO - Sistema de Gestão Operacional: PWA em Laravel com coleta de dados georreferenciados em tempo real. Impacto direto na eficiência administrativa e sustentabilidade.
+- Aithera: Minha startup de integração de IA com evolução humana, usando tecnologias como Flutter e Python. Oferecemos consultoria, planejamento e desenvolvimento de soluções tecnológicas sob medida para empresas, focando em eficiência e inovação.
+            `.trim(),
+            contact: `
+Contato:
+E-mail: contato@aithera.com.br
+Telefone: +55 14 99140 9140
+            `.trim()
+        };
+
+        // Função para simular o efeito de digitação no terminal
+        function typeWriter(text, element, i = 0, speed = 15) { // Velocidade ligeiramente mais rápida
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                setTimeout(() => typeWriter(text, element, i + 1, speed), speed);
+            } else {
+                terminalOutput.scrollTop = terminalOutput.scrollHeight; // Rola para o final
+            }
+        }
+
+        // Função para adicionar uma linha ao terminal
+        function addLineToTerminal(text, color = '#0f0') {
+            const line = document.createElement('span');
+            line.style.color = color;
+            terminalOutput.appendChild(line);
+            typeWriter(text + '\n', line); // Adiciona quebra de linha
+        }
+
+        // Função para limpar o terminal
+        function clearTerminal() {
+            terminalOutput.innerHTML = '';
+        }
+
+        // Mapeamento de comandos e suas ações
+        const commands = {
+            help: () => {
+                addLineToTerminal('Comandos disponíveis:');
+                addLineToTerminal('  help       - Exibe esta mensagem de ajuda.');
+                addLineToTerminal('  clear      - Limpa a tela do terminal.');
+                addLineToTerminal('  about      - Exibe informações sobre Wallacy.');
+                addLineToTerminal('  experience - Exibe a experiência profissional.');
+                addLineToTerminal('  skills     - Exibe as habilidades e conhecimentos.');
+                addLineToTerminal('  projects   - Exibe os projetos de destaque.');
+                addLineToTerminal('  contact    - Exibe as informações de contato.');
+                addLineToTerminal('  list       - Lista todos os comandos de conteúdo.');
+                addLineToTerminal('  future     - Uma visão sobre o futuro da tecnologia.');
+                addLineToTerminal('  ai         - A inteligência artificial na minha jornada.');
+                addLineToTerminal('  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.');
+            },
+            clear: () => {
+                clearTerminal();
+            },
+            about: () => addLineToTerminal(content.about),
+            experience: () => addLineToTerminal(content.experience),
+            skills: () => addLineToTerminal(content.skills),
+            projects: () => addLineToTerminal(content.projects),
+            contact: () => addLineToTerminal(content.contact),
+            list: () => {
+                addLineToTerminal('Comandos de conteúdo disponíveis:');
+                for (const key in content) {
+                    if (content.hasOwnProperty(key)) {
+                        addLineToTerminal(`  - ${key}`);
+                    }
+                }
+                addLineToTerminal('Comandos especiais: future, ai, evolution');
+            },
+            // Comandos "easter egg" personalizados com base nos seus interesses
+            'future': () => {
+                addLineToTerminal('O futuro é um campo fértil para a inovação. Vejo uma simbiose cada vez maior entre humanos e tecnologia, impulsionada por IA e dados, moldando um novo horizonte para a sociedade. Estamos construindo o amanhã, byte a byte. 💡', '#0ff');
+            },
+            'ai': () => {
+                addLineToTerminal('A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠', '#0ff');
+            },
+            'evolution': () => {
+                addLineToTerminal('A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨', '#0ff');
+            },
+            'cyberpunk': () => {
+                addLineToTerminal('Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃', '#0ff');
+            }
+        };
+
+        // Função para processar o comando
+        function processCommand() {
+            const command = terminalInput.value.trim().toLowerCase();
+            addLineToTerminal(`> ${command}`, '#0ff'); // Mostra o comando digitado
+
+            if (commands[command]) {
+                commands[command]();
+            } else {
+                addLineToTerminal(`Comando não reconhecido: '${command}'. Digite 'help' para ver os comandos disponíveis.`, '#f00');
+            }
+            terminalInput.value = ''; // Limpa o campo de entrada
+        }
+
+        // Event listener para a tecla Enter no campo de entrada
+        terminalInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                processCommand();
+            }
+        });
+
+        // Mensagem de boas-vindas ao carregar a página
+        window.onload = () => {
+            addLineToTerminal('Conectando ao sistema... [OK]');
+            addLineToTerminal('Bem-vindo, Wallacy Rodrigo da Silva. Prepare-se para explorar o futuro.');
+            addLineToTerminal('Digite "help" para acessar o diretório de comandos.');
+            terminalInput.focus(); // Foca no campo de entrada ao carregar
+        };
+    </script>
 </body>
 </html>
