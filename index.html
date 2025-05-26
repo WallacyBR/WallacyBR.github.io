@@ -14,7 +14,7 @@
             padding: 0;
             background-color: #000;
             color: #0ff;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Garante que não haja rolagem horizontal na página */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -33,17 +33,17 @@
             padding: 20px;
             width: 90%; /* Ocupa mais largura */
             max-width: 900px;
-            height: 85vh; /* Ocupa uma boa parte da altura da viewport */
+            height: 100vh; /* Ocupa 100% da altura da viewport */
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            margin-bottom: 20px; /* Espaço antes do footer */
+            /* margin-bottom removido */
             transition: all 0.5s ease-in-out; /* Transição suave para mudanças de estilo */
         }
 
         .terminal-output {
             flex-grow: 1; /* Permite que a saída ocupe o espaço restante */
-            overflow-y: auto;
+            overflow-y: auto; /* Rolagem vertical apenas dentro desta área */
             white-space: pre-wrap;
             word-wrap: break-word;
             color: #0f0;
@@ -188,7 +188,7 @@
         @media (max-width: 768px) {
             .terminal-container {
                 width: 95%;
-                height: 80vh; /* Mais altura em telas menores */
+                height: 95vh; /* Ajuste para telas menores */
                 padding: 15px;
             }
             .terminal-output {
@@ -490,7 +490,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             contact: () => addLineToTerminal(localizedContent[currentLanguage].contact),
             list: () => {
                 addLineToTerminal(currentLanguage === 'pt' ? 'Comandos de conteúdo disponíveis:' : 'Available content commands:');
-                for (const key in content.pt) { // Usa pt como base para listar as chaves
+                for (const key in localizedContent.pt) { // Usa pt como base para listar as chaves
                     if (['about', 'experience', 'skills', 'projects', 'contact', 'education', 'goals'].includes(key)) {
                         addLineToTerminal(`  - ${key}`);
                     }
