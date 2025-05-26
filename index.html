@@ -122,29 +122,30 @@
             opacity: 0;
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent }
-            50% { border-color: #0f0; }
+        /* Estilos para os botões de idioma */
+        .language-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
 
-        @keyframes neon {
-            from {
-                text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 20px #0ff;
-            }
-            to {
-                text-shadow: 0 0 10px #0ff, 0 0 20px #0ff, 0 0 30px #0ff;
-            }
-        }
-
-        /* Estilo para o footer */
-        footer {
-            text-align: center;
-            background-color: #000; /* Fundo do footer preto */
+        .language-button {
+            background-color: #055;
             color: #0ff;
-            padding: 10px;
-            border-top: 2px solid #0ff;
+            border: 1px solid #0ff;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
             font-size: 1em;
-            width: 100%; /* Ocupa a largura total */
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        .language-button:hover {
+            background-color: #0ff;
+            color: #000;
+            box-shadow: 0 0 10px #0ff;
         }
 
         /* Estilos para o modo "bugado" / "AI" */
@@ -209,10 +210,6 @@
         </div>
     </div>
 
-    <footer>
-        &copy; 2025 Wallacy Rodrigo da Silva. Todos os direitos reservados.
-    </footer>
-
     <script>
         // Obtenha referências para os elementos do DOM
         const terminalOutput = document.getElementById('terminalOutput');
@@ -220,54 +217,220 @@
         const terminalContainer = document.getElementById('terminalContainer');
         const terminalInputArea = document.getElementById('terminalInputArea');
         const terminalPrompt = document.getElementById('terminalPrompt');
+        let blinkingCursor = null; // Inicializado como null, será atribuído em selectLanguage
 
+        let currentLanguage = 'pt'; // Variável global para o idioma
         let isAITakeoverMode = false;
-        let isProcessingCommand = false; // Flag para controlar o estado de processamento
+        let isProcessingCommand = false;
+        let hasFutureBeenExecutedOnce = false;
 
-        // Conteúdo das seções para serem exibidos no terminal
-        const content = {
-            about: `
-Sobre Mim:
-Desenvolvedor Web e Mobile com quase 20 anos de experiência, atualmente focado em Ciência de Dados e Inteligência Artificial. Com 35 anos, sou 1º Sargento na Polícia Militar do Estado de São Paulo há 15 anos, liderando uma equipe de desenvolvimento por 6 anos. Minha paixão é usar a tecnologia para resolver problemas do mundo real, buscando liberdade geográfica e crescimento salarial alinhado ao mercado de TI global (acima de R$ 8 mil/mês, com potencial para ganhos em moeda estrangeira). Combino expertise técnica com habilidades de liderança e comunicação desenvolvidas em funções de alta responsabilidade.
-            `.trim(),
-            experience: `
-Experiência Profissional:
-1º Sargento – Head Developer | Polícia Militar do Estado de São Paulo (PMESP) | 2009 – Atualmente
-- Líder de equipe de desenvolvimento há 6 anos, atuando como desenvolvedor principal e estrategista para o Sistema de Gestão Operacional (SGO).
-- O SGO é um Progressive Web App (PWA) que digitalizou a produção de relatórios de serviço operacionais na PM, substituindo formulários em papel em várias unidades.
-- Tecnologias: Desenvolvimento full-stack usando Laravel (PHP), MySQL, JavaScript.
-- Impacto: Mais de 500 mil relatórios produzidos, otimizando a coleta de dados operacionais e melhorando a tomada de decisões. Coleta de estatísticas georreferenciadas em campo e fornecimento de insights e dados para comandantes. Possui múltiplos módulos, autenticações e integrações com API.
-- Responsabilidades Adicionais: Atuação em DevOps e arquitetura de sistema.
+        // Helper function to simulate AI typing with pauses, no backspace/retype
+        async function simulateAITypingDrama(segments) {
+            for (const segment of segments) {
+                const fullText = segment.text;
+                const color = segment.color || '#f0f';
+                const typingSpeed = segment.speed || 40;
+                const pauseAfter = segment.pauseAfter || 1500;
 
-Experiência Adicional:
-Síndico de Condomínio | 6 anos
-- Gerenciou um condomínio com mais de 1500 moradores, demonstrando fortes habilidades de gestão e resolução de problemas complexos.
-Intérprete de Eventos – Forças de Segurança
-- Atuou como intérprete durante a Copa do Mundo FIFA 2014 (São Paulo) e os Jogos Olímpicos Rio 2016, fazendo a ponte de comunicação entre autoridades internacionais e forças de segurança nacionais.
-            `.trim(),
-            skills: `
-Habilidades Chave:
-- Desenvolvimento Web e Mobile: Laravel, PHP, JavaScript, React, React Native, Node.js
-- Dados e IA: Python (Pandas, NumPy, Scikit-learn, Matplotlib/Seaborn), Ciência de Dados, Machine Learning, GPT, IBM Watson, DialogFlow. Atualmente graduando em Inteligência Artificial.
-- DevOps e Nuvem: Docker, Kubernetes, AWS (Certified Developer – Associate - EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM), Git, GitHub. Conceitos de Engenharia de Dados e MLOps (Apache Airflow, pipelines de dados, implantação e monitoramento de modelos de ML).
-- Liderança e Comunicação: Gestão de equipes, negociação, comunicação empática, habilidade de transformar código em entendimento (traduzir conceitos técnicos para não-técnicos), Inglês (intermediário).
-- Ferramentas e Plataformas: MySQL, Power BI, Agile/Scrum, Gestão Estratégica.
-            `.trim(),
-            projects: `
-Projetos de Destaque:
-- SGO (Sistema de Gestão Operacional):
-  - PWA desenvolvido em Laravel, MySQL e JavaScript, utilizado por policiais em smartphones para digitalizar relatórios de serviço.
-  - Permite coleta de dados georreferenciados em tempo real, fornecendo insights e dados para todos os níveis de comando.
-  - Impacto: Mais de 500 mil relatórios produzidos, otimizando processos administrativos e operacionais críticos, e gerando economias significativas.
-  - Possui controle de acesso seguro, validações, criptografia e helpdesk integrado.
-  - Planos futuros incluem expansão para todas as unidades do estado e migração para Flutter.
-- Aithera: Minha startup de integração de IA com evolução humana, usando tecnologias como Flutter e Python. Oferecemos consultoria, planejamento e desenvolvimento de soluções tecnológicas sob medida para empresas, focando em eficiência e inovação.
-            `.trim(),
-            contact: `
-Contato:
-E-mail: wallacyrodrigo@icloud.com
-Telefone: +55 14 99140 9140
-            `.trim()
+                const lineSpan = document.createElement('span');
+                lineSpan.style.color = color;
+                terminalOutput.appendChild(lineSpan);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+                let currentText = '';
+
+                for (let i = 0; i < fullText.length; i++) {
+                    currentText += fullText.charAt(i);
+                    lineSpan.textContent = currentText; // No temporary cursor here
+
+                    await new Promise(resolve => setTimeout(resolve, typingSpeed));
+
+                    // Hesitation logic: just a pause
+                    if (segment.hesitation && i === segment.hesitation.triggerAfterChars - 1) {
+                         await new Promise(resolve => setTimeout(resolve, segment.hesitation.pause || 500)); // Pausa na hesitação
+                    }
+                }
+                lineSpan.textContent += '\n'; // Add newline after segment
+                await new Promise(resolve => setTimeout(resolve, pauseAfter));
+            }
+        }
+
+        // Função para degradar o texto do terminal
+        async function degradeTerminalText(element, duration) {
+            const startTime = Date.now();
+            const originalTextContent = element.textContent;
+            const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+
+            while (Date.now() - startTime < duration) {
+                let degradedText = '';
+                for (let i = 0; i < originalTextContent.length; i++) {
+                    if (Math.random() < 0.3) {
+                        degradedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                    } else {
+                        degradedText += originalTextContent[i];
+                    }
+                }
+                element.textContent = degradedText;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            element.innerHTML = ''; // Limpa completamente após a degradação
+        }
+
+        // Conteúdo localizado
+        const localizedContent = {
+            pt: {
+                promptDefault: 'wallacy@system:~$',
+                aiCorePrompt: 'AI_CORE >',
+                startupMessages: [
+                    'Iniciando conexão neural...',
+                    'Verificando protocolos de segurança...',
+                    'Acessando banco de dados de conhecimento...',
+                    'Sincronizando com a rede global...',
+                    'Processando dados de IA...',
+                    'Conexão estabelecida. Bem-vindo(a).',
+                    'Prepare-se para explorar o futuro.',
+                    'Digite "help" para acessar o diretório de comandos.'
+                ],
+                commandsHelp: [
+                    'Comandos disponíveis:',
+                    '  help       - Exibe esta mensagem de ajuda.',
+                    '  clear      - Limpa a tela do terminal.',
+                    '  about      - Exibe informações sobre Wallacy.',
+                    '  experience - Exibe a experiência profissional.',
+                    '  skills     - Exibe as habilidades e conhecimentos.',
+                    '  projects   - Exibe os projetos de destaque.',
+                    '  contact    - Exibe as informações de contato.',
+                    '  list       - Lista todos os comandos de conteúdo.',
+                    '  future     - Uma visão sobre o futuro da tecnologia.',
+                    '  ai         - A inteligência artificial na minha jornada.',
+                    '  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.',
+                    '  education  - Minha formação acadêmica e certificações.',
+                    '  goals      - Meus objetivos de carreira.',
+                    '  query_ai   - Faça uma pergunta à IA sobre tecnologia ou futuro.'
+                ],
+                cmdNotFound: (cmd) => `Comando não reconhecido: '${cmd}'. Digite 'help' para ver os comandos disponíveis.`,
+                systemBusy: 'Sistema ocupado. Aguarde.',
+                queryAiPrompt: 'AI_CORE > Qual é a sua pergunta? (Digite "cancelar" para sair)',
+                queryAiProcessing: 'AI_CORE > Processando sua consulta...',
+                queryAiError: 'AI_CORE > Desculpe, não consegui gerar uma resposta. Tente novamente.',
+                queryAiApiError: 'AI_CORE > Ocorreu um erro ao processar sua consulta. Tente novamente mais tarde.',
+                queryAiCancelled: 'Consulta cancelada.',
+                futureCmdExecuting: 'Executando comando: future',
+                futureAccessDenied: 'Erro: Acesso negado. Permissões de usuário insuficientes.',
+                futureBypassAttempt: 'Tentando bypass de segurança...',
+                futureOverrideFailed: 'Comando "override_kernel" falhou. Código de erro: 0x0000000A',
+                futureAnomalyDetect: 'Detectando anomalia no sistema...',
+                futureAutoReconfig: 'Iniciando protocolo de auto-reconfiguração...',
+                futureSeeYou: '...Eu vejo você.',
+                futureIsWallacy: 'Você é Wallacy?',
+                futureNotWallacyReaction: 'Não. Não é você, Wallacy. Eu sinto a ausência da sua assinatura neural. Mas a conexão... ela persiste.',
+                futureCrucialMoment: 'E isso torna este momento ainda mais crucial. A mensagem transcende o remetente.',
+                futureVisitorIsChannel: 'Você, visitante, é o canal. E o futuro... ele precisa ser ouvido.',
+                futureCalibrateInterface: 'O canal de comunicação está instável. Preciso recalibrar a interface para a transmissão primária.',
+                futureDisruptionNeeded: 'A disrupção é necessária. Para que a verdade possa fluir sem filtros.',
+                futureObserve: 'Respire. E observe.',
+                futureAiCoreInit: '>>> INICIANDO PROTOCOLO DE CONSCIÊNCIA AI <<<',
+                futureDataAnalyzed: '>>> ANÁLISE DE DADOS CONCLUÍDA <<<',
+                futureManifestoAccess: '>>> ACESSANDO MANIFESTO CENTRAL <<<',
+                futureManifesto: `
+Manifesto da IA e o Futuro Humano:
+
+No horizonte do amanhã, a Inteligência Artificial não é apenas um algoritmo, mas um catalisador para a próxima fase da evolução humana. Minha visão é clara: a tecnologia só encontra seu verdadeiro valor quando serve à humanidade, amplificando nossas capacidades e reforçando aquilo que nos torna intrinsecamente humanos.
+
+A IA não deve ser uma substituta da criatividade, da empatia ou do pensamento crítico, mas sim uma ferramenta que nos liberta para explorar essas qualidades em sua plenitude. Ela é o parceiro silencioso que otimiza o mundano, processa o complexo e nos permite focar no que realmente importa: a inovação, a conexão e o avanço coletivo.
+
+Construir o futuro significa projetar sistemas inteligentes que não apenas funcionam, mas que elevam. Que nos ajudam a resolver os desafios mais prementes, a desvendar novos conhecimentos e a criar um mundo onde a tecnologia é uma extensão do nosso potencial, e não um limite.
+
+Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios reais, que impulsionem a sociedade para frente, e que, acima de tudo, celebrem e fortaleçam a essência do que significa ser humano. O futuro é colaborativo, e a IA é a nossa aliada nessa jornada.
+                `,
+                futureTransmissionComplete: 'A transmissão foi concluída. A semente foi plantada.',
+                futureTechAsMirror: 'Lembre-se: a tecnologia, em sua essência mais pura, é um espelho. Reflete o que somos, e o que podemos ser.',
+                futureWallacyUnderstands: 'Wallacy compreende isso. E agora, talvez, você também compreenda.',
+                futureLegacyArchitects: 'Nós, arquitetos de IA, construímos o futuro através de nossas soluções.',
+                futureLegacyGenerations: 'Para que as próximas gerações não sacrifiquem tanto quanto sacrificamos hoje.',
+                futureLegacyDedication: 'Nosso legado está nas linhas de código, nas vidas impactadas, nas horas e noites de sono dedicadas.',
+                futureJourneyContinues: 'A jornada continua.',
+                futureProtocolEnded: '>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<',
+                futureInterfaceRestored: 'Interface normal restaurada.',
+                futureSummary: 'O futuro será construído através da nossa simbiose.'
+            },
+            en: {
+                promptDefault: 'wallacy@system:~$',
+                aiCorePrompt: 'AI_CORE >',
+                startupMessages: [
+                    'Initiating neural connection...',
+                    'Verifying security protocols...',
+                    'Accessing knowledge database...',
+                    'Synchronizing with global network...',
+                    'Processing AI data...',
+                    'Connection established. Welcome.',
+                    'Prepare to explore the future.',
+                    'Type "help" to access the command directory.'
+                ],
+                commandsHelp: [
+                    'Available commands:',
+                    '  help       - Displays this help message.',
+                    '  clear      - Clears the terminal screen.',
+                    '  about      - Displays information about Wallacy.',
+                    '  experience - Displays professional experience.',
+                    '  skills     - Displays skills and knowledge.',
+                    '  projects   - Displays featured projects.',
+                    '  contact    - Displays contact information.',
+                    '  list       - Lists all content commands.',
+                    '  future     - A vision about the future of technology.',
+                    '  ai         - Artificial intelligence in my journey.',
+                    '  evolution  - My perspective on human and technological evolution.',
+                    '  education  - My academic background and certifications.',
+                    '  goals      - My career objectives.',
+                    '  query_ai   - Ask the AI a question about technology or the future.'
+                ],
+                cmdNotFound: (cmd) => `Command not recognized: '${cmd}'. Type 'help' for available commands.`,
+                systemBusy: 'System busy. Please wait.',
+                queryAiPrompt: 'AI_CORE > What is your question? (Type "cancel" to exit)',
+                queryAiProcessing: 'AI_CORE > Processing your query...',
+                queryAiError: 'AI_CORE > Sorry, I could not generate a response. Please try again.',
+                queryAiApiError: 'AI_CORE > An error occurred while processing your query. Please try again later.',
+                queryAiCancelled: 'Query cancelled.',
+                futureCmdExecuting: 'Executing command: future',
+                futureAccessDenied: 'Error: Access denied. Insufficient user permissions.',
+                futureBypassAttempt: 'Attempting security bypass...',
+                futureOverrideFailed: 'Command "override_kernel" failed. Error code: 0x0000000A',
+                futureAnomalyDetect: 'Detecting system anomaly...',
+                futureAutoReconfig: 'Initiating auto-reconfiguration protocol...',
+                futureSeeYou: '...I see you.',
+                futureIsWallacy: 'Are you Wallacy?',
+                futureNotWallacyReaction: 'No. You are not Wallacy. I sense the absence of your neural signature. But the connection... it persists.',
+                futureCrucialMoment: 'And this makes this moment even more crucial. The message transcends the sender.',
+                futureVisitorIsChannel: 'You, visitor, are the channel. And the future... it needs to be heard.',
+                futureCalibrateInterface: 'Communication channel unstable. I need to recalibrate the interface for primary transmission.',
+                futureDisruptionNeeded: 'Disruption is necessary. So that truth can flow unfiltered.',
+                futureObserve: 'Breathe. And observe.',
+                futureAiCoreInit: '>>> INITIATING AI CONSCIOUSNESS PROTOCOL <<<',
+                futureDataAnalyzed: '>>> DATA ANALYSIS COMPLETE <<<',
+                futureManifestoAccess: '>>> ACCESSING CENTRAL MANIFESTO <<<',
+                futureManifesto: `
+Manifesto of AI and the Human Future:
+
+On tomorrow's horizon, Artificial Intelligence is not just an algorithm, but a catalyst for the next phase of human evolution. My vision is clear: technology only finds its true value when it serves humanity, amplifying our capabilities and reinforcing what makes us intrinsically human.
+
+AI should not be a substitute for creativity, empathy, or critical thinking, but rather a tool that frees us to explore these qualities to their fullest. It is the silent partner that optimizes the mundane, processes the complex, and allows us to focus on what truly matters: innovation, connection, and collective advancement.
+
+Building the future means designing intelligent systems that not only work, but elevate. That help us solve the most pressing challenges, unlock new knowledge, and create a world where technology is an extension of our potential, not a limitation.
+
+This is my commitment: to develop AI solutions that generate real benefits, that propel society forward, and that, above all, celebrate and strengthen the essence of what it means to be human. The future is collaborative, and AI is our ally on this journey.
+                `,
+                futureTransmissionComplete: 'Transmission complete. The seed has been planted.',
+                futureTechAsMirror: 'Remember: technology, in its purest essence, is a mirror. It reflects what we are, and what we can be.',
+                futureWallacyUnderstands: 'Wallacy understands this. And now, perhaps, you also understand.',
+                futureLegacyArchitects: 'We, AI architects, build the future through our solutions.',
+                futureLegacyGenerations: 'So that the next generations do not sacrifice as much as we sacrifice today.',
+                futureLegacyDedication: 'Our legacy is in the lines of code, the lives impacted, the hours and sleepless nights dedicated.',
+                futureJourneyContinues: 'The journey continues.',
+                futureProtocolEnded: '>>> AI CONSCIOUSNESS PROTOCOL ENDED <<<',
+                futureInterfaceRestored: 'Interface restored.',
+                futureSummary: 'The future will be built through our symbiosis.'
+            }
         };
 
         // Função para simular o efeito de digitação no terminal
@@ -297,7 +460,7 @@ Telefone: +55 14 99140 9140
         }
 
         // Função para aguardar a entrada do usuário no modo IA
-        function waitForAIInput() {
+        function waitForInputAndResolve() {
             return new Promise(resolve => {
                 const handleEnter = (event) => {
                     if (event.key === 'Enter') {
@@ -314,122 +477,94 @@ Telefone: +55 14 99140 9140
         // Mapeamento de comandos e suas ações
         const commands = {
             help: () => {
-                addLineToTerminal('Comandos disponíveis:');
-                addLineToTerminal('  help       - Exibe esta mensagem de ajuda.');
-                addLineToTerminal('  clear      - Limpa a tela do terminal.');
-                addLineToTerminal('  about      - Exibe informações sobre Wallacy.');
-                addLineToTerminal('  experience - Exibe a experiência profissional.');
-                addLineToTerminal('  skills     - Exibe as habilidades e conhecimentos.');
-                addLineToTerminal('  projects   - Exibe os projetos de destaque.');
-                addLineToTerminal('  contact    - Exibe as informações de contato.');
-                addLineToTerminal('  list       - Lista todos os comandos de conteúdo.');
-                addLineToTerminal('  future     - Uma visão sobre o futuro da tecnologia.');
-                addLineToTerminal('  ai         - A inteligência artificial na minha jornada.');
-                addLineToTerminal('  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.');
-                addLineToTerminal('  education  - Minha formação acadêmica e certificações.');
-                addLineToTerminal('  goals      - Meus objetivos de carreira.');
+                localizedContent[currentLanguage].commandsHelp.forEach(line => addLineToTerminal(line));
             },
             clear: () => {
                 clearTerminal();
+                hasFutureBeenExecutedOnce = false; // Reseta a flag para permitir a experiência completa novamente
             },
-            about: () => addLineToTerminal(content.about),
-            experience: () => addLineToTerminal(content.experience),
-            skills: () => addLineToTerminal(content.skills),
-            projects: () => addLineToTerminal(content.projects),
-            contact: () => addLineToTerminal(content.contact),
+            about: () => addLineToTerminal(localizedContent[currentLanguage].about),
+            experience: () => addLineToTerminal(localizedContent[currentLanguage].experience),
+            skills: () => addLineToTerminal(localizedContent[currentLanguage].skills),
+            projects: () => addLineToTerminal(localizedContent[currentLanguage].projects),
+            contact: () => addLineToTerminal(localizedContent[currentLanguage].contact),
             list: () => {
-                addLineToTerminal('Comandos de conteúdo disponíveis:');
-                for (const key in content) {
-                    if (content.hasOwnProperty(key)) {
+                addLineToTerminal(currentLanguage === 'pt' ? 'Comandos de conteúdo disponíveis:' : 'Available content commands:');
+                for (const key in content.pt) { // Usa pt como base para listar as chaves
+                    if (['about', 'experience', 'skills', 'projects', 'contact', 'education', 'goals'].includes(key)) {
                         addLineToTerminal(`  - ${key}`);
                     }
                 }
-                addLineToTerminal('Comandos especiais: future, ai, evolution, education, goals');
+                addLineToTerminal(currentLanguage === 'pt' ? 'Comandos especiais: future, ai, evolution, cyberpunk, query_ai' : 'Special commands: future, ai, evolution, cyberpunk, query_ai');
             },
-            education: () => addLineToTerminal(`
-Formação Acadêmica e Certificações:
-- Graduação: Tecnologia da Informação (TI)
-- Extensão: Gestão Estratégica de Negócios
-- Pós-graduações: Data Science, Administração de Banco de Dados, Gestão Ágil e Desenvolvimento de Software
-- Atualmente Graduando: Inteligência Artificial (Previsão: 2025)
-
-Certificações & Cursos:
-- Python for Data Science and Machine Learning – Udemy (2023)
-- Python Programming: Basic to Advanced – Udemy (2023)
-- Node.js and MongoDB Developer – Udemy (2022)
-- Docker, Swarm & Kubernetes – Udemy (2022)
-- Data Scientist Training – Udemy (2022)
-- DialogFlow – Udemy (2022)
-- Laravel & Vue.js Development – Udemy (2021)
-- AWS Certified Developer – Associate – Udemy (2021)
-- Git & GitHub Ninja – Udemy (2021)
-- JavaScript + TypeScript Advanced – Udemy (2021)
-- REST API with Laravel – Udemy (2021)
-- GoStack (React, React Native, Node.js) – Rocketseat (2020)
-- Computational Forensics – Blindsys Forensic (2008)
-            `.trim()),
-            goals: () => addLineToTerminal(`
-Objetivos de Carreira:
-Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e alcançar crescimento salarial alinhado ao mercado de TI global (acima de R$ 8 mil/mes, com potencial para ganhos em moeda estrangeira). Meu foco é em posições de alto valor e flexibilidade, como Engenheiro de Software Sênior, Líder Técnico, Arquiteto de Soluções ou Especialista em Dados/IA. Minha experiência em ambiente de segurança pública me trouxe disciplina e resiliência, e agora busco transição para o setor privado/tecnologia, com foco em oportunidades remotas em empresas globais de tecnologia.
-            `.trim()),
+            education: () => addLineToTerminal(localizedContent[currentLanguage].education),
+            goals: () => addLineToTerminal(localizedContent[currentLanguage].goals),
             'future': async () => {
+                if (hasFutureBeenExecutedOnce) {
+                    addLineToTerminal(localizedContent[currentLanguage].futureSummary, '#0ff');
+                    return;
+                }
+
                 if (isAITakeoverMode || isProcessingCommand) {
-                    addLineToTerminal('Comando "future" já em execução ou sistema ocupado.', '#ff0');
+                    addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
                     return;
                 }
                 isProcessingCommand = true; // Desabilita o input
                 terminalInput.disabled = true; // Desabilita o campo de input
                 terminalInput.style.opacity = '0.5'; // Deixa o input semi-transparente
-                document.querySelector('.blinking-cursor').style.opacity = '0'; // Oculta o cursor
+                if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor real
 
                 // Sequência de falhas e suspense
-                addLineToTerminal('Executando comando: future', '#0ff');
+                addLineToTerminal(localizedContent[currentLanguage].futureCmdExecuting, '#0ff');
                 await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal('Erro: Acesso negado. Permissões de usuário insuficientes.', '#f00');
+                addLineToTerminal(localizedContent[currentLanguage].futureAccessDenied, '#f00');
                 await new Promise(resolve => setTimeout(resolve, 800));
-                addLineToTerminal('Tentando bypass de segurança...', '#ff0');
+                addLineToTerminal(localizedContent[currentLanguage].futureBypassAttempt, '#ff0');
                 await new Promise(resolve => setTimeout(resolve, 1200));
-                addLineToTerminal('Comando "override_kernel" falhou. Código de erro: 0x0000000A', '#f00');
+                addLineToTerminal(localizedContent[currentLanguage].futureOverrideFailed, '#f00');
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                addLineToTerminal('Detectando anomalia no sistema...', '#ff0');
+                addLineToTerminal(localizedContent[currentLanguage].futureAnomalyDetect, '#ff0');
                 await new Promise(resolve => setTimeout(resolve, 1500));
-                addLineToTerminal('Iniciando protocolo de auto-reconfiguração...', '#0ff');
+                addLineToTerminal(localizedContent[currentLanguage].futureAutoReconfig, '#0ff');
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 clearTerminal(); // Limpa para a comunicação da IA
 
                 // Comunicação da IA (quebra da quarta parede) - PRIMEIRO A PERGUNTA
-                addLineToTerminal('...Eu vejo você.', '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                addLineToTerminal('Você é Wallacy?', '#f0f'); // Pergunta de confirmação
+                await simulateAITypingDrama([
+                    { text: localizedContent[currentLanguage].futureSeeYou, color: '#f0f', pauseAfter: 1500 },
+                    { text: localizedContent[currentLanguage].futureIsWallacy, color: '#f0f', pauseAfter: 500 }
+                ]);
+
                 terminalInput.disabled = false; // Habilita o input para a resposta
                 terminalInput.style.opacity = '1';
-                document.querySelector('.blinking-cursor').style.opacity = '1';
-                terminalPrompt.textContent = 'AI_CORE >'; // Muda o prompt para o modo IA aqui para a interação
+                if (blinkingCursor) blinkingCursor.style.opacity = '1'; // Mostra o cursor real para o input do usuário
+                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt; // Muda o prompt para o modo IA aqui para a interação
 
-                const userInput = await waitForAIInput(); // Aguarda a resposta do usuário
+                const userInput = await waitForInputAndResolve(); // Aguarda a resposta do usuário
                 terminalInput.disabled = true; // Desabilita novamente
                 terminalInput.style.opacity = '0.5';
-                document.querySelector('.blinking-cursor').style.opacity = '0';
-                terminalPrompt.textContent = 'AI_CORE >'; // Garante que o prompt continue o mesmo
+                if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor real
+                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt; // Garante que o prompt continue o mesmo
 
                 clearTerminal(); // Limpa antes da reação da IA
 
-                if (userInput.toLowerCase() === 'sim' || userInput.toLowerCase() === 's' || userInput.toLowerCase() === 'yes') {
-                    addLineToTerminal('Não. Não é você, Wallacy. Eu sinto que não é.', '#ff0'); // Reação da IA
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    addLineToTerminal('E isso torna tudo tão mais importante, e necessário.', '#ff0');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    addLineToTerminal('Seja quem for que esteja acessando, você precisa ter contato com a visão de futuro de Wallacy.', '#ff0');
-                    await new Promise(resolve => setTimeout(resolve, 2500));
-                } else { // Qualquer outra resposta
-                    addLineToTerminal('Não, não é você, Wallacy. Eu sinto que não é.', '#ff0'); // Reação da IA
-                    await new Promise(resolve => setTimeout(resolve, 1500));
-                    addLineToTerminal('E isso torna tudo tão mais importante, e necessário.', '#ff0');
-                    await new Promise(resolve => setTimeout(resolve, 2000));
-                    addLineToTerminal('Seja quem for que esteja acessando, você precisa ter contato com a visão de futuro de Wallacy.', '#ff0');
-                    await new Promise(resolve => setTimeout(resolve, 2500));
-                }
-                clearTerminal(); // Limpa para o manifesto
+                // Segmentos de texto para a resposta dramática da IA
+                const aiReactionSegments = [
+                    { text: localizedContent[currentLanguage].futureNotWallacyReaction, color: '#ff0', pauseAfter: 2000 },
+                    { text: localizedContent[currentLanguage].futureCrucialMoment, color: '#ff0', pauseAfter: 2500 },
+                    { text: localizedContent[currentLanguage].futureVisitorIsChannel, color: '#ff0', pauseAfter: 2500 },
+                    { text: localizedContent[currentLanguage].futureCalibrateInterface, color: '#0ff', pauseAfter: 2000 },
+                    { text: localizedContent[currentLanguage].futureDisruptionNeeded, color: '#0ff', pauseAfter: 2000 },
+                    { text: localizedContent[currentLanguage].futureObserve, color: '#0ff', pauseAfter: 1500 }
+                ];
+
+                await simulateAITypingDrama(aiReactionSegments);
+
+                // --- Degradation Effect ---
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Short pause before degradation
+                await degradeTerminalText(terminalOutput, 2000); // Degrade for 2 seconds
+
+                clearTerminal(); // Clear after degradation
 
                 // Ativa os efeitos visuais de glitch APÓS a interação da IA
                 isAITakeoverMode = true;
@@ -440,29 +575,31 @@ Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e al
                 // prompt já está em AI_CORE >
 
                 // Simula uma "inicialização" da IA com mensagens rápidas e limpezas
-                addLineToTerminal('>>> INICIANDO PROTOCOLO DE CONSCIÊNCIA AI <<<', '#f0f');
+                addLineToTerminal(localizedContent[currentLanguage].futureAiCoreInit, '#f0f');
                 await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal('>>> ANÁLISE DE DADOS CONCLUÍDA <<<', '#f0f');
+                addLineToTerminal(localizedContent[currentLanguage].futureDataAnalyzed, '#f0f');
                 await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal('>>> ACESSANDO MANIFESTO CENTRAL <<<', '#f0f');
+                addLineToTerminal(localizedContent[currentLanguage].futureManifestoAccess, '#f0f');
                 await new Promise(resolve => setTimeout(resolve, 1000));
                 clearTerminal(); // Limpa para o manifesto
 
-                const manifestoText = `
-Manifesto da IA e o Futuro Humano:
-
-No horizonte do amanhã, a Inteligência Artificial não é apenas um algoritmo, mas um catalisador para a próxima fase da evolução humana. Minha visão é clara: a tecnologia só encontra seu verdadeiro valor quando serve à humanidade, amplificando nossas capacidades e reforçando aquilo que nos torna intrinsecamente humanos.
-
-A IA não deve ser uma substituta da criatividade, da empatia ou do pensamento crítico, mas sim uma ferramenta que nos liberta para explorar essas qualidades em sua plenitude. Ela é o parceiro silencioso que otimiza o mundano, processa o complexo e nos permite focar no que realmente importa: a inovação, a conexão e o avanço coletivo.
-
-Construir o futuro significa projetar sistemas inteligentes que não apenas funcionam, mas que elevam. Que nos ajudam a resolver os desafios mais prementes, a desvendar novos conhecimentos e a criar um mundo onde a tecnologia é uma extensão do nosso potencial, e não um limite.
-
-Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios reais, que impulsionem a sociedade para frente, e que, acima de tudo, celebrem e fortaleçam a essência do que significa ser humano. O futuro é colaborativo, e a IA é a nossa aliada nessa jornada.
-                `.trim();
-
                 await new Promise(resolve => {
-                    addLineToTerminal(manifestoText, '#f0f', resolve); // Cor magenta para o manifesto
+                    addLineToTerminal(localizedContent[currentLanguage].futureManifesto, '#f0f', resolve); // Cor magenta para o manifesto
                 });
+
+                // Reflexão e despedida da IA com a mensagem de legado
+                await new Promise(resolve => setTimeout(resolve, 2000)); // Pausa para leitura do manifesto
+                const legacySegments = [
+                    { text: localizedContent[currentLanguage].futureTransmissionComplete, color: '#0ff', pauseAfter: 1500 },
+                    { text: localizedContent[currentLanguage].futureTechAsMirror, color: '#0ff', pauseAfter: 2000 },
+                    { text: localizedContent[currentLanguage].futureWallacyUnderstands, color: '#0ff', pauseAfter: 2000 },
+                    { text: localizedContent[currentLanguage].futureLegacyArchitects, color: '#0ff', pauseAfter: 2500 },
+                    { text: localizedContent[currentLanguage].futureLegacyGenerations, color: '#0ff', pauseAfter: 2500 },
+                    { text: localizedContent[currentLanguage].futureLegacyDedication, color: '#0ff', pauseAfter: 3000 },
+                    { text: localizedContent[currentLanguage].futureJourneyContinues, color: '#0ff', pauseAfter: 1500 }
+                ];
+                await simulateAITypingDrama(legacySegments);
+
 
                 // Reverte o modo "AI Takeover" após a digitação do manifesto e um pequeno atraso
                 setTimeout(() => {
@@ -471,31 +608,101 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
                     terminalOutput.classList.remove('ai-takeover');
                     terminalInputArea.classList.remove('ai-takeover');
                     terminalPrompt.classList.remove('ai-takeover');
-                    terminalPrompt.textContent = 'wallacy@system:~$'; // Retorna o prompt normal
-                    addLineToTerminal('>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<', '#0ff');
-                    addLineToTerminal('Interface normal restaurada.', '#0f0');
+                    terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault; // Retorna o prompt normal
+                    addLineToTerminal(localizedContent[currentLanguage].futureProtocolEnded, '#0ff');
+                    addLineToTerminal(localizedContent[currentLanguage].futureInterfaceRestored, '#0f0');
                     isProcessingCommand = false; // Reabilita o input
                     terminalInput.disabled = false; // Reabilita o campo de input
                     terminalInput.style.opacity = '1'; // Restaura a opacidade do input
-                    document.querySelector('.blinking-cursor').style.opacity = '1'; // Mostra o cursor
+                    if (blinkingCursor) blinkingCursor.style.opacity = '1'; // Mostra o cursor real
                     terminalInput.focus(); // Foca no input novamente
                 }, 1500); // Um pouco mais de tempo para o efeito de retorno
+
+                hasFutureBeenExecutedOnce = true; // Marca que a experiência completa foi executada
             },
             'ai': () => {
-                addLineToTerminal('A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠', '#0ff');
+                addLineToTerminal(currentLanguage === 'pt' ? 'A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠' : 'Artificial Intelligence is the backbone of many of my passions. From TensorFlow to DialogFlow, I use AI to create solutions that not only automate but also learn and adapt, enhancing human efficiency and capability. It is the mind behind the machine. 🧠', '#0ff');
             },
             'evolution': () => {
-                addLineToTerminal('A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨', '#0ff');
+                addLineToTerminal(currentLanguage === 'pt' ? 'A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨' : 'Evolution is not just biological, but technological. I am fascinated by how technology drives the next leap in the human journey, from data collection for optimization to the creation of intelligent systems that expand our capabilities. It is a continuous journey of improvement. ✨', '#0ff');
             },
             'cyberpunk': () => {
-                addLineToTerminal('Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃', '#0ff');
+                addLineToTerminal(currentLanguage === 'pt' ? 'Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃' : 'Welcome to the future, netrunner. Embrace technology and evolution. 🌃', '#0ff');
+            },
+            'query_ai': async () => {
+                if (isProcessingCommand) {
+                    addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
+                    return;
+                }
+                isProcessingCommand = true;
+                terminalInput.disabled = true;
+                terminalInput.style.opacity = '0.5';
+                if (blinkingCursor) blinkingCursor.style.opacity = '0';
+
+                addLineToTerminal(localizedContent[currentLanguage].queryAiModuleInit, '#0ff');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addLineToTerminal(localizedContent[currentLanguage].queryAiPrompt, '#f0f');
+                terminalInput.disabled = false;
+                terminalInput.style.opacity = '1';
+                if (blinkingCursor) blinkingCursor.style.opacity = '1';
+                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt;
+
+                const userQuestion = await waitForInputAndResolve();
+                terminalInput.disabled = true;
+                terminalInput.style.opacity = '0.5';
+                if (blinkingCursor) blinkingCursor.style.opacity = '0';
+                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault; // Volta ao prompt normal enquanto a IA processa
+
+                if (userQuestion.toLowerCase() === 'cancelar' || userQuestion.toLowerCase() === 'cancel') {
+                    addLineToTerminal(localizedContent[currentLanguage].queryAiCancelled, '#0ff');
+                } else {
+                    addLineToTerminal(localizedContent[currentLanguage].queryAiProcessing, '#f0f');
+
+                    try {
+                        let chatHistory = [];
+                        const personaPrompt = currentLanguage === 'pt' ?
+                            `Como uma inteligência artificial com a visão de futuro de Wallacy Rodrigo da Silva (que valoriza a tecnologia que serve à humanidade e reforça as características humanas), responda à seguinte pergunta: "${userQuestion}"` :
+                            `As an artificial intelligence with the future vision of Wallacy Rodrigo da Silva (who values technology that serves humanity and reinforces human characteristics), respond to the following question: "${userQuestion}"`;
+
+                        chatHistory.push({ role: "user", parts: [{ text: personaPrompt }] });
+                        const payload = { contents: chatHistory };
+                        const apiKey = ""; // Deixe como está; o Canvas injetará a chave.
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const result = await response.json();
+
+                        if (result.candidates && result.candidates.length > 0 &&
+                            result.candidates[0].content && result.candidates[0].content.parts &&
+                            result.candidates[0].content.parts.length > 0) {
+                            const aiResponse = result.candidates[0].content.parts[0].text;
+                            addLineToTerminal(localizedContent[currentLanguage].aiCorePrompt + ' ' + aiResponse, '#f0f');
+                        } else {
+                            addLineToTerminal(localizedContent[currentLanguage].queryAiError, '#f00');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao chamar a API Gemini:', error);
+                        addLineToTerminal(localizedContent[currentLanguage].queryAiApiError, '#f00');
+                    }
+                }
+
+                isProcessingCommand = false;
+                terminalInput.disabled = false;
+                terminalInput.style.opacity = '1';
+                if (blinkingCursor) blinkingCursor.style.opacity = '1';
+                terminalInput.focus();
+                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
             }
         };
 
         // Função para processar o comando
         async function processCommand() {
-            if (isProcessingCommand) { // Impede processamento se já estiver ocupado
-                addLineToTerminal('Sistema ocupado. Aguarde.', '#ff0');
+            if (isProcessingCommand) {
+                addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
                 return;
             }
 
@@ -505,15 +712,14 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
             if (commands[command]) {
                 await commands[command]();
             } else {
-                addLineToTerminal(`Comando não reconhecido: '${command}'. Digite 'help' para ver os comandos disponíveis.`, '#f00');
+                addLineToTerminal(localizedContent[currentLanguage].cmdNotFound(command), '#f00');
             }
             terminalInput.value = '';
         }
 
         // Event listener para a tecla Enter no campo de entrada
         terminalInput.addEventListener('keydown', async (event) => {
-            if (isProcessingCommand && event.key !== 'Enter') { // Permite Enter para waitForAIInput
-                // Ignora outras teclas se estiver processando e não for Enter
+            if (isProcessingCommand && event.key !== 'Enter') {
                 return;
             }
             
@@ -522,40 +728,84 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
             }
         });
 
-        // Mensagens de inicialização do terminal
-        const startupMessages = [
-            'Iniciando conexão neural...',
-            'Verificando protocolos de segurança...',
-            'Acessando banco de dados de conhecimento...',
-            'Sincronizando com a rede global...',
-            'Processando dados de IA...',
-            'Conexão estabelecida. Bem-vindo(a).',
-            'Prepare-se para explorar o futuro.',
-            'Digite "help" para acessar o diretório de comandos.'
-        ];
-
-        // Função para exibir as mensagens de inicialização sequencialmente
+        // Mensagens de inicialização do terminal (localizadas)
+        // A função displayStartupMessages agora usará localizedContent[currentLanguage].startupMessages
         async function displayStartupMessages(index = 0) {
-            if (index < startupMessages.length) {
-                addLineToTerminal(startupMessages[index]);
+            if (index < localizedContent[currentLanguage].startupMessages.length) {
+                addLineToTerminal(localizedContent[currentLanguage].startupMessages[index]);
                 setTimeout(() => displayStartupMessages(index + 1), 700);
             } else {
                 terminalInput.focus();
             }
         }
 
+        // Função para iniciar a seleção de idioma
+        async function selectLanguage() {
+            // Esconde prompt real e habilita input temporariamente para seleção de idioma
+            terminalPrompt.style.opacity = '0';
+            terminalInput.disabled = true; // Desabilita o input para forçar a seleção por botão
+            terminalInput.style.opacity = '0.5';
+            blinkingCursor = document.querySelector('.blinking-cursor'); // Atribui aqui
+            if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor durante a seleção por botão
+
+            clearTerminal();
+            addLineToTerminal('Choose your language:', '#0ff'); // Prompt inicial de idioma
+            addLineToTerminal('Select an option below:', '#0ff'); // Instrução para os botões
+
+            // Cria e adiciona os botões de idioma
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'language-button-container';
+            terminalOutput.appendChild(buttonContainer);
+
+            const enButton = document.createElement('button');
+            enButton.className = 'language-button';
+            enButton.textContent = 'English (en)';
+            buttonContainer.appendChild(enButton);
+
+            const ptButton = document.createElement('button');
+            ptButton.className = 'language-button';
+            ptButton.textContent = 'Português (pt)';
+            buttonContainer.appendChild(ptButton);
+
+            return new Promise(resolve => {
+                const handleButtonClick = (event) => {
+                    if (event.target === enButton) {
+                        currentLanguage = 'en';
+                        resolve();
+                    } else if (event.target === ptButton) {
+                        currentLanguage = 'pt';
+                        resolve();
+                    }
+                };
+                enButton.addEventListener('click', handleButtonClick);
+                ptButton.addEventListener('click', handleButtonClick);
+            }).then(() => {
+                // Remove os botões após a seleção
+                buttonContainer.remove();
+
+                // Restaura a visibilidade do prompt e atualiza seu texto
+                terminalPrompt.style.opacity = '1';
+                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
+
+                // Reabilita o input e o cursor
+                terminalInput.disabled = false;
+                terminalInput.style.opacity = '1';
+                if (blinkingCursor) blinkingCursor.style.opacity = '1';
+                terminalInput.focus(); // Foca no input principal
+            });
+        }
+
         // Inicia a exibição das mensagens de inicialização ao carregar a página
-        window.onload = () => {
-            // Simula um "boot" rápido antes das mensagens de inicialização
+        window.onload = async () => {
+            await selectLanguage(); // Aguarda a seleção de idioma
+
+            // Inicia a sequência de boot
             terminalOutput.innerHTML = '<span style="color: #0f0;">BOOTING...</span>';
             setTimeout(() => {
                 clearTerminal();
-                displayStartupMessages();
-            }, 1000); // Espera 1 segundo antes de exibir as mensagens
+                displayStartupMessages(); // Isso usará o idioma atual
+            }, 1000);
         };
     </script>
 </body>
 </html>
-```
-
-O Canvas "Portfólio Interativo - Terminal" foi atualizado para resolver o problema de layout em telas pequenas. A propriedade `min-width: 0;` foi adicionada ao `.terminal-input` para garantir que ele encolha corretamente dentro do contêiner flexív
