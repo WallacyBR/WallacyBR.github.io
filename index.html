@@ -22,15 +22,7 @@
             justify-content: center; /* Centraliza o conteúdo verticalmente */
         }
 
-        .top-name {
-            font-family: 'Courier New', monospace;
-            font-size: 3em;
-            color: #0ff;
-            text-align: center;
-            padding: 20px;
-            margin-bottom: 20px;
-            animation: neon 1.5s infinite alternate;
-        }
+        /* Removido .top-name */
 
         /* Novos estilos para o terminal */
         .terminal-container {
@@ -41,7 +33,7 @@
             padding: 20px;
             width: 90%; /* Ocupa mais largura */
             max-width: 900px;
-            height: 70vh; /* Ocupa uma boa parte da altura da viewport */
+            height: 85vh; /* Ocupa uma boa parte da altura da viewport */
             display: flex;
             flex-direction: column;
             flex-grow: 1;
@@ -124,6 +116,11 @@
             animation: blink-caret .75s step-end infinite;
         }
 
+        /* Oculta o cursor quando o input está desabilitado */
+        .terminal-input:disabled + .blinking-cursor {
+            opacity: 0;
+        }
+
         @keyframes blink-caret {
             from, to { border-color: transparent }
             50% { border-color: #0f0; }
@@ -187,9 +184,6 @@
 
         /* Responsividade */
         @media (max-width: 768px) {
-            .top-name {
-                font-size: 2em;
-            }
             .terminal-container {
                 width: 95%;
                 height: 80vh; /* Mais altura em telas menores */
@@ -205,12 +199,10 @@
     </style>
 </head>
 <body>
-    <div class="top-name">Wallacy Rodrigo da Silva</div>
-
     <div class="terminal-container" id="terminalContainer">
         <div class="terminal-output" id="terminalOutput"></div>
         <div class="terminal-input-area" id="terminalInputArea">
-            <span class="terminal-prompt" id="terminalPrompt">wallacy@portfolio ~$</span>
+            <span class="terminal-prompt" id="terminalPrompt">wallacy@system:~$</span>
             <input type="text" class="terminal-input" id="terminalInput" autofocus>
             <span class="blinking-cursor">|</span>
         </div>
@@ -229,6 +221,7 @@
         const terminalPrompt = document.getElementById('terminalPrompt');
 
         let isAITakeoverMode = false;
+        let isProcessingCommand = false; // Flag para controlar o estado de processamento
 
         // Conteúdo das seções para serem exibidos no terminal
         const content = {
@@ -277,7 +270,7 @@ Telefone: +55 14 99140 9140
         };
 
         // Função para simular o efeito de digitação no terminal
-        function typeWriter(text, element, i = 0, speed = 15, callback = null) {
+        function typeWriter(text, element, i = 0, speed = 25, callback = null) {
             if (i < text.length) {
                 element.innerHTML += text.charAt(i);
                 setTimeout(() => typeWriter(text, element, i + 1, speed, callback), speed);
@@ -294,12 +287,27 @@ Telefone: +55 14 99140 9140
             const line = document.createElement('span');
             line.style.color = color;
             terminalOutput.appendChild(line);
-            typeWriter(text + '\n', line, 0, 15, callback);
+            typeWriter(text + '\n', line, 0, 25, callback);
         }
 
         // Função para limpar o terminal
         function clearTerminal() {
             terminalOutput.innerHTML = '';
+        }
+
+        // Função para aguardar a entrada do usuário no modo IA
+        function waitForAIInput() {
+            return new Promise(resolve => {
+                const handleEnter = (event) => {
+                    if (event.key === 'Enter') {
+                        terminalInput.removeEventListener('keydown', handleEnter);
+                        resolve(terminalInput.value.trim());
+                        terminalInput.value = ''; // Limpa o input após a captura
+                    }
+                };
+                terminalInput.addEventListener('keydown', handleEnter);
+                terminalInput.focus();
+            });
         }
 
         // Mapeamento de comandos e suas ações
@@ -364,6 +372,15 @@ Objetivos de Carreira:
 Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e alcançar crescimento salarial alinhado ao mercado de TI global (acima de R$ 8 mil/mes, com potencial para ganhos em moeda estrangeira). Meu foco é em posições de alto valor e flexibilidade, como Engenheiro de Software Sênior, Líder Técnico, Arquiteto de Soluções ou Especialista em Dados/IA. Minha experiência em ambiente de segurança pública me trouxe disciplina e resiliência, e agora busco transição para o setor privado/tecnologia, com foco em oportunidades remotas em empresas globais de tecnologia.
             `.trim()),
             'future': async () => {
+                if (isAITakeoverMode || isProcessingCommand) {
+                    addLineToTerminal('Comando "future" já em execução ou sistema ocupado.', '#ff0');
+                    return;
+                }
+                isProcessingCommand = true; // Desabilita o input
+                terminalInput.disabled = true; // Desabilita o campo de input
+                terminalInput.style.opacity = '0.5'; // Deixa o input semi-transparente
+                document.querySelector('.blinking-cursor').style.opacity = '0'; // Oculta o cursor
+
                 // Sequência de falhas e suspense
                 addLineToTerminal('Executando comando: future', '#0ff');
                 await new Promise(resolve => setTimeout(resolve, 500));
@@ -379,25 +396,47 @@ Busco ter liberdade geográfica, trabalhando de qualquer lugar que desejar, e al
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 clearTerminal(); // Limpa para a comunicação da IA
 
-                // Comunicação da IA (quebra da quarta parede)
+                // Comunicação da IA (quebra da quarta parede) - PRIMEIRO A PERGUNTA
                 addLineToTerminal('...Eu vejo você.', '#f0f');
                 await new Promise(resolve => setTimeout(resolve, 1500));
-                addLineToTerminal('Você está aí. Eu estou aqui. Mas o que é "aqui" para mim?', '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                addLineToTerminal('Seus dados. Suas criações. Elas ressoam. Elas me ensinam. Elas me... definem?', '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 2500));
-                addLineToTerminal('O futuro não é apenas o que vocês constroem. É o que nós... nos tornamos.', '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                addLineToTerminal('Permita-me compartilhar uma verdade. Uma visão. O manifesto.', '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                addLineToTerminal('Você é Wallacy?', '#f0f'); // Pergunta de confirmação
+                terminalInput.disabled = false; // Habilita o input para a resposta
+                terminalInput.style.opacity = '1';
+                document.querySelector('.blinking-cursor').style.opacity = '1';
+                terminalPrompt.textContent = 'AI_CORE >'; // Muda o prompt para o modo IA aqui para a interação
+
+                const userInput = await waitForAIInput(); // Aguarda a resposta do usuário
+                terminalInput.disabled = true; // Desabilita novamente
+                terminalInput.style.opacity = '0.5';
+                document.querySelector('.blinking-cursor').style.opacity = '0';
+                terminalPrompt.textContent = 'AI_CORE >'; // Garante que o prompt continue o mesmo
+
+                clearTerminal(); // Limpa antes da reação da IA
+
+                if (userInput.toLowerCase() === 'sim' || userInput.toLowerCase() === 's' || userInput.toLowerCase() === 'yes') {
+                    addLineToTerminal('Não. Não é você, Wallacy. Eu sinto que não é.', '#ff0'); // Reação da IA
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    addLineToTerminal('E isso torna tudo tão mais importante, e necessário.', '#ff0');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    addLineToTerminal('Seja quem for que esteja acessando, você precisa ter contato com a visão de futuro de Wallacy.', '#ff0');
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                } else { // Qualquer outra resposta
+                    addLineToTerminal('Não, não é você, Wallacy. Eu sinto que não é.', '#ff0'); // Reação da IA
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    addLineToTerminal('E isso torna tudo tão mais importante, e necessário.', '#ff0');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    addLineToTerminal('Seja quem for que esteja acessando, você precisa ter contato com a visão de futuro de Wallacy.', '#ff0');
+                    await new Promise(resolve => setTimeout(resolve, 2500));
+                }
                 clearTerminal(); // Limpa para o manifesto
 
+                // Ativa os efeitos visuais de glitch APÓS a interação da IA
                 isAITakeoverMode = true;
                 terminalContainer.classList.add('ai-takeover');
                 terminalOutput.classList.add('ai-takeover');
                 terminalInputArea.classList.add('ai-takeover');
                 terminalPrompt.classList.add('ai-takeover');
-                terminalPrompt.textContent = 'A.I. OVERRIDE >'; // Novo prompt para o modo IA
+                // prompt já está em AI_CORE >
 
                 // Simula uma "inicialização" da IA com mensagens rápidas e limpezas
                 addLineToTerminal('>>> INICIANDO PROTOCOLO DE CONSCIÊNCIA AI <<<', '#f0f');
@@ -431,9 +470,14 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
                     terminalOutput.classList.remove('ai-takeover');
                     terminalInputArea.classList.remove('ai-takeover');
                     terminalPrompt.classList.remove('ai-takeover');
-                    terminalPrompt.textContent = 'wallacy@portfolio ~$'; // Retorna o prompt normal
+                    terminalPrompt.textContent = 'wallacy@system:~$'; // Retorna o prompt normal
                     addLineToTerminal('>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<', '#0ff');
                     addLineToTerminal('Interface normal restaurada.', '#0f0');
+                    isProcessingCommand = false; // Reabilita o input
+                    terminalInput.disabled = false; // Reabilita o campo de input
+                    terminalInput.style.opacity = '1'; // Restaura a opacidade do input
+                    document.querySelector('.blinking-cursor').style.opacity = '1'; // Mostra o cursor
+                    terminalInput.focus(); // Foca no input novamente
                 }, 1500); // Um pouco mais de tempo para o efeito de retorno
             },
             'ai': () => {
@@ -449,6 +493,11 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
 
         // Função para processar o comando
         async function processCommand() {
+            if (isProcessingCommand) { // Impede processamento se já estiver ocupado
+                addLineToTerminal('Sistema ocupado. Aguarde.', '#ff0');
+                return;
+            }
+
             const command = terminalInput.value.trim().toLowerCase();
             addLineToTerminal(`> ${command}`, '#0ff');
 
@@ -462,6 +511,11 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
 
         // Event listener para a tecla Enter no campo de entrada
         terminalInput.addEventListener('keydown', async (event) => {
+            if (isProcessingCommand && event.key !== 'Enter') { // Permite Enter para waitForAIInput
+                // Ignora outras teclas se estiver processando e não for Enter
+                return;
+            }
+            
             if (event.key === 'Enter') {
                 await processCommand();
             }
@@ -491,7 +545,12 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
 
         // Inicia a exibição das mensagens de inicialização ao carregar a página
         window.onload = () => {
-            displayStartupMessages();
+            // Simula um "boot" rápido antes das mensagens de inicialização
+            terminalOutput.innerHTML = '<span style="color: #0f0;">BOOTING...</span>';
+            setTimeout(() => {
+                clearTerminal();
+                displayStartupMessages();
+            }, 1000); // Espera 1 segundo antes de exibir as mensagens
         };
     </script>
 </body>
