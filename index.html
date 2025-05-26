@@ -103,6 +103,7 @@
             font-family: 'Courier New', monospace;
             font-size: 1.1em;
             padding: 5px;
+            min-width: 0; /* Adicionado para garantir que o input possa encolher */
         }
 
         .terminal-input::selection {
@@ -555,3 +556,6 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
     </script>
 </body>
 </html>
+```
+
+O Canvas "Portfólio Interativo - Terminal" foi atualizado para resolver o problema de layout em telas pequenas. A propriedade `min-width: 0;` foi adicionada ao `.terminal-input` para garantir que ele encolha corretamente dentro do contêiner flexív
