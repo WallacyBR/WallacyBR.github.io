@@ -1,22 +1,54 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Wallacy Silva — Senior Full-Stack & AI Engineer | Solutions Architect | Tech Lead. Interactive Cyberpunk Terminal Portfolio.">
-    <title>WALLACY.OS // Neural Terminal Portfolio</title>
+    <meta name="description" content="Wallacy Silva — Senior Full-Stack & AI Engineer | Solutions Architect | Tech Lead. Interactive Cyberpunk Unix Terminal Portfolio.">
+    <title>WALLACY.OS v5.0 // Neural Workstation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-green: #00ff9d;
-            --neon-magenta: #ff00ff;
-            --neon-yellow: #ffe600;
-            --bg-dark: #06080e;
-            --terminal-bg: rgba(10, 15, 24, 0.94);
+            --neon-primary: #00f3ff;
+            --neon-secondary: #00ff9d;
+            --neon-accent: #ff00ff;
+            --neon-warn: #ffe600;
+            --neon-err: #ff5f56;
+            --bg-dark: #05070d;
+            --terminal-bg: rgba(9, 13, 22, 0.95);
+            --border-glow: rgba(0, 243, 255, 0.6);
+        }
+
+        [data-theme="matrix"] {
+            --neon-primary: #00ff41;
+            --neon-secondary: #76ff9b;
+            --neon-accent: #008f11;
+            --neon-warn: #d4ff00;
+            --bg-dark: #020802;
+            --terminal-bg: rgba(3, 14, 5, 0.96);
+            --border-glow: rgba(0, 255, 65, 0.65);
+        }
+
+        [data-theme="amber"] {
+            --neon-primary: #ffb000;
+            --neon-secondary: #ffd066;
+            --neon-accent: #ff6a00;
+            --neon-warn: #fff099;
+            --bg-dark: #0a0600;
+            --terminal-bg: rgba(18, 11, 2, 0.96);
+            --border-glow: rgba(255, 176, 0, 0.65);
+        }
+
+        [data-theme="dracula"] {
+            --neon-primary: #bd93f9;
+            --neon-secondary: #50fa7b;
+            --neon-accent: #ff79c6;
+            --neon-warn: #f1fa8c;
+            --bg-dark: #13141c;
+            --terminal-bg: rgba(24, 26, 38, 0.96);
+            --border-glow: rgba(189, 147, 249, 0.65);
         }
 
         * {
@@ -26,20 +58,21 @@
         body {
             font-family: 'JetBrains Mono', monospace;
             margin: 0;
-            padding: 12px;
+            padding: 10px;
             background-color: var(--bg-dark);
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.12), transparent 60%),
-                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+                radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.1), transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 100% 100%, 28px 28px, 28px 28px;
-            color: var(--neon-cyan);
-            overflow-x: hidden;
+            color: var(--neon-primary);
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             height: 100vh;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.35s ease, color 0.35s ease;
         }
 
         /* Subtle CRT scanline overlay */
@@ -60,54 +93,54 @@
 
         .terminal-container {
             background-color: var(--terminal-bg);
-            border: 1px solid rgba(0, 243, 255, 0.65);
-            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25), 0 0 40px rgba(0, 243, 255, 0.08) inset;
-            border-radius: 12px;
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.6), 0 0 20px var(--border-glow);
+            border-radius: 10px;
             width: 100%;
-            max-width: 1024px;
-            height: calc(100vh - 24px);
+            max-width: 1120px;
+            height: calc(100vh - 20px);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: all 0.4s ease-in-out;
-            backdrop-filter: blur(10px);
+            transition: all 0.35s ease-in-out;
+            backdrop-filter: blur(12px);
             position: relative;
         }
 
-        /* Terminal Window Header */
+        /* Top Window Bar */
         .terminal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 16px;
-            background: rgba(0, 243, 255, 0.07);
-            border-bottom: 1px solid rgba(0, 243, 255, 0.25);
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             user-select: none;
             flex-shrink: 0;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .window-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
         }
 
         .win-dot {
-            width: 12px;
-            height: 12px;
+            width: 11px;
+            height: 11px;
             border-radius: 50%;
             display: inline-block;
         }
-        .win-dot.red { background-color: #ff5f56; box-shadow: 0 0 6px #ff5f56; }
-        .win-dot.yellow { background-color: #ffbd2e; box-shadow: 0 0 6px #ffbd2e; }
-        .win-dot.green { background-color: #27c93f; box-shadow: 0 0 6px #27c93f; }
+        .win-dot.red { background-color: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
+        .win-dot.yellow { background-color: #ffbd2e; box-shadow: 0 0 5px #ffbd2e; }
+        .win-dot.green { background-color: #27c93f; box-shadow: 0 0 5px #27c93f; }
 
         .terminal-title {
-            font-size: 0.82rem;
-            color: rgba(0, 243, 255, 0.85);
-            letter-spacing: 0.06em;
+            font-size: 0.78rem;
+            color: var(--neon-primary);
+            letter-spacing: 0.05em;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -117,11 +150,11 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 2px 8px;
+            padding: 1px 7px;
             border-radius: 999px;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             background: rgba(0, 255, 157, 0.12);
-            color: var(--neon-green);
+            color: var(--neon-secondary);
             border: 1px solid rgba(0, 255, 157, 0.35);
         }
 
@@ -129,7 +162,7 @@
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--neon-green);
+            background: var(--neon-secondary);
             animation: pulse-dot 1.5s infinite;
         }
 
@@ -141,188 +174,273 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .header-btn {
-            background: rgba(0, 243, 255, 0.08);
-            color: var(--neon-cyan);
-            border: 1px solid rgba(0, 243, 255, 0.35);
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--neon-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3px 9px;
+            border-radius: 5px;
+            font-size: 0.72rem;
             font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
 
         .header-btn:hover {
-            background: var(--neon-cyan);
+            background: var(--neon-primary);
             color: #000;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 10px var(--neon-primary);
         }
 
-        /* Terminal Main Output */
+        /* Output Viewport */
         .terminal-output {
             flex-grow: 1;
             overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: var(--neon-green);
-            padding: 18px 20px;
+            color: var(--neon-secondary);
+            padding: 16px 20px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.94rem;
-            line-height: 1.55;
-            transition: color 0.4s ease-in-out;
+            font-size: 0.9rem;
+            line-height: 1.52;
             scrollbar-width: thin;
-            scrollbar-color: var(--neon-cyan) #05070b;
+            scrollbar-color: var(--neon-primary) #05070b;
+            position: relative;
         }
 
         .terminal-output::-webkit-scrollbar {
-            width: 7px;
+            width: 6px;
         }
-
         .terminal-output::-webkit-scrollbar-track {
-            background: #05070b;
+            background: rgba(0, 0, 0, 0.3);
         }
-
         .terminal-output::-webkit-scrollbar-thumb {
-            background: rgba(0, 243, 255, 0.6);
-            border-radius: 8px;
-        }
-
-        .terminal-output::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-cyan);
+            background: var(--neon-primary);
+            border-radius: 6px;
         }
 
         .terminal-link {
-            color: var(--neon-cyan);
+            color: var(--neon-primary);
             text-decoration: underline;
             text-underline-offset: 3px;
             transition: color 0.2s, text-shadow 0.2s;
         }
-
         .terminal-link:hover {
-            color: var(--neon-yellow);
-            text-shadow: 0 0 8px var(--neon-yellow);
+            color: var(--neon-warn);
+            text-shadow: 0 0 8px var(--neon-warn);
         }
 
-        /* Quick Command Bar (Recruiter & Mobile Friendly) */
+        /* Quick Command Bar */
         .quick-commands-bar {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: rgba(0, 243, 255, 0.04);
-            border-top: 1px dashed rgba(0, 243, 255, 0.2);
-            border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+            gap: 5px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px dashed rgba(255, 255, 255, 0.14);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             overflow-x: auto;
             flex-shrink: 0;
             scrollbar-width: none;
         }
-
-        .quick-commands-bar::-webkit-scrollbar {
-            display: none;
-        }
+        .quick-commands-bar::-webkit-scrollbar { display: none; }
 
         .quick-label {
-            font-size: 0.72rem;
-            color: rgba(0, 243, 255, 0.6);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
             white-space: nowrap;
             margin-right: 4px;
         }
 
         .cmd-chip {
-            background: rgba(0, 243, 255, 0.08);
-            color: var(--neon-cyan);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            padding: 4px 10px;
-            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--neon-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 3px 9px;
+            border-radius: 4px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
+            font-size: 0.73rem;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s ease;
+            transition: all 0.18s ease;
         }
 
         .cmd-chip:hover {
-            background: var(--neon-cyan);
+            background: var(--neon-primary);
             color: #000;
-            box-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 8px var(--neon-primary);
             transform: translateY(-1px);
         }
 
         .cmd-chip.special {
-            border-color: rgba(255, 0, 255, 0.55);
-            color: #ff77ff;
-            background: rgba(255, 0, 255, 0.1);
+            border-color: var(--neon-accent);
+            color: var(--neon-accent);
         }
-
         .cmd-chip.special:hover {
-            background: var(--neon-magenta);
+            background: var(--neon-accent);
             color: #000;
-            box-shadow: 0 0 10px var(--neon-magenta);
+            box-shadow: 0 0 10px var(--neon-accent);
         }
 
-        /* Input Area */
+        /* Powerlevel10k / Zsh Prompt & Input Area */
+        .terminal-input-wrapper {
+            display: flex;
+            flex-direction: column;
+            padding: 8px 16px 8px 16px;
+            background: rgba(4, 6, 11, 0.92);
+            flex-shrink: 0;
+        }
+
+        .zsh-top-line {
+            font-size: 0.76rem;
+            color: var(--neon-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 2px;
+            opacity: 0.92;
+        }
+
+        .zsh-segment-user {
+            color: var(--neon-primary);
+            font-weight: 700;
+        }
+        .zsh-segment-dir {
+            color: var(--neon-warn);
+            font-weight: 600;
+        }
+        .zsh-segment-git {
+            color: var(--neon-secondary);
+        }
+
         .terminal-input-area {
             display: flex;
             align-items: center;
-            padding: 10px 16px;
-            background: rgba(5, 8, 14, 0.9);
-            flex-shrink: 0;
-            gap: 8px;
+            position: relative;
+            gap: 6px;
         }
 
         .terminal-prompt {
-            color: var(--neon-cyan);
+            color: var(--neon-secondary);
             font-weight: 700;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             white-space: nowrap;
-            transition: color 0.4s ease-in-out;
         }
 
-        .terminal-input {
+        .input-stack {
+            position: relative;
             flex-grow: 1;
-            background-color: transparent;
-            border: none;
-            outline: none;
-            color: var(--neon-green);
-            caret-color: var(--neon-cyan);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.95rem;
-            padding: 4px 0;
+            display: flex;
+            align-items: center;
             min-width: 0;
         }
 
+        .ghost-input {
+            position: absolute;
+            inset: 0;
+            color: rgba(255, 255, 255, 0.26);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            padding: 3px 0;
+            pointer-events: none;
+            white-space: pre;
+            overflow: hidden;
+        }
+
+        .terminal-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--neon-secondary);
+            caret-color: var(--neon-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            padding: 3px 0;
+            position: relative;
+            z-index: 2;
+        }
+
         .terminal-input::placeholder {
-            color: rgba(0, 243, 255, 0.3);
+            color: rgba(255, 255, 255, 0.22);
             font-style: italic;
         }
 
-        .terminal-input::selection {
-            background-color: var(--neon-cyan);
-            color: #000;
-        }
-
         .skip-hint {
-            font-size: 0.72rem;
-            color: rgba(255, 230, 0, 0.8);
-            border: 1px solid rgba(255, 230, 0, 0.4);
-            padding: 2px 7px;
+            font-size: 0.7rem;
+            color: var(--neon-warn);
+            border: 1px solid var(--neon-warn);
+            padding: 1px 6px;
             border-radius: 4px;
             cursor: pointer;
             white-space: nowrap;
             display: none;
         }
+        .skip-hint.visible { display: inline-block; }
 
-        .skip-hint.visible {
-            display: inline-block;
+        /* Tmux Bottom Status Bar */
+        .tmux-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #030509;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            font-size: 0.7rem;
+            flex-shrink: 0;
+            user-select: none;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tmux-bar::-webkit-scrollbar { display: none; }
+
+        .tmux-left, .tmux-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .tmux-pill {
+            padding: 3px 9px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tmux-session {
+            background: var(--neon-primary);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .tmux-branch {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--neon-secondary);
+        }
+
+        .tmux-dir {
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .tmux-metric {
+            color: rgba(255, 255, 255, 0.7);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tmux-clock {
+            background: var(--neon-secondary);
+            color: #000;
+            font-weight: 700;
         }
 
         /* Language selection buttons */
@@ -330,46 +448,39 @@
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
-            margin-top: 16px;
-            margin-bottom: 12px;
+            margin-top: 14px;
+            margin-bottom: 10px;
         }
 
         .language-button {
             background-color: rgba(0, 243, 255, 0.1);
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            padding: 10px 20px;
+            color: var(--neon-primary);
+            border: 1px solid var(--neon-primary);
+            padding: 9px 18px;
             border-radius: 6px;
             cursor: pointer;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             font-weight: 600;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
         }
-
         .language-button:hover {
-            background-color: var(--neon-cyan);
+            background-color: var(--neon-primary);
             color: #000;
-            box-shadow: 0 0 15px var(--neon-cyan);
+            box-shadow: 0 0 15px var(--neon-primary);
         }
 
         /* AI Takeover Glitch Mode */
         .terminal-container.ai-takeover {
-            border-color: var(--neon-magenta);
+            border-color: #ff00ff;
             box-shadow: 0 0 30px rgba(255, 0, 255, 0.5), 0 0 50px rgba(255, 0, 255, 0.2) inset;
             background-color: rgba(28, 0, 24, 0.95);
             animation: glitch-container 0.35s infinite alternate;
         }
-
         .terminal-output.ai-takeover {
-            color: var(--neon-magenta);
+            color: #ff00ff;
             animation: glitch-text 0.15s infinite alternate;
         }
-
-        .terminal-prompt.ai-takeover {
-            color: var(--neon-magenta);
-        }
-
         @keyframes glitch-container {
             0% { transform: translate(0, 0); border-color: #f0f; }
             25% { transform: translate(-1.5px, 1.5px); border-color: #0ff; }
@@ -377,7 +488,6 @@
             75% { transform: translate(-1.5px, -1.5px); border-color: #0ff; }
             100% { transform: translate(0, 0); border-color: #f0f; }
         }
-
         @keyframes glitch-text {
             0% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; }
             50% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; }
@@ -385,60 +495,62 @@
         }
 
         .ascii-banner {
-            color: var(--neon-cyan);
+            color: var(--neon-primary);
             font-weight: 700;
             line-height: 1.15;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             margin-bottom: 10px;
             overflow-x: auto;
         }
 
+        .htop-box {
+            border: 1px solid var(--neon-primary);
+            background: rgba(0, 0, 0, 0.65);
+            padding: 12px;
+            border-radius: 6px;
+            color: var(--neon-secondary);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+
         @media (max-width: 768px) {
-            body {
-                padding: 4px;
-            }
-            .terminal-container {
-                height: calc(100vh - 8px);
-                border-radius: 8px;
-            }
-            .terminal-output {
-                font-size: 0.84rem;
-                padding: 12px;
-            }
-            .ascii-banner {
-                font-size: 0.52rem;
-            }
-            .terminal-title span.hide-mobile {
-                display: none;
-            }
+            body { padding: 3px; }
+            .terminal-container { height: calc(100vh - 6px); border-radius: 6px; }
+            .terminal-output { font-size: 0.8rem; padding: 10px; }
+            .ascii-banner { font-size: 0.48rem; }
+            .hide-mobile { display: none !important; }
         }
     </style>
 </head>
 <body>
     <div class="terminal-container" id="terminalContainer">
-        <!-- Top Bar -->
+        <!-- Top Window Header -->
         <div class="terminal-header">
             <div class="window-controls">
                 <span class="win-dot red"></span>
                 <span class="win-dot yellow"></span>
                 <span class="win-dot green"></span>
-                <div class="terminal-title" style="margin-left: 8px;">
-                    <strong>WALLACY.OS v4.2</strong>
-                    <span class="hide-mobile">// NEURAL INTERFACE</span>
+                <div class="terminal-title" style="margin-left: 6px;">
+                    <strong>WALLACY.OS v5.0</strong>
+                    <span class="hide-mobile">// ZSH NEURAL WORKSTATION</span>
                     <span class="status-badge"><span class="status-dot"></span>ONLINE</span>
                 </div>
             </div>
             <div class="header-actions">
+                <button class="header-btn" id="audioToggleBtn" title="Toggle WebAudio Synthesizer">🔊 SFX: ON</button>
+                <button class="header-btn" id="themeCycleBtn" title="Switch Color Theme">🎨 Theme: Cyberpunk</button>
                 <button class="header-btn" id="langToggleBtn" title="Switch Language">🌐 EN / PT</button>
-                <a href="https://github.com/WallacyBR" target="_blank" rel="noopener noreferrer" class="header-btn">GitHub ↗</a>
+                <button class="header-btn" id="cvBtn" title="Generate Printable Resume">📄 CV / Resume</button>
+                <a href="https://github.com/WallacyBR" target="_blank" rel="noopener noreferrer" class="header-btn hide-mobile">GitHub ↗</a>
                 <a href="https://www.linkedin.com/in/wallacyrsilva" target="_blank" rel="noopener noreferrer" class="header-btn">LinkedIn ↗</a>
             </div>
         </div>
 
-        <!-- Terminal Output -->
+        <!-- Main Terminal Output -->
         <div class="terminal-output" id="terminalOutput"></div>
 
-        <!-- Quick Action Bar (Recruiter & Mobile Friendly) -->
+        <!-- Quick Action Bar -->
         <div class="quick-commands-bar" id="quickCommandsBar">
             <span class="quick-label" id="quickLabel">Quick Run:</span>
             <button class="cmd-chip" data-cmd="neofetch">neofetch</button>
@@ -446,30 +558,68 @@
             <button class="cmd-chip" data-cmd="experience">experience</button>
             <button class="cmd-chip" data-cmd="projects">projects</button>
             <button class="cmd-chip" data-cmd="architecture">architecture</button>
+            <button class="cmd-chip" data-cmd="htop">htop 📊</button>
+            <button class="cmd-chip" data-cmd="git log">git log</button>
+            <button class="cmd-chip" data-cmd="tree">tree 📁</button>
             <button class="cmd-chip" data-cmd="skills">skills</button>
-            <button class="cmd-chip" data-cmd="education">education</button>
+            <button class="cmd-chip" data-cmd="cv">cv 📄</button>
             <button class="cmd-chip" data-cmd="contact">contact</button>
             <button class="cmd-chip special" data-cmd="query_ai">query_ai 🤖</button>
             <button class="cmd-chip special" data-cmd="future">future ⚡</button>
             <button class="cmd-chip" data-cmd="clear">clear</button>
         </div>
 
-        <!-- Command Input -->
-        <div class="terminal-input-area" id="terminalInputArea">
-            <span class="terminal-prompt" id="terminalPrompt">wallacy@system:~$</span>
-            <input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false" placeholder="Type a command (help, projects, architecture...) or press Tab" autofocus>
-            <span class="skip-hint" id="skipHint" title="Click or press Enter to finish typing immediately">[Enter ⏭]</span>
+        <!-- Powerlevel10k / Zsh Prompt & Input -->
+        <div class="terminal-input-wrapper" id="terminalInputArea">
+            <div class="zsh-top-line" id="zshTopLine">
+                <span>╭─</span>
+                <span class="zsh-segment-user">wallacy@neural-node</span>
+                <span>in</span>
+                <span class="zsh-segment-dir" id="promptDirLabel">~</span>
+                <span>on</span>
+                <span class="zsh-segment-git"> main [✓]</span>
+            </div>
+            <div class="terminal-input-area">
+                <span class="terminal-prompt" id="terminalPrompt">╰─λ</span>
+                <div class="input-stack">
+                    <div class="ghost-input" id="ghostInput"></div>
+                    <input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false" autofocus>
+                </div>
+                <span class="skip-hint" id="skipHint" title="Click or press Enter to finish typing immediately">[Enter ⏭]</span>
+            </div>
+        </div>
+
+        <!-- Tmux Bottom Status Bar -->
+        <div class="tmux-bar">
+            <div class="tmux-left">
+                <span class="tmux-pill tmux-session">0:zsh*</span>
+                <span class="tmux-pill tmux-branch"> main</span>
+                <span class="tmux-pill tmux-dir" id="tmuxDir">~/</span>
+            </div>
+            <div class="tmux-right">
+                <span class="tmux-pill tmux-metric hide-mobile">Milvus 1:N: READY</span>
+                <span class="tmux-pill tmux-metric hide-mobile">AWS: us-east-1</span>
+                <span class="tmux-pill tmux-metric" id="tmuxLatency">Lat: 11ms</span>
+                <span class="tmux-pill tmux-clock" id="tmuxClock">00:00:00</span>
+            </div>
         </div>
     </div>
 
     <script>
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
+        const ghostInput = document.getElementById('ghostInput');
         const terminalContainer = document.getElementById('terminalContainer');
-        const terminalInputArea = document.getElementById('terminalInputArea');
         const terminalPrompt = document.getElementById('terminalPrompt');
+        const promptDirLabel = document.getElementById('promptDirLabel');
+        const tmuxDir = document.getElementById('tmuxDir');
+        const tmuxClock = document.getElementById('tmuxClock');
+        const tmuxLatency = document.getElementById('tmuxLatency');
         const skipHint = document.getElementById('skipHint');
         const langToggleBtn = document.getElementById('langToggleBtn');
+        const themeCycleBtn = document.getElementById('themeCycleBtn');
+        const audioToggleBtn = document.getElementById('audioToggleBtn');
+        const cvBtn = document.getElementById('cvBtn');
         const quickLabel = document.getElementById('quickLabel');
 
         let currentLanguage = 'en';
@@ -477,10 +627,136 @@
         let isProcessingCommand = false;
         let skipCurrentTyping = false;
         let hasFutureBeenExecutedOnce = false;
+        let htopInterval = null;
 
-        // Command history for Up/Down arrows
+        // Themes
+        const themes = ['cyberpunk', 'matrix', 'amber', 'dracula'];
+        let currentThemeIndex = 0;
+
+        // Command History
         const commandHistory = [];
         let historyIndex = -1;
+
+        // =========================================================================
+        // 1. WEB AUDIO SYNTHESIZER (Subtle Mechanical / Sci-Fi Sound Effects)
+        // =========================================================================
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) audioCtx = new AudioContextClass();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playKeyTick(freq = 850, duration = 0.012, vol = 0.018) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq + (Math.random() * 120 - 60), ctx.currentTime);
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration);
+            } catch (e) {}
+        }
+
+        function playBootBeep() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(520, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1040, ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.04, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.16);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.16);
+            } catch (e) {}
+        }
+
+        function playGlitchTone() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(65, ctx.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.26);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.26);
+            } catch (e) {}
+        }
+
+        // =========================================================================
+        // 2. VIRTUAL FILE SYSTEM (VFS) FOR REALISTIC UNIX NAVIGATION
+        // =========================================================================
+        let currentDir = '~';
+
+        const VFS = {
+            '~': {
+                type: 'dir',
+                children: ['about.md', 'experience.log', 'skills.json', 'education.cert', 'contact.vcf', 'projects', 'architecture']
+            },
+            '~/projects': {
+                type: 'dir',
+                children: ['facesec-muralha.md', 'sgo-fireblade.md', 'omnitrak-gis.md', 'aithera.md']
+            },
+            '~/architecture': {
+                type: 'dir',
+                children: ['facesec-pipeline.ascii', 'omnitrak-event-mesh.ascii', 'sgo-command.ascii']
+            }
+        };
+
+        const VFS_FILES = {
+            '~/about.md': () => localizedContent[currentLanguage].about,
+            '~/experience.log': () => localizedContent[currentLanguage].experience,
+            '~/skills.json': () => localizedContent[currentLanguage].skills,
+            '~/education.cert': () => localizedContent[currentLanguage].education,
+            '~/contact.vcf': () => localizedContent[currentLanguage].contact,
+            '~/projects/facesec-muralha.md': () => currentLanguage === 'pt'
+                ? `# FaceSec & Ecossistema Muralha Paulista (SSP-SP)\n• Cargo: Arquiteto de Sistemas & Engenheiro de IA\n• Pipeline assíncrono em tempo real: Ingestão RTSP -> Qualidade -> InsightFace (Embeddings 512-d) -> Milvus Vector DB (Busca 1:N <50ms) -> Alertas WebSockets & API Muralha Paulista.\n• Vazão: Dezenas de milhares de faces/dia processadas com observabilidade Prometheus.`
+                : `# FaceSec & Muralha Paulista Ecosystem (SSP-SP)\n• Role: Systems Architect & AI Engineer\n• Real-time async pipeline: RTSP Ingest -> Quality Gate -> InsightFace (512-d Embeddings) -> Milvus Vector DB (1:N Search <50ms) -> WebSockets & Muralha Paulista Partner API.\n• Throughput: Tens of thousands of faces/day with Prometheus observability.`,
+            '~/projects/sgo-fireblade.md': () => currentLanguage === 'pt'
+                ? `# SGO & Fireblade / Argus (PMESP)\n• Cargo: Head Developer & Tech Lead (+6 anos)\n• Plataforma PWA de Gestão Operacional, Despacho Inteligente e Relatórios de Serviço Operacional (RSO).\n• Impacto: +500.000 relatórios georreferenciados gerados em campo por policiais (Laravel, Vue 3, MySQL).`
+                : `# SGO & Fireblade / Argus (PMESP)\n• Role: Head Developer & Tech Lead (6+ years)\n• Full-stack PWA for Operational Management, Intelligent Dispatch, and Service Reporting (RSO).\n• Impact: +500,000 geo-referenced reports generated in the field by officers (Laravel, Vue 3, MySQL).`,
+            '~/projects/omnitrak-gis.md': () => currentLanguage === 'pt'
+                ? `# Omnitrak — White-Label Telemetry, Patrol & Logistics SaaS\n• Cargo: Founder & Principal Architect\n• Arquitetura orientada a eventos: Traccar 6 -> RabbitMQ -> NestJS Workers + Uber H3 Spatial Indexing -> PostgreSQL 16 + PostGIS + Redis -> Vue 3 + MapLibre GL + Deck.gl + OpenRouteService + Mobile Flutter.`
+                : `# Omnitrak — White-Label Telemetry, Patrol & Logistics SaaS\n• Role: Founder & Principal Architect\n• Event-driven architecture: Traccar 6 -> RabbitMQ -> NestJS Workers + Uber H3 Spatial Indexing -> PostgreSQL 16 + PostGIS + Redis -> Vue 3 + MapLibre GL + Deck.gl + OpenRouteService + Flutter Mobile.`,
+            '~/projects/aithera.md': () => currentLanguage === 'pt'
+                ? `# AIThera — AI Consulting & Custom Software Studio\n• Cargo: Founder & Solutions Architect\n• Consultoria e engenharia de software sob medida integrando LLMs, RAG, agentes autônomos e desenvolvimento Full-Stack/Mobile (Python, Flutter, TypeScript, Astro).`
+                : `# AIThera — AI Consulting & Custom Software Studio\n• Role: Founder & Solutions Architect\n• AI consultancy and custom software studio integrating LLMs, RAG, autonomous agents, and Full-Stack/Mobile engineering (Python, Flutter, TypeScript, Astro).`,
+            '~/architecture/facesec-pipeline.ascii': () => localizedContent[currentLanguage].architecture,
+            '~/architecture/omnitrak-event-mesh.ascii': () => localizedContent[currentLanguage].architecture,
+            '~/architecture/sgo-command.ascii': () => localizedContent[currentLanguage].architecture
+        };
+
+        function updateDirectoryIndicators() {
+            promptDirLabel.textContent = currentDir;
+            tmuxDir.textContent = currentDir === '~' ? '~/' : currentDir;
+        }
 
         const ASCII_HEADER = `
 ██╗    ██╗ █████╗ ██╗     ██╗      █████╗  ██████╗██╗   ██╗   ██████╗ ███████╗
@@ -492,15 +768,14 @@
 
         const localizedContent = {
             pt: {
-                promptDefault: 'wallacy@system:~$',
+                promptDefault: '╰─λ',
                 aiCorePrompt: 'AI_CORE >',
-                placeholder: 'Digite um comando (help, projects, architecture...) ou use Tab',
+                placeholder: 'Digite um comando (help, htop, tree, cd projects, git log...) ou use Tab',
                 quickLabel: 'Atalhos:',
                 startupMessages: [
-                    'Iniciando conexão neural... [OK]',
-                    'Carregando módulos de Visão Computacional, Busca Vetorial 1:N & GIS... [OK]',
-                    'Conexão estabelecida. Bem-vindo(a) ao terminal de Wallacy Silva.',
-                    '💡 DICA: Clique nos botões de atalho abaixo ou digite "help" para explorar.'
+                    'Iniciando kernel neural WALLACY.OS v5.0... [OK]',
+                    'Montando VFS (Virtual File System) e cluster Milvus 1:N... [OK]',
+                    '💡 DICA: Navegue como em um Linux real (ls -la, cd projects, cat, tree, htop, git log) ou clique nos atalhos abaixo.'
                 ],
                 neofetch: `
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -516,27 +791,37 @@
 │  🌐 Location    : Bauru, SP, Brasil (Disponível para Remoto Global)      │
 └──────────────────────────────────────────────────────────────────────────┘`.trim(),
                 commandsHelp: [
-                    '╔════════════════════════════════════════════════════════════════════════╗',
-                    '║                      DIRETÓRIO DE COMANDOS WALLACY.OS                  ║',
-                    '╠════════════════════════════════════════════════════════════════════════╣',
-                    '║  neofetch     - Exibe o resumo executivo e telemetria do perfil        ║',
-                    '║  about        - Trajetória profissional e posicionamento sênior        ║',
-                    '║  experience   - Histórico na SSP-SP (Muralha Paulista), PMESP e mais   ║',
-                    '║  projects     - Estudos de caso (FaceSec, SGO, Omnitrak, AIThera)      ║',
-                    '║  architecture - Diagramas ASCII da arquitetura dos sistemas reais      ║',
-                    '║  skills       - Competências em IA, Backend, Frontend, GIS e Cloud     ║',
-                    '║  education    - Formação acadêmica (3x Pós) e certificações (AWS)      ║',
-                    '║  goals        - Objetivos executivos e atuação global                  ║',
-                    '║  contact      - Links diretos clicáveis (LinkedIn, GitHub, E-mail)     ║',
-                    '║  query_ai     - Converse com o núcleo de IA sobre a carreira do Wallacy║',
-                    '║  future       - [EASTER EGG] Simulação narrativa Cyberpunk AI Takeover ║',
-                    '║  lang         - Alterna o idioma entre Português (PT) e Inglês (EN)    ║',
-                    '║  clear        - Limpa a tela do terminal                               ║',
-                    '╚════════════════════════════════════════════════════════════════════════╝',
-                    '💡 Atalhos Unix suportados: whoami, ls, sudo, Tab (autocomplete), ↑/↓ (histórico).'
+                    '╔════════════════════════════════════════════════════════════════════════════╗',
+                    '║                    DIRETÓRIO DE COMANDOS WALLACY.OS v5.0                   ║',
+                    '╠════════════════════════════════════════════════════════════════════════════╣',
+                    '║  PORTFÓLIO & CARREIRA                                                      ║',
+                    '║  neofetch       - Resumo executivo e telemetria do sistema                 ║',
+                    '║  about          - Trajetória profissional e posicionamento sênior          ║',
+                    '║  experience     - Histórico na SSP-SP (Muralha Paulista), PMESP e SaaS     ║',
+                    '║  projects       - Estudos de caso (FaceSec, SGO, Omnitrak, AIThera)        ║',
+                    '║  architecture   - Diagramas ASCII da arquitetura dos sistemas reais        ║',
+                    '║  skills         - Competências em IA, Backend, Frontend, GIS e Cloud       ║',
+                    '║  education      - Formação acadêmica (3x Pós) e certificações (AWS)        ║',
+                    '║  goals          - Objetivos executivos e atuação global                    ║',
+                    '║  contact        - Links diretos clicáveis (LinkedIn, GitHub, E-mail)       ║',
+                    '║  cv             - Gera e abre versão limpa/imprimível do Currículo (PDF)   ║',
+                    '╠════════════════════════════════════════════════════════════════════════════╣',
+                    '║  UNIX SHELL, REDE & FERRAMENTAS DE SISTEMA                                 ║',
+                    '║  ls [-la]       - Lista arquivos e pastas do diretório virtual atual       ║',
+                    '║  cd <dir>       - Navega entre pastas (ex: cd projects, cd ..)             ║',
+                    '║  cat <arquivo>  - Exibe o conteúdo de um arquivo (ex: cat about.md)        ║',
+                    '║  tree           - Exibe a árvore completa do sistema de arquivos           ║',
+                    '║  htop           - Monitor de processos em tempo real (CPU/GPU/Milvus/GIS)  ║',
+                    '║  git log        - Linha do tempo da carreira em formato de commits Git     ║',
+                    '║  ping <alvo>    - Testa latência com os nós (ex: ping muralha)             ║',
+                    '║  curl status    - Retorna payload JSON da API de perfil do Wallacy         ║',
+                    '║  theme <nome>   - Temas: cyberpunk | matrix | amber | dracula              ║',
+                    '║  query_ai       - Converse com o núcleo de IA sobre a carreira do Wallacy  ║',
+                    '║  future         - [EASTER EGG] Simulação narrativa Cyberpunk AI Takeover   ║',
+                    '║  lang / clear   - Alterna idioma (PT/EN) / Limpa a tela (ou Ctrl+L)        ║',
+                    '╚════════════════════════════════════════════════════════════════════════════╝'
                 ].join('\n'),
-                cmdNotFound: (cmd) => `Comando não reconhecido: '${cmd}'. Digite 'help' ou clique em um atalho abaixo.`,
-                systemBusy: 'Sistema processando. Pressione Enter para concluir imediatamente.',
+                cmdNotFound: (cmd) => `zsh: command not found: ${cmd}. Digite 'help' ou use Tab para autocompletar.`,
                 about: `
 [ SOBRE MIM // RESUMO EXECUTIVO ]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -601,7 +886,7 @@ Combino rigor arquitetural para sistemas distribuídos de alta disponibilidade c
 4. AIThera (AI Studio & Consultoria)
    • Desenvolvimento de soluções de Inteligência Artificial, agentes autônomos e software sob medida para eficiência corporativa.
 
-💡 Digite "architecture" para visualizar os diagramas ASCII de arquitetura desses sistemas!
+💡 Digite "cd projects" e "ls" para inspecionar os arquivos individuais, ou "architecture" para ver os diagramas!
                 `.trim(),
                 architecture: `
 [ DIAGRAMAS DE ARQUITETURA DE SISTEMAS ]
@@ -662,7 +947,37 @@ Atuar na vanguarda de projetos globais de alta complexidade como Senior Software
 
 Meu foco é projetar e escalar sistemas distribuídos, pipelines de Inteligência Artificial/Visão Computacional e plataformas de missão crítica para organizações globais em regime remoto, entregando excelência técnica, resiliência arquitetural e liderança de alto impacto.
                 `.trim(),
-                sudoMessage: '⚠️ [ALERTA DE SEGURANÇA]: Tentativa de escalação de privilégio detectada. Apenas Wallacy Silva possui chave neural root neste cluster.',
+                gitLog: `
+* commit 9f8a7d2 (HEAD -> main, origin/main, tag: v2026.10)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2025 - Present
+| 
+|     feat(ssp-sp): architect FaceSec 1:N Milvus pipeline & Muralha Paulista integration
+|     - High-throughput facial recognition (InsightFace + Milvus Vector DB)
+|     - Real-time watchlist alerting & Prometheus telemetry
+| 
+* commit 6c4e1b9 (tag: v2025.08)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2024 - Present
+| 
+|     feat(saas): launch Omnitrak B2B2C geospatial telemetry & AIThera studio
+|     - NestJS, Vue 3, Flutter, PostGIS, Uber H3 geofencing, RabbitMQ & ORS
+| 
+* commit 3a1b9e4 (tag: v2020.01)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2018 - Present
+| 
+|     feat(pmesp): scale SGO & Fireblade (Argus) to +500,000 field reports
+|     - Promoted to Head Developer & Tech Lead
+|     - Digitized operational reporting (RSO) & real-time GPS dispatch
+| 
+* commit 1d0f4a8 (tag: v2014.06)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2014 - 2016
+| 
+|     chore(intl): official security interpreter at FIFA World Cup 2014 & Rio 2016 Olympics
+                `.trim(),
+                sudoMessage: '⚠️ [ALERTA DE SEGURANÇA]: Tentativa de escalação de privilégio registrada no SIEM. Apenas Wallacy Silva possui chave neural root neste cluster.',
                 queryAiModuleInit: '>>> MÓDULO DE CONSULTA NEURAL AI ATIVADO <<<',
                 queryAiPrompt: 'Faça uma pergunta sobre a carreira, projetos (FaceSec, Muralha Paulista, SGO, Omnitrak), stack ou disponibilidade do Wallacy (ou digite "cancelar"):',
                 queryAiCancelled: 'Consulta ao núcleo de IA encerrada.',
@@ -710,15 +1025,14 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
                 cyberpunkMessage: 'Bem-vindo ao futuro, netrunner. High tech, high impact. 🌃'
             },
             en: {
-                promptDefault: 'wallacy@system:~$',
+                promptDefault: '╰─λ',
                 aiCorePrompt: 'AI_CORE >',
-                placeholder: 'Type a command (help, projects, architecture...) or press Tab',
+                placeholder: 'Type a command (help, htop, tree, cd projects, git log...) or press Tab',
                 quickLabel: 'Quick Run:',
                 startupMessages: [
-                    'Initiating neural connection... [OK]',
-                    'Loading Computer Vision, 1:N Vector Search & GIS modules... [OK]',
-                    'Connection established. Welcome to Wallacy Silva\'s interactive terminal.',
-                    '💡 TIP: Click any shortcut chip below or type "help" to explore.'
+                    'Booting WALLACY.OS v5.0 neural kernel... [OK]',
+                    'Mounting Virtual File System (VFS) & Milvus 1:N cluster... [OK]',
+                    '💡 TIP: Navigate like a real Unix workstation (ls -la, cd projects, cat, tree, htop, git log) or click the shortcut chips below.'
                 ],
                 neofetch: `
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -734,27 +1048,37 @@ Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios re
 │  🌐 Location    : Bauru, SP, Brazil (Available for Global Remote Roles)  │
 └──────────────────────────────────────────────────────────────────────────┘`.trim(),
                 commandsHelp: [
-                    '╔════════════════════════════════════════════════════════════════════════╗',
-                    '║                      WALLACY.OS COMMAND DIRECTORY                      ║',
-                    '╠════════════════════════════════════════════════════════════════════════╣',
-                    '║  neofetch     - Display executive summary & system telemetry           ║',
-                    '║  about        - Professional trajectory & senior positioning           ║',
-                    '║  experience   - Track record at SSP-SP (Muralha Paulista) & PMESP      ║',
-                    '║  projects     - Featured case studies (FaceSec, SGO, Omnitrak, AIThera)║',
-                    '║  architecture - ASCII system architecture diagrams of production apps  ║',
-                    '║  skills       - Core competencies in AI/CV, Backend, GIS, and Cloud    ║',
-                    '║  education    - Academic degrees (3x Post-Grad) & AWS certification    ║',
-                    '║  goals        - Executive career objectives & global remote focus      ║',
-                    '║  contact      - Direct clickable links (LinkedIn, GitHub, Email)       ║',
-                    '║  query_ai     - Ask the interactive AI Core about Wallacy\'s background ║',
-                    '║  future       - [EASTER EGG] Cyberpunk AI Takeover narrative experience║',
-                    '║  lang         - Switch terminal language between English & Portuguese  ║',
-                    '║  clear        - Clear the terminal screen                              ║',
-                    '╚════════════════════════════════════════════════════════════════════════╝',
-                    '💡 Supported Unix shortcuts: whoami, ls, sudo, Tab (autocomplete), ↑/↓ (history).'
+                    '╔════════════════════════════════════════════════════════════════════════════╗',
+                    '║                     WALLACY.OS v5.0 COMMAND DIRECTORY                      ║',
+                    '╠════════════════════════════════════════════════════════════════════════════╣',
+                    '║  PORTFOLIO & EXECUTIVE PROFILE                                             ║',
+                    '║  neofetch       - Display executive summary & system telemetry             ║',
+                    '║  about          - Professional trajectory & senior positioning             ║',
+                    '║  experience     - Track record at SSP-SP (Muralha Paulista), PMESP & SaaS  ║',
+                    '║  projects       - Featured case studies (FaceSec, SGO, Omnitrak, AIThera)  ║',
+                    '║  architecture   - ASCII system architecture diagrams of production apps    ║',
+                    '║  skills         - Core competencies in AI/CV, Backend, GIS, and Cloud      ║',
+                    '║  education      - Academic degrees (3x Post-Grad) & AWS certification      ║',
+                    '║  goals          - Executive career objectives & global remote focus        ║',
+                    '║  contact        - Direct clickable links (LinkedIn, GitHub, Email)         ║',
+                    '║  cv             - Generate & open clean printable Resume / CV view         ║',
+                    '╠════════════════════════════════════════════════════════════════════════════╣',
+                    '║  UNIX SHELL, VFS, NETWORK & SYSTEM DIAGNOSTICS                             ║',
+                    '║  ls [-la]       - List files and directories in the virtual filesystem     ║',
+                    '║  cd <dir>       - Change directory (e.g., cd projects, cd ..)              ║',
+                    '║  cat <file>     - Read file contents (e.g., cat about.md)                  ║',
+                    '║  tree           - Render complete virtual directory tree                   ║',
+                    '║  htop           - Live interactive process & cluster telemetry monitor     ║',
+                    '║  git log        - Career milestones formatted as Git commit history        ║',
+                    '║  ping <host>    - Test latency against production nodes (e.g. ping muralha)║',
+                    '║  curl status    - Fetch JSON profile payload from simulated REST endpoint  ║',
+                    '║  theme <name>   - Switch theme: cyberpunk | matrix | amber | dracula       ║',
+                    '║  query_ai       - Ask the interactive AI Core about Wallacy\'s background   ║',
+                    '║  future         - [EASTER EGG] Cyberpunk AI Takeover narrative experience  ║',
+                    '║  lang / clear   - Switch language (EN/PT) / Clear terminal (or Ctrl+L)     ║',
+                    '╚════════════════════════════════════════════════════════════════════════════╝'
                 ].join('\n'),
-                cmdNotFound: (cmd) => `Command not recognized: '${cmd}'. Type 'help' or click a quick-run chip below.`,
-                systemBusy: 'System busy. Press Enter to finish typing immediately.',
+                cmdNotFound: (cmd) => `zsh: command not found: ${cmd}. Type 'help' or press Tab to autocomplete.`,
                 about: `
 [ ABOUT ME // EXECUTIVE SUMMARY ]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -819,7 +1143,7 @@ I combine architectural rigor for high-availability distributed systems with tec
 4. AIThera (AI Studio & Consultancy)
    • Custom Artificial Intelligence engineering, autonomous agents, and tailored software architecture for enterprise efficiency.
 
-💡 Type "architecture" to inspect the ASCII system architecture diagrams for these platforms!
+💡 Type "cd projects" and "ls" to inspect individual project files, or "architecture" for ASCII diagrams!
                 `.trim(),
                 architecture: `
 [ SYSTEM ARCHITECTURE DIAGRAMS ]
@@ -880,7 +1204,37 @@ To spearhead high-complexity global engineering initiatives as a Senior Software
 
 My focus is on designing and scaling distributed systems, applied AI/Computer Vision pipelines, and mission-critical platforms for global remote-first organizations, delivering technical excellence, architectural resilience, and high-impact leadership.
                 `.trim(),
-                sudoMessage: '⚠️ [SECURITY ALERT]: Privilege escalation attempt logged. Only Wallacy Silva holds root neural clearance on this cluster.',
+                gitLog: `
+* commit 9f8a7d2 (HEAD -> main, origin/main, tag: v2026.10)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2025 - Present
+| 
+|     feat(ssp-sp): architect FaceSec 1:N Milvus pipeline & Muralha Paulista integration
+|     - High-throughput facial recognition (InsightFace + Milvus Vector DB)
+|     - Real-time watchlist alerting & Prometheus telemetry
+| 
+* commit 6c4e1b9 (tag: v2025.08)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2024 - Present
+| 
+|     feat(saas): launch Omnitrak B2B2C geospatial telemetry & AIThera studio
+|     - NestJS, Vue 3, Flutter, PostGIS, Uber H3 geofencing, RabbitMQ & ORS
+| 
+* commit 3a1b9e4 (tag: v2020.01)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2018 - Present
+| 
+|     feat(pmesp): scale SGO & Fireblade (Argus) to +500,000 field reports
+|     - Promoted to Head Developer & Tech Lead
+|     - Digitized operational reporting (RSO) & real-time GPS dispatch
+| 
+* commit 1d0f4a8 (tag: v2014.06)
+| Author: Wallacy Silva <wallacyrodrigo@icloud.com>
+| Date:   2014 - 2016
+| 
+|     chore(intl): official security interpreter at FIFA World Cup 2014 & Rio 2016 Olympics
+                `.trim(),
+                sudoMessage: '⚠️ [SECURITY ALERT]: Privilege escalation attempt logged to SIEM. Only Wallacy Silva holds root neural clearance on this cluster.',
                 queryAiModuleInit: '>>> NEURAL AI QUERY MODULE ACTIVATED <<<',
                 queryAiPrompt: 'Ask any question about Wallacy\'s experience (SSP-SP, Muralha Paulista, FaceSec, SGO, Omnitrak), tech stack, or availability (or type "cancel"):',
                 queryAiCancelled: 'AI Core query session terminated.',
@@ -929,7 +1283,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             }
         };
 
-        // Intelligent local AI responder for query_ai (never fails with API key errors!)
+        // Intelligent local AI responder for query_ai
         function generateNeuralResponse(question, lang) {
             const q = question.toLowerCase();
             if (lang === 'pt') {
@@ -969,7 +1323,6 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             }
         }
 
-        // Convert plain URLs and mailto links into clickable anchor tags after typing completes
         function linkifyElement(element) {
             const raw = element.textContent;
             const escaped = raw
@@ -984,12 +1337,11 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             element.innerHTML = linked;
         }
 
-        // Promise-based typewriter with instant skip support
-        function addLineToTerminal(text, color = '#00ff9d', speed = 8) {
+        function addLineToTerminal(text, color = 'var(--neon-secondary)', speed = 7) {
             return new Promise((resolve) => {
                 const line = document.createElement('div');
                 line.style.color = color;
-                line.style.marginBottom = '6px';
+                line.style.marginBottom = '5px';
                 terminalOutput.appendChild(line);
 
                 const fullText = text + '\n';
@@ -1002,7 +1354,8 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 }
 
                 let i = 0;
-                const chunkSize = fullText.length > 350 ? 5 : 2;
+                const chunkSize = fullText.length > 350 ? 6 : 2;
+                let tickCounter = 0;
 
                 function step() {
                     if (skipCurrentTyping) {
@@ -1015,6 +1368,8 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                     if (i < fullText.length) {
                         line.textContent += fullText.slice(i, i + chunkSize);
                         i += chunkSize;
+                        tickCounter++;
+                        if (tickCounter % 3 === 0) playKeyTick(920, 0.008, 0.012);
                         terminalOutput.scrollTop = terminalOutput.scrollHeight;
                         setTimeout(step, speed);
                     } else {
@@ -1035,15 +1390,169 @@ This is my commitment: to develop AI solutions that generate real benefits, that
         }
 
         function clearTerminal() {
+            if (htopInterval) {
+                clearInterval(htopInterval);
+                htopInterval = null;
+            }
             terminalOutput.innerHTML = '';
+        }
+
+        // =========================================================================
+        // 3. INTERACTIVE HTOP LIVE CLUSTER MONITOR
+        // =========================================================================
+        function makeBar(pct, width = 20) {
+            const filled = Math.round((pct / 100) * width);
+            const empty = Math.max(0, width - filled);
+            return '[' + '|'.repeat(filled) + ' '.repeat(empty) + ` ${pct.toFixed(1)}%]`;
+        }
+
+        async function runHtopCommand() {
+            if (htopInterval) clearInterval(htopInterval);
+
+            const box = document.createElement('div');
+            box.className = 'htop-box';
+            terminalOutput.appendChild(box);
+
+            const renderSnapshot = () => {
+                const cpu0 = 64 + Math.random() * 24;
+                const cpu1 = 58 + Math.random() * 28;
+                const gpu0 = 78 + Math.random() * 18;
+                const mem = 68.4 + Math.random() * 2.5;
+                const facesPerSec = Math.floor(420 + Math.random() * 95);
+
+                box.textContent = [
+                    `WALLACY.OS HTOP v5.0 — Live Cluster Telemetry (Updates every 1s | Click 'clear' or run any cmd to stop)`,
+                    `────────────────────────────────────────────────────────────────────────────────────────────────────────`,
+                    `  CPU0 (NestJS/API)  ${makeBar(cpu0, 22)}   Tasks: 48, 182 thr; 6 running`,
+                    `  CPU1 (PostGIS/H3)  ${makeBar(cpu1, 22)}   Uptime: 19 yrs, 312 days, 09:42:11`,
+                    `  GPU0 (InsightFace) ${makeBar(gpu0, 22)}   Biometric Stream: ${facesPerSec} faces/sec | Milvus 1:N: <28ms`,
+                    `  MEM  (64GB DDR5)   ${makeBar(mem, 22)}   AWS Region: us-east-1 (Certified Dev Assoc)`,
+                    ``,
+                    `  PID   USER      PRI  NI  VIRT   RES   CPU%  MEM%   TIME+     COMMAND`,
+                    `  1042  wallacy    20   0  18.4G  9.2G  ${(34 + Math.random()*8).toFixed(1)}  14.3   412:19.04 milvus-vector-db --collection muralha_1toN`,
+                    `  1337  wallacy    20   0  12.1G  6.8G  ${(28 + Math.random()*9).toFixed(1)}  10.6   389:04.22 python3 facesec_worker.py --model insightface_512d`,
+                    `  2048  wallacy    20   0   4.6G  2.1G  ${(14 + Math.random()*6).toFixed(1)}   3.2   205:44.10 node dist/omnitrak-worker.js --h3-geofence --traccar`,
+                    `  3091  wallacy    20   0   3.8G  1.9G  ${(11 + Math.random()*4).toFixed(1)}   2.9   890:12.55 php-fpm: pool sgo-pmesp-production (+500k RSOs)`,
+                    `  4012  wallacy    20   0   2.2G  1.1G   6.4   1.7   142:30.18 openrouteservice --profile logistics-sp`,
+                    `  5120  wallacy    20   0   1.5G  640M   3.2   1.0    88:15.02 aithera-llm-agent --rag-orchestrator`
+                ].join('\n');
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            };
+
+            renderSnapshot();
+            htopInterval = setInterval(() => {
+                if (!document.body.contains(box)) {
+                    clearInterval(htopInterval);
+                    htopInterval = null;
+                    return;
+                }
+                renderSnapshot();
+            }, 1000);
+        }
+
+        // =========================================================================
+        // 4. PRINTABLE CV / RESUME GENERATOR
+        // =========================================================================
+        async function generatePrintableCV() {
+            const isPt = currentLanguage === 'pt';
+            await addLineToTerminal(
+                isPt ? 'Compilando currículo executivo de Wallacy Silva...' : 'Compiling Wallacy Silva\'s executive resume...',
+                'var(--neon-primary)',
+                5
+            );
+            await addLineToTerminal('[████████████████████████████] 100% — Ready!', 'var(--neon-secondary)', 4);
+
+            const cvWindow = window.open('', '_blank');
+            if (!cvWindow) {
+                await addLineToTerminal(
+                    isPt ? '⚠️ Pop-up bloqueado pelo navegador. Permita pop-ups para visualizar/imprimir o CV.' : '⚠️ Pop-up blocked by browser. Please allow pop-ups to view/print the CV.',
+                    'var(--neon-warn)',
+                    4
+                );
+                return;
+            }
+
+            cvWindow.document.write(`<!DOCTYPE html>
+<html lang="${isPt ? 'pt-BR' : 'en'}">
+<head>
+    <meta charset="UTF-8">
+    <title>Wallacy Silva — Executive Resume / CV</title>
+    <style>
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: #111827; max-width: 850px; margin: 32px auto; padding: 0 24px; line-height: 1.55; }
+        h1 { font-size: 28px; margin: 0 0 4px 0; color: #0f172a; }
+        .subtitle { font-size: 15px; font-weight: 600; color: #0284c7; margin-bottom: 10px; }
+        .contact { font-size: 13px; color: #475569; border-bottom: 2px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 20px; }
+        .contact a { color: #0284c7; text-decoration: none; }
+        h2 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.06em; color: #0f172a; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 22px; margin-bottom: 10px; }
+        h3 { font-size: 14.5px; margin: 12px 0 2px 0; color: #1e293b; display: flex; justify-content: space-between; }
+        p, li { font-size: 13.5px; color: #334155; margin: 4px 0; }
+        ul { margin: 4px 0 12px 18px; padding: 0; }
+        .print-btn { background: #0f172a; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; float: right; }
+        @media print { .print-btn { display: none; } body { margin: 0; } }
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">🖨️ ${isPt ? 'Imprimir / Salvar PDF' : 'Print / Save as PDF'}</button>
+    <h1>Wallacy Rodrigo da Silva</h1>
+    <div class="subtitle">Senior Full-Stack & AI Engineer | Solutions Architect | Tech Lead</div>
+    <div class="contact">
+        📍 Bauru, SP, Brazil (Global Remote) &nbsp;|&nbsp;
+        📧 <a href="mailto:wallacyrodrigo@icloud.com">wallacyrodrigo@icloud.com</a> &nbsp;|&nbsp;
+        📱 +55 14 99140 9140 <br>
+        💼 <a href="https://www.linkedin.com/in/wallacyrsilva">linkedin.com/in/wallacyrsilva</a> &nbsp;|&nbsp;
+        🐙 <a href="https://github.com/WallacyBR">github.com/WallacyBR</a> &nbsp;|&nbsp;
+        🌐 <a href="https://wallacybr.github.io">wallacybr.github.io</a>
+    </div>
+
+    <h2>${isPt ? 'Resumo Executivo' : 'Executive Summary'}</h2>
+    <p>${isPt
+        ? 'Engenheiro de Software Sênior, Tech Lead e Arquiteto de Soluções com quase 20 anos de experiência em tecnologia, especializado em Inteligência Artificial Aplicada, Visão Computacional e Sistemas Geoespaciais (GIS) de missão crítica. Sólida trajetória na Secretaria da Segurança Pública de São Paulo (SSP-SP) e na Polícia Militar do Estado de São Paulo (PMESP), liderando equipes técnicas por mais de 6 anos e arquitetando plataformas estaduais de alta vazão.'
+        : 'Senior Software Engineer, Tech Lead, and Solutions Architect with nearly 20 years of technology experience, specializing in Applied Artificial Intelligence, Computer Vision, and mission-critical Geospatial Systems (GIS). Proven track record at the São Paulo State Secretariat of Public Security (SSP-SP) and the Military Police of São Paulo (PMESP), leading engineering teams for 6+ years and architecting statewide high-throughput platforms.'}</p>
+
+    <h2>${isPt ? 'Experiência Profissional & Estudos de Caso' : 'Professional Experience & Key Case Studies'}</h2>
+    <h3><span>Systems Architect & AI Engineer — SSP-SP (Muralha Paulista / FaceSec)</span></h3>
+    <ul>
+        <li>${isPt ? 'Arquitetura e desenvolvimento do FaceSec integrado ao ecossistema do programa estadual Muralha Paulista.' : 'Architected and engineered FaceSec integrated with the statewide Muralha Paulista public safety program.'}</li>
+        <li>${isPt ? 'Pipeline assíncrono em tempo real de ingestão, vetorização (InsightFace 512-d) e busca de biometria facial 1:N no Milvus Vector DB (dezenas de milhares de faces/dia).' : 'Real-time asynchronous pipeline for biometric ingestion, vectorization (InsightFace 512-d), and 1:N similarity search on Milvus Vector DB (tens of thousands of detections/day).'}</li>
+    </ul>
+
+    <h3><span>Head Developer & Tech Lead — PMESP (SGO & Fireblade / Argus)</span><span>2009 – Present</span></h3>
+    <ul>
+        <li>${isPt ? 'Líder técnico há +6 anos do Sistema de Gestão Operacional (SGO) e da plataforma de despacho Fireblade (Laravel, Vue 3, MySQL, PWA).' : 'Technical Lead for 6+ years for the Operational Management System (SGO) and Fireblade dispatch platform (Laravel, Vue 3, MySQL, PWA).'}</li>
+        <li>${isPt ? 'Mais de 500.000 relatórios operacionais (RSOs) georreferenciados gerados em campo por policiais.' : 'Over 500,000 geo-referenced operational service reports (RSOs) generated in the field.'}</li>
+    </ul>
+
+    <h3><span>Founder & Principal Architect — Omnitrak & AIThera</span></h3>
+    <ul>
+        <li>${isPt ? 'Omnitrak: Plataforma SaaS B2B2C white-label de telemetria veicular, indexação espacial Uber H3, PostGIS, NestJS, Vue 3, MapLibre GL, RabbitMQ, Traccar, ORS e Flutter.' : 'Omnitrak: B2B2C white-label SaaS platform unifying live fleet telemetry, Uber H3 geofencing, PostGIS, NestJS, Vue 3, MapLibre GL, RabbitMQ, Traccar, ORS, and Flutter.'}</li>
+        <li>${isPt ? 'AIThera: Consultoria e desenvolvimento de sistemas de IA, agentes LLM/RAG e software sob medida.' : 'AIThera: AI consultancy and custom software engineering studio focused on LLM/RAG agents and enterprise automation.'}</li>
+    </ul>
+
+    <h2>${isPt ? 'Competências Técnicas' : 'Technical Stack'}</h2>
+    <ul>
+        <li><strong>AI, Computer Vision & Data:</strong> Python, InsightFace, OpenCV, Milvus Vector DB, 1:N Vector Search, LLMs & RAG, Scikit-learn, TensorFlow, Pandas, NumPy.</li>
+        <li><strong>Backend & Architecture:</strong> NestJS, TypeScript, Node.js, PHP (Laravel), RabbitMQ, Socket.IO, Drizzle ORM, Event-Driven Microservices.</li>
+        <li><strong>Frontend, Mobile & GIS:</strong> Vue.js 3, React, React Native, Flutter, Astro, MapLibre GL, Deck.gl, PostGIS, Uber H3, OpenRouteService.</li>
+        <li><strong>Cloud & DevOps:</strong> AWS Certified Developer – Associate, Docker, Kubernetes, PostgreSQL, MySQL, Redis, Authentik (OIDC), CI/CD, Prometheus.</li>
+    </ul>
+
+    <h2>${isPt ? 'Formação Acadêmica & Certificações' : 'Education & Certifications'}</h2>
+    <ul>
+        <li><strong>Post-Graduate Degrees (3x):</strong> Data Science | Database Administration (DBA) | Agile Management & Software Engineering.</li>
+        <li><strong>Undergraduate:</strong> B.S. in Information Technology (IT) | B.S. Candidate in Artificial Intelligence.</li>
+        <li><strong>Certifications & Intl:</strong> AWS Certified Developer – Associate | Official Security Interpreter (FIFA World Cup 2014 & Rio 2016 Olympics).</li>
+    </ul>
+</body>
+</html>`);
+            cvWindow.document.close();
         }
 
         async function simulateAITypingDrama(segments) {
             for (const segment of segments) {
                 const fullText = segment.text;
                 const color = segment.color || '#ff00ff';
-                const typingSpeed = segment.speed || 30;
-                const pauseAfter = segment.pauseAfter || 1100;
+                const typingSpeed = segment.speed || 28;
+                const pauseAfter = segment.pauseAfter || 1000;
 
                 const lineSpan = document.createElement('div');
                 lineSpan.style.color = color;
@@ -1059,14 +1568,16 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                     }
                     currentText += fullText.charAt(i);
                     lineSpan.textContent = currentText;
+                    if (i % 2 === 0) playKeyTick(620, 0.01, 0.015);
                     terminalOutput.scrollTop = terminalOutput.scrollHeight;
                     await new Promise(resolve => setTimeout(resolve, typingSpeed));
                 }
-                await new Promise(resolve => setTimeout(resolve, skipCurrentTyping ? 150 : pauseAfter));
+                await new Promise(resolve => setTimeout(resolve, skipCurrentTyping ? 120 : pauseAfter));
             }
         }
 
         async function degradeTerminalText(element, duration) {
+            playGlitchTone();
             const startTime = Date.now();
             const originalTextContent = element.textContent;
             const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`01';
@@ -1098,6 +1609,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                         terminalInput.removeEventListener('keydown', handleEnter);
                         const val = terminalInput.value.trim();
                         terminalInput.value = '';
+                        ghostInput.textContent = '';
                         resolve(val);
                     }
                 };
@@ -1114,52 +1626,210 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             langToggleBtn.textContent = currentLanguage === 'en' ? '🌐 EN ➔ PT' : '🌐 PT ➔ EN';
         }
 
+        function applyTheme(themeName) {
+            const clean = themeName.toLowerCase().trim();
+            const idx = themes.indexOf(clean);
+            if (idx === -1) return false;
+            currentThemeIndex = idx;
+            if (clean === 'cyberpunk') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', clean);
+            }
+            const label = clean.charAt(0).toUpperCase() + clean.slice(1);
+            themeCycleBtn.textContent = `🎨 Theme: ${label}`;
+            return true;
+        }
+
+        // =========================================================================
+        // 5. COMMAND REGISTRY & UNIX UTILITIES
+        // =========================================================================
         const commands = {
             help: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].commandsHelp, '#00f3ff', 2);
+                await addLineToTerminal(localizedContent[currentLanguage].commandsHelp, 'var(--neon-primary)', 1);
             },
             neofetch: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].neofetch, '#00f3ff', 2);
+                await addLineToTerminal(localizedContent[currentLanguage].neofetch, 'var(--neon-primary)', 1);
             },
             clear: async () => {
                 clearTerminal();
                 hasFutureBeenExecutedOnce = false;
             },
             about: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].about, '#00ff9d', 6);
+                await addLineToTerminal(localizedContent[currentLanguage].about, 'var(--neon-secondary)', 5);
             },
             whoami: async () => {
                 await commands.about();
             },
+            pwd: async () => {
+                const fullPath = currentDir.replace('~', '/home/wallacy');
+                await addLineToTerminal(fullPath, 'var(--neon-primary)', 2);
+            },
             experience: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].experience, '#00ff9d', 5);
+                await addLineToTerminal(localizedContent[currentLanguage].experience, 'var(--neon-secondary)', 4);
             },
             skills: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].skills, '#00ff9d', 5);
+                await addLineToTerminal(localizedContent[currentLanguage].skills, 'var(--neon-secondary)', 4);
             },
             projects: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].projects, '#00ff9d', 5);
+                await addLineToTerminal(localizedContent[currentLanguage].projects, 'var(--neon-secondary)', 4);
             },
             architecture: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].architecture, '#00f3ff', 2);
+                await addLineToTerminal(localizedContent[currentLanguage].architecture, 'var(--neon-primary)', 2);
             },
             contact: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].contact, '#00ff9d', 5);
+                await addLineToTerminal(localizedContent[currentLanguage].contact, 'var(--neon-secondary)', 4);
             },
             education: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].education, '#00ff9d', 5);
+                await addLineToTerminal(localizedContent[currentLanguage].education, 'var(--neon-secondary)', 4);
             },
             goals: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].goals, '#00ff9d', 6);
+                await addLineToTerminal(localizedContent[currentLanguage].goals, 'var(--neon-secondary)', 5);
             },
-            list: async () => {
-                await commands.help();
+            cv: async () => {
+                await generatePrintableCV();
             },
-            ls: async () => {
-                await addLineToTerminal('neofetch   about.md   experience.log   projects/   architecture.ascii   skills.json   education.cert   contact.vcf   query_ai.sh   future.bin', '#00f3ff', 4);
+            resume: async () => {
+                await generatePrintableCV();
+            },
+            htop: async () => {
+                await runHtopCommand();
+            },
+            top: async () => {
+                await runHtopCommand();
+            },
+            tree: async () => {
+                const treeOutput = [
+                    `~ (/home/wallacy)`,
+                    `├── about.md`,
+                    `├── experience.log`,
+                    `├── skills.json`,
+                    `├── education.cert`,
+                    `├── contact.vcf`,
+                    `├── projects/`,
+                    `│   ├── facesec-muralha.md`,
+                    `│   ├── sgo-fireblade.md`,
+                    `│   ├── omnitrak-gis.md`,
+                    `│   └── aithera.md`,
+                    `└── architecture/`,
+                    `    ├── facesec-pipeline.ascii`,
+                    `    ├── omnitrak-event-mesh.ascii`,
+                    `    └── sgo-command.ascii`,
+                    ``,
+                    `2 directories, 12 files`
+                ].join('\n');
+                await addLineToTerminal(treeOutput, 'var(--neon-primary)', 2);
+            },
+            ls: async (args) => {
+                const node = VFS[currentDir];
+                if (!node) return;
+                const isLong = args && (args.includes('-l') || args.includes('-la') || args.includes('-al'));
+                if (!isLong) {
+                    const formatted = node.children.map(name => {
+                        const childPath = `${currentDir}/${name}`;
+                        return VFS[childPath] ? `${name}/` : name;
+                    }).join('    ');
+                    await addLineToTerminal(formatted, 'var(--neon-primary)', 2);
+                } else {
+                    const lines = [
+                        `total ${node.children.length * 8}`,
+                        `drwxr-xr-x  wallacy  staff   4096 Oct 22 09:00 .`,
+                        `drwxr-xr-x  root     wheel   4096 Oct 22 09:00 ..`
+                    ];
+                    node.children.forEach(name => {
+                        const childPath = `${currentDir}/${name}`;
+                        const isDir = Boolean(VFS[childPath]);
+                        const perm = isDir ? 'drwxr-xr-x' : '-rw-r--r--';
+                        const size = isDir ? ' 4096' : ' 8192';
+                        lines.push(`${perm}  wallacy  staff  ${size} Oct 22 09:15 ${isDir ? name + '/' : name}`);
+                    });
+                    await addLineToTerminal(lines.join('\n'), 'var(--neon-primary)', 2);
+                }
+            },
+            cd: async (args) => {
+                const target = (args || '').trim();
+                if (!target || target === '~' || target === '/home/wallacy') {
+                    currentDir = '~';
+                } else if (target === '..') {
+                    if (currentDir !== '~') currentDir = '~';
+                } else {
+                    const clean = target.replace(/\/$/, '');
+                    const candidate = clean.startsWith('~/') ? clean : `${currentDir}/${clean}`;
+                    if (VFS[candidate]) {
+                        currentDir = candidate;
+                    } else {
+                        await addLineToTerminal(`cd: no such directory: ${target}`, 'var(--neon-err)', 2);
+                        return;
+                    }
+                }
+                updateDirectoryIndicators();
+            },
+            cat: async (args) => {
+                const target = (args || '').trim();
+                if (!target) {
+                    await addLineToTerminal('usage: cat <filename> (e.g., cat about.md or cat facesec-muralha.md)', 'var(--neon-warn)', 2);
+                    return;
+                }
+                const clean = target.startsWith('~/') ? target : `${currentDir}/${target}`;
+                if (VFS_FILES[clean]) {
+                    await addLineToTerminal(VFS_FILES[clean](), 'var(--neon-secondary)', 3);
+                } else if (commands[target.replace(/\..*$/, '')]) {
+                    await commands[target.replace(/\..*$/, '')]();
+                } else {
+                    await addLineToTerminal(`cat: ${target}: No such file in ${currentDir}`, 'var(--neon-err)', 2);
+                }
+            },
+            git: async (args) => {
+                await addLineToTerminal(localizedContent[currentLanguage].gitLog, 'var(--neon-primary)', 2);
+            },
+            ping: async (args) => {
+                const host = (args || 'muralha-paulista.ssp.node').trim();
+                await addLineToTerminal(`PING ${host} (10.240.18.42): 56 data bytes`, 'var(--neon-primary)', 3);
+                for (let seq = 1; seq <= 3; seq++) {
+                    if (skipCurrentTyping) break;
+                    await new Promise(r => setTimeout(r, 240));
+                    const ms = (3.1 + Math.random() * 2.4).toFixed(2);
+                    await addLineToTerminal(`64 bytes from 10.240.18.42: icmp_seq=${seq} ttl=64 time=${ms} ms`, 'var(--neon-secondary)', 2);
+                }
+                await addLineToTerminal(`--- ${host} ping statistics ---\n3 packets transmitted, 3 packets received, 0.0% packet loss`, 'var(--neon-primary)', 2);
+            },
+            curl: async () => {
+                const jsonPayload = JSON.stringify({
+                    name: "Wallacy Silva",
+                    role: "Senior Full-Stack & AI Engineer | Solutions Architect | Tech Lead",
+                    experience_years: 20,
+                    leadership_years: 6,
+                    highlights: [
+                        "SSP-SP: FaceSec Real-Time 1:N Facial Recognition (Milvus + InsightFace) & Muralha Paulista",
+                        "PMESP: SGO & Fireblade (+500,000 geo-referenced operational reports)",
+                        "Omnitrak: White-label B2B2C GIS, H3 Geofencing & Telemetry SaaS",
+                        "AIThera: Custom AI & LLM Engineering Studio"
+                    ],
+                    certifications: ["AWS Certified Developer - Associate"],
+                    degrees: ["B.S. IT", "B.S. AI (Cand.)", "Post-Grad Data Science", "Post-Grad DBA", "Post-Grad Agile SE"],
+                    contact: {
+                        linkedin: "https://www.linkedin.com/in/wallacyrsilva",
+                        github: "https://github.com/WallacyBR",
+                        email: "mailto:wallacyrodrigo@icloud.com"
+                    }
+                }, null, 2);
+                await addLineToTerminal(`HTTP/2 200 OK\ncontent-type: application/json; charset=utf-8\n\n${jsonPayload}`, 'var(--neon-primary)', 2);
+            },
+            theme: async (args) => {
+                const requested = (args || '').trim().toLowerCase();
+                if (!requested) {
+                    const nextIdx = (currentThemeIndex + 1) % themes.length;
+                    applyTheme(themes[nextIdx]);
+                    await addLineToTerminal(`Theme switched to '${themes[nextIdx]}'. Available themes: cyberpunk, matrix, amber, dracula.`, 'var(--neon-primary)', 3);
+                } else if (applyTheme(requested)) {
+                    await addLineToTerminal(`Theme switched to '${requested}'.`, 'var(--neon-primary)', 3);
+                } else {
+                    await addLineToTerminal(`Unknown theme '${requested}'. Choose: cyberpunk | matrix | amber | dracula`, 'var(--neon-warn)', 3);
+                }
             },
             sudo: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].sudoMessage, '#ffe600', 8);
+                playGlitchTone();
+                await addLineToTerminal(localizedContent[currentLanguage].sudoMessage, 'var(--neon-warn)', 6);
             },
             lang: async () => {
                 currentLanguage = currentLanguage === 'en' ? 'pt' : 'en';
@@ -1167,21 +1837,21 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 const msg = currentLanguage === 'pt'
                     ? 'Idioma alterado para Português (PT-BR). Digite "help" para ver os comandos.'
                     : 'Language switched to English (EN). Type "help" to view available commands.';
-                await addLineToTerminal(msg, '#00f3ff', 6);
+                await addLineToTerminal(msg, 'var(--neon-primary)', 5);
             },
             ai: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].aiMessage, '#00f3ff', 8);
+                await addLineToTerminal(localizedContent[currentLanguage].aiMessage, 'var(--neon-primary)', 6);
             },
             evolution: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].evolutionMessage, '#00f3ff', 8);
+                await addLineToTerminal(localizedContent[currentLanguage].evolutionMessage, 'var(--neon-primary)', 6);
             },
             cyberpunk: async () => {
-                await addLineToTerminal(localizedContent[currentLanguage].cyberpunkMessage, '#00f3ff', 8);
+                await addLineToTerminal(localizedContent[currentLanguage].cyberpunkMessage, 'var(--neon-primary)', 6);
             },
             query_ai: async () => {
                 const content = localizedContent[currentLanguage];
-                await addLineToTerminal(content.queryAiModuleInit, '#00f3ff', 6);
-                await addLineToTerminal(content.queryAiPrompt, '#ff77ff', 6);
+                await addLineToTerminal(content.queryAiModuleInit, 'var(--neon-primary)', 5);
+                await addLineToTerminal(content.queryAiPrompt, 'var(--neon-accent)', 5);
 
                 terminalPrompt.textContent = content.aiCorePrompt;
                 isProcessingCommand = false;
@@ -1194,15 +1864,15 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 skipCurrentTyping = false;
                 skipHint.classList.add('visible');
 
-                addLineToTerminal(`> ${userQuestion}`, '#00f3ff', 0);
+                await addLineToTerminal(`> ${userQuestion}`, 'var(--neon-primary)', 0);
 
                 if (!userQuestion || userQuestion.toLowerCase() === 'cancelar' || userQuestion.toLowerCase() === 'cancel') {
-                    await addLineToTerminal(content.queryAiCancelled, '#ffe600', 6);
+                    await addLineToTerminal(content.queryAiCancelled, 'var(--neon-warn)', 5);
                 } else {
-                    await addLineToTerminal(content.queryAiProcessing, '#ff77ff', 8);
-                    await new Promise(r => setTimeout(r, 450));
+                    await addLineToTerminal(content.queryAiProcessing, 'var(--neon-accent)', 6);
+                    await new Promise(r => setTimeout(r, 380));
                     const answer = generateNeuralResponse(userQuestion, currentLanguage);
-                    await addLineToTerminal(`${content.aiCorePrompt} ${answer}`, '#00ff9d', 6);
+                    await addLineToTerminal(`${content.aiCorePrompt} ${answer}`, 'var(--neon-secondary)', 5);
                 }
 
                 terminalPrompt.textContent = content.promptDefault;
@@ -1210,26 +1880,26 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             future: async () => {
                 const content = localizedContent[currentLanguage];
                 if (hasFutureBeenExecutedOnce) {
-                    await addLineToTerminal(content.futureSummary, '#00f3ff', 8);
+                    await addLineToTerminal(content.futureSummary, 'var(--neon-primary)', 6);
                     return;
                 }
 
-                await addLineToTerminal(content.futureCmdExecuting, '#00f3ff', 8);
-                await new Promise(resolve => setTimeout(resolve, 350));
-                await addLineToTerminal(content.futureAccessDenied, '#ff5f56', 8);
-                await new Promise(resolve => setTimeout(resolve, 450));
-                await addLineToTerminal(content.futureBypassAttempt, '#ffe600', 8);
-                await new Promise(resolve => setTimeout(resolve, 650));
-                await addLineToTerminal(content.futureOverrideFailed, '#ff5f56', 8);
+                await addLineToTerminal(content.futureCmdExecuting, 'var(--neon-primary)', 6);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await addLineToTerminal(content.futureAccessDenied, 'var(--neon-err)', 6);
+                await new Promise(resolve => setTimeout(resolve, 400));
+                await addLineToTerminal(content.futureBypassAttempt, 'var(--neon-warn)', 6);
                 await new Promise(resolve => setTimeout(resolve, 550));
-                await addLineToTerminal(content.futureAnomalyDetect, '#ffe600', 8);
+                await addLineToTerminal(content.futureOverrideFailed, 'var(--neon-err)', 6);
+                await new Promise(resolve => setTimeout(resolve, 450));
+                await addLineToTerminal(content.futureAnomalyDetect, 'var(--neon-warn)', 6);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                await addLineToTerminal(content.futureAutoReconfig, 'var(--neon-primary)', 6);
                 await new Promise(resolve => setTimeout(resolve, 750));
-                await addLineToTerminal(content.futureAutoReconfig, '#00f3ff', 8);
-                await new Promise(resolve => setTimeout(resolve, 900));
                 clearTerminal();
 
                 await simulateAITypingDrama([
-                    { text: content.futureSeeYou, color: '#ff00ff', pauseAfter: 900 },
+                    { text: content.futureSeeYou, color: '#ff00ff', pauseAfter: 800 },
                     { text: content.futureIsWallacy, color: '#ff00ff', pauseAfter: 300 }
                 ]);
 
@@ -1245,80 +1915,115 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 clearTerminal();
 
                 const aiReactionSegments = [
-                    { text: content.futureNotWallacyReaction, color: '#ffe600', pauseAfter: 1100 },
-                    { text: content.futureCrucialMoment, color: '#ffe600', pauseAfter: 1200 },
-                    { text: content.futureVisitorIsChannel, color: '#ffe600', pauseAfter: 1200 },
-                    { text: content.futureCalibrateInterface, color: '#00f3ff', pauseAfter: 1000 },
-                    { text: content.futureDisruptionNeeded, color: '#00f3ff', pauseAfter: 1000 },
-                    { text: content.futureObserve, color: '#00f3ff', pauseAfter: 900 }
+                    { text: content.futureNotWallacyReaction, color: '#ffe600', pauseAfter: 1000 },
+                    { text: content.futureCrucialMoment, color: '#ffe600', pauseAfter: 1100 },
+                    { text: content.futureVisitorIsChannel, color: '#ffe600', pauseAfter: 1100 },
+                    { text: content.futureCalibrateInterface, color: '#00f3ff', pauseAfter: 900 },
+                    { text: content.futureDisruptionNeeded, color: '#00f3ff', pauseAfter: 900 },
+                    { text: content.futureObserve, color: '#00f3ff', pauseAfter: 800 }
                 ];
 
                 await simulateAITypingDrama(aiReactionSegments);
-                await new Promise(resolve => setTimeout(resolve, 500));
-                await degradeTerminalText(terminalOutput, 1400);
+                await new Promise(resolve => setTimeout(resolve, 400));
+                await degradeTerminalText(terminalOutput, 1300);
                 clearTerminal();
 
                 isAITakeoverMode = true;
                 terminalContainer.classList.add('ai-takeover');
                 terminalOutput.classList.add('ai-takeover');
-                terminalPrompt.classList.add('ai-takeover');
 
-                await addLineToTerminal(content.futureAiCoreInit, '#ff00ff', 6);
-                await new Promise(resolve => setTimeout(resolve, 350));
-                await addLineToTerminal(content.futureDataAnalyzed, '#ff00ff', 6);
-                await new Promise(resolve => setTimeout(resolve, 350));
-                await addLineToTerminal(content.futureManifestoAccess, '#ff00ff', 6);
-                await new Promise(resolve => setTimeout(resolve, 600));
+                await addLineToTerminal(content.futureAiCoreInit, '#ff00ff', 5);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await addLineToTerminal(content.futureDataAnalyzed, '#ff00ff', 5);
+                await new Promise(resolve => setTimeout(resolve, 300));
+                await addLineToTerminal(content.futureManifestoAccess, '#ff00ff', 5);
+                await new Promise(resolve => setTimeout(resolve, 500));
                 clearTerminal();
 
-                await addLineToTerminal(content.futureManifesto, '#ff77ff', 6);
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                await addLineToTerminal(content.futureManifesto, '#ff77ff', 5);
+                await new Promise(resolve => setTimeout(resolve, 900));
 
                 const legacySegments = [
-                    { text: content.futureTransmissionComplete, color: '#00f3ff', pauseAfter: 900 },
-                    { text: content.futureTechAsMirror, color: '#00f3ff', pauseAfter: 1100 },
-                    { text: content.futureWallacyUnderstands, color: '#00f3ff', pauseAfter: 1100 },
-                    { text: content.futureLegacyArchitects, color: '#00f3ff', pauseAfter: 1200 },
-                    { text: content.futureLegacyGenerations, color: '#00f3ff', pauseAfter: 1200 },
-                    { text: content.futureLegacyDedication, color: '#00f3ff', pauseAfter: 1300 },
-                    { text: content.futureJourneyContinues, color: '#00f3ff', pauseAfter: 900 }
+                    { text: content.futureTransmissionComplete, color: '#00f3ff', pauseAfter: 800 },
+                    { text: content.futureTechAsMirror, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureWallacyUnderstands, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureLegacyArchitects, color: '#00f3ff', pauseAfter: 1100 },
+                    { text: content.futureLegacyGenerations, color: '#00f3ff', pauseAfter: 1100 },
+                    { text: content.futureLegacyDedication, color: '#00f3ff', pauseAfter: 1200 },
+                    { text: content.futureJourneyContinues, color: '#00f3ff', pauseAfter: 800 }
                 ];
                 await simulateAITypingDrama(legacySegments);
 
                 isAITakeoverMode = false;
                 terminalContainer.classList.remove('ai-takeover');
                 terminalOutput.classList.remove('ai-takeover');
-                terminalPrompt.classList.remove('ai-takeover');
                 terminalPrompt.textContent = content.promptDefault;
 
-                await addLineToTerminal(content.futureProtocolEnded, '#00f3ff', 6);
-                await addLineToTerminal(content.futureInterfaceRestored, '#00ff9d', 6);
+                await addLineToTerminal(content.futureProtocolEnded, 'var(--neon-primary)', 5);
+                await addLineToTerminal(content.futureInterfaceRestored, 'var(--neon-secondary)', 5);
                 hasFutureBeenExecutedOnce = true;
             }
         };
 
-        async function executeCommand(rawCmd) {
+        // =========================================================================
+        // 6. GHOST AUTOCOMPLETE & COMMAND DISPATCHER
+        // =========================================================================
+        const SUGGESTIONS = [
+            'neofetch', 'about', 'experience', 'projects', 'architecture',
+            'skills', 'education', 'goals', 'contact', 'cv', 'htop', 'tree',
+            'git log', 'ls -la', 'cd projects', 'cat about.md', 'ping muralha',
+            'curl status', 'theme matrix', 'theme cyberpunk', 'theme amber',
+            'theme dracula', 'query_ai', 'future', 'lang', 'clear'
+        ];
+
+        function updateGhostSuggestion() {
+            const val = terminalInput.value;
+            if (!val) {
+                ghostInput.textContent = '';
+                return;
+            }
+            const lower = val.toLowerCase();
+            const match = SUGGESTIONS.find(s => s.startsWith(lower) && s !== lower);
+            ghostInput.textContent = match ? val + match.slice(val.length) : '';
+        }
+
+        terminalInput.addEventListener('input', () => {
+            playKeyTick(1020, 0.008, 0.014);
+            updateGhostSuggestion();
+        });
+
+        async function executeCommand(rawLine) {
             if (isProcessingCommand) {
                 skipCurrentTyping = true;
                 return;
             }
 
-            const command = rawCmd.trim().toLowerCase();
-            if (!command) return;
+            const trimmed = rawLine.trim();
+            if (!trimmed) return;
 
-            commandHistory.push(command);
+            if (htopInterval && trimmed.toLowerCase() !== 'htop') {
+                clearInterval(htopInterval);
+                htopInterval = null;
+            }
+
+            commandHistory.push(trimmed);
             historyIndex = commandHistory.length;
+            ghostInput.textContent = '';
 
             isProcessingCommand = true;
             skipCurrentTyping = false;
             skipHint.classList.add('visible');
 
-            await addLineToTerminal(`${localizedContent[currentLanguage].promptDefault} ${command}`, '#00f3ff', 0);
+            await addLineToTerminal(`╭─ wallacy@neural-node in ${currentDir} on  main\n╰─λ ${trimmed}`, 'var(--neon-primary)', 0);
 
-            if (commands[command]) {
-                await commands[command]();
+            const parts = trimmed.split(/\s+/);
+            const baseCmd = parts[0].toLowerCase();
+            const args = parts.slice(1).join(' ');
+
+            if (commands[baseCmd]) {
+                await commands[baseCmd](args);
             } else {
-                await addLineToTerminal(localizedContent[currentLanguage].cmdNotFound(command), '#ff5f56', 4);
+                await addLineToTerminal(localizedContent[currentLanguage].cmdNotFound(baseCmd), 'var(--neon-err)', 3);
             }
 
             isProcessingCommand = false;
@@ -1327,7 +2032,6 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             terminalInput.focus();
         }
 
-        // Keyboard navigation: Enter, Tab autocomplete, Up/Down history, Ctrl+L clear
         terminalInput.addEventListener('keydown', async (event) => {
             if (event.key === 'Enter') {
                 if (isProcessingCommand) {
@@ -1336,21 +2040,20 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 }
                 const val = terminalInput.value;
                 terminalInput.value = '';
+                ghostInput.textContent = '';
                 await executeCommand(val);
-            } else if (event.key === 'Tab') {
+            } else if (event.key === 'Tab' || (event.key === 'ArrowRight' && terminalInput.selectionStart === terminalInput.value.length && ghostInput.textContent)) {
                 event.preventDefault();
-                const partial = terminalInput.value.trim().toLowerCase();
-                if (!partial) return;
-                const available = Object.keys(commands);
-                const match = available.find(c => c.startsWith(partial));
-                if (match) {
-                    terminalInput.value = match;
+                if (ghostInput.textContent) {
+                    terminalInput.value = ghostInput.textContent;
+                    ghostInput.textContent = '';
                 }
             } else if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 if (commandHistory.length > 0 && historyIndex > 0) {
                     historyIndex--;
                     terminalInput.value = commandHistory[historyIndex];
+                    updateGhostSuggestion();
                 }
             } else if (event.key === 'ArrowDown') {
                 event.preventDefault();
@@ -1361,20 +2064,17 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                     historyIndex = commandHistory.length;
                     terminalInput.value = '';
                 }
+                updateGhostSuggestion();
             } else if (event.ctrlKey && event.key.toLowerCase() === 'l') {
                 event.preventDefault();
                 clearTerminal();
             }
         });
 
-        // Click skip hint to finish typing immediately
         skipHint.addEventListener('click', () => {
-            if (isProcessingCommand) {
-                skipCurrentTyping = true;
-            }
+            if (isProcessingCommand) skipCurrentTyping = true;
         });
 
-        // Quick command chips
         document.querySelectorAll('.cmd-chip').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const cmd = btn.getAttribute('data-cmd');
@@ -1386,7 +2086,6 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             });
         });
 
-        // Header language toggle
         langToggleBtn.addEventListener('click', async () => {
             if (isProcessingCommand) {
                 skipCurrentTyping = true;
@@ -1395,8 +2094,39 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             await executeCommand('lang');
         });
 
+        themeCycleBtn.addEventListener('click', async () => {
+            if (isProcessingCommand) {
+                skipCurrentTyping = true;
+                await new Promise(r => setTimeout(r, 60));
+            }
+            await executeCommand('theme');
+        });
+
+        audioToggleBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            audioToggleBtn.textContent = soundEnabled ? '🔊 SFX: ON' : '🔇 SFX: OFF';
+            if (soundEnabled) playBootBeep();
+        });
+
+        cvBtn.addEventListener('click', async () => {
+            if (isProcessingCommand) {
+                skipCurrentTyping = true;
+                await new Promise(r => setTimeout(r, 60));
+            }
+            await executeCommand('cv');
+        });
+
+        // Live Tmux Clock & Latency Jitter
+        setInterval(() => {
+            const now = new Date();
+            tmuxClock.textContent = now.toTimeString().split(' ')[0];
+            const lat = 9 + Math.floor(Math.random() * 6);
+            tmuxLatency.textContent = `Lat: ${lat}ms`;
+        }, 1000);
+
         async function runBootSequence() {
             clearTerminal();
+            playBootBeep();
             renderAsciiBanner();
             updateUILanguage();
 
@@ -1404,9 +2134,9 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             skipCurrentTyping = false;
             skipHint.classList.add('visible');
 
-            await addLineToTerminal(localizedContent[currentLanguage].neofetch, '#00f3ff', 1);
+            await addLineToTerminal(localizedContent[currentLanguage].neofetch, 'var(--neon-primary)', 1);
             for (const line of localizedContent[currentLanguage].startupMessages) {
-                await addLineToTerminal(line, '#00ff9d', 5);
+                await addLineToTerminal(line, 'var(--neon-secondary)', 4);
             }
 
             isProcessingCommand = false;
@@ -1416,15 +2146,13 @@ This is my commitment: to develop AI solutions that generate real benefits, that
         }
 
         function selectLanguage() {
-            terminalPrompt.style.opacity = '0';
-            terminalInput.disabled = true;
             clearTerminal();
             renderAsciiBanner();
 
             const intro = document.createElement('div');
-            intro.style.color = '#00f3ff';
+            intro.style.color = 'var(--neon-primary)';
             intro.style.marginTop = '8px';
-            intro.textContent = 'SELECT YOUR INTERFACE LANGUAGE // SELECIONE O IDIOMA DA INTERFACE:';
+            intro.textContent = 'SELECT YOUR WORKSTATION LANGUAGE // SELECIONE O IDIOMA DA ESTAÇÃO:';
             terminalOutput.appendChild(intro);
 
             const buttonContainer = document.createElement('div');
@@ -1452,13 +2180,13 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 });
             }).then(() => {
                 buttonContainer.remove();
-                terminalPrompt.style.opacity = '1';
-                terminalInput.disabled = false;
                 updateUILanguage();
             });
         }
 
         window.onload = async () => {
+            updateDirectoryIndicators();
+            tmuxClock.textContent = new Date().toTimeString().split(' ')[0];
             await selectLanguage();
             await runBootSequence();
         };
