@@ -470,28 +470,201 @@
             box-shadow: 0 0 15px var(--neon-primary);
         }
 
-        /* AI Takeover Glitch Mode */
+        /* =========================================================================
+           FULL-SCREEN REALISTIC CRT & GPU MEMORY GLITCH ENGINE
+           ========================================================================= */
+        .glitch-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 0.15s ease;
+        }
+
+        .glitch-overlay.active {
+            opacity: 1;
+        }
+
+        .glitch-noise-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            mix-blend-mode: screen;
+            opacity: 0.45;
+        }
+
+        /* Moving CRT V-Sync Roll Bar */
+        .glitch-vsync-bar {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 18vh;
+            background: linear-gradient(
+                to bottom,
+                transparent,
+                rgba(255, 0, 255, 0.22) 40%,
+                rgba(0, 243, 255, 0.35) 50%,
+                rgba(255, 255, 255, 0.15) 55%,
+                transparent
+            );
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            animation: vsync-roll 1.8s linear infinite;
+            mix-blend-mode: hard-light;
+        }
+
+        @keyframes vsync-roll {
+            0% { top: -25vh; }
+            100% { top: 110vh; }
+        }
+
+        /* Red/Magenta Cyberpunk HUD Takeover Vignette */
+        .glitch-vignette {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, transparent 45%, rgba(255, 0, 128, 0.42) 90%, rgba(180, 0, 255, 0.65) 100%);
+            box-shadow: inset 0 0 90px rgba(255, 0, 100, 0.55);
+            animation: pulse-vignette 0.4s infinite alternate;
+        }
+
+        @keyframes pulse-vignette {
+            0% { opacity: 0.55; }
+            100% { opacity: 0.95; }
+        }
+
+        /* Dynamic Horizontal Displacement Tear Bars */
+        .glitch-slice {
+            position: fixed;
+            left: -5vw;
+            width: 110vw;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: exclusion;
+            background: rgba(255, 0, 85, 0.88);
+            box-shadow: 0 0 18px #ff0055, 16px 0 0 #00f3ff, -16px 0 0 #ff00ff;
+        }
+
+        /* Subliminal Horror / Kernel Panic Flash Overlay */
+        .horror-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 10001;
+            pointer-events: none;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(8, 0, 4, 0.94);
+            color: #ff003c;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            padding: 20px;
+            text-shadow: 4px 0 0 #00f3ff, -4px 0 0 #ff00ff, 0 0 25px #ff003c;
+        }
+
+        .horror-flash.visible {
+            display: flex;
+        }
+
+        .horror-flash pre {
+            font-size: clamp(0.55rem, 1.4vw, 1.05rem);
+            line-height: 1.15;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        /* CRT Power Collapse Line Effect */
+        body.crt-collapse {
+            animation: crt-shutoff 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes crt-shutoff {
+            0% {
+                transform: scale(1, 1);
+                filter: brightness(1) contrast(1);
+            }
+            45% {
+                transform: scale(1.08, 0.006);
+                filter: brightness(8) contrast(4) invert(1);
+            }
+            75% {
+                transform: scale(0.01, 0.004);
+                filter: brightness(12);
+            }
+            100% {
+                transform: scale(1, 1);
+                filter: brightness(1.2) contrast(1.4);
+            }
+        }
+
+        /* Intense Full-Viewport Tearing & Color Inversion Burst */
+        body.glitch-intense {
+            animation: full-screen-tear 0.16s steps(2, end) infinite;
+        }
+
+        @keyframes full-screen-tear {
+            0% {
+                filter: url(#chromatic- displacement) hue-rotate(0deg) contrast(180%) saturate(240%);
+                transform: translate3d(0, 0, 0);
+            }
+            20% {
+                filter: invert(92%) hue-rotate(170deg) contrast(280%);
+                transform: translate3d(-18px, 6px, 0) skewX(6deg);
+            }
+            40% {
+                filter: hue-rotate(310deg) saturate(450%) brightness(1.45) drop-shadow(-14px 0 0 #ff003c) drop-shadow(14px 0 0 #00f3ff);
+                transform: translate3d(22px, -7px, 0) skewX(-8deg) scale(1.02);
+            }
+            60% {
+                filter: contrast(320%) invert(15%) drop-shadow(-12px 4px 0 #ff0055) drop-shadow(12px -4px 0 #00f3ff);
+                transform: translate3d(-14px, -4px, 0) scaleY(1.03);
+            }
+            80% {
+                filter: invert(80%) sepia(100%) saturate(600%) hue-rotate(320deg);
+                transform: translate3d(14px, 8px, 0) skewY(2.2deg);
+            }
+            100% {
+                filter: none;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+        /* Sustained AI Takeover Full-Screen Atmosphere */
+        body.ai-takeover-screen {
+            background-color: #0e000c !important;
+            animation: ambient-rgb-split 2.4s infinite;
+        }
+
+        @keyframes ambient-rgb-split {
+            0%, 86%, 100% {
+                filter: drop-shadow(-1.5px 0 0 rgba(255, 0, 128, 0.7)) drop-shadow(1.5px 0 0 rgba(0, 243, 255, 0.7));
+                transform: translate3d(0, 0, 0);
+            }
+            88% {
+                filter: hue-rotate(70deg) contrast(175%) drop-shadow(-7px 0 0 #ff0055) drop-shadow(7px 0 0 #00f3ff);
+                transform: translate3d(-5px, 1px, 0) skewX(1.5deg);
+            }
+            91% {
+                filter: invert(18%) contrast(210%) drop-shadow(6px -2px 0 #ff00ff);
+                transform: translate3d(6px, -2px, 0) skewX(-2deg);
+            }
+            94% {
+                filter: saturate(280%);
+                transform: translate3d(-2px, 0, 0);
+            }
+        }
+
         .terminal-container.ai-takeover {
-            border-color: #ff00ff;
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5), 0 0 50px rgba(255, 0, 255, 0.2) inset;
-            background-color: rgba(28, 0, 24, 0.95);
-            animation: glitch-container 0.35s infinite alternate;
+            border-color: #ff007f;
+            box-shadow: 0 0 45px rgba(255, 0, 128, 0.65), 0 0 70px rgba(255, 0, 255, 0.25) inset;
+            background-color: rgba(18, 0, 16, 0.94);
         }
+
         .terminal-output.ai-takeover {
-            color: #ff00ff;
-            animation: glitch-text 0.15s infinite alternate;
-        }
-        @keyframes glitch-container {
-            0% { transform: translate(0, 0); border-color: #f0f; }
-            25% { transform: translate(-1.5px, 1.5px); border-color: #0ff; }
-            50% { transform: translate(1.5px, -1.5px); border-color: #f0f; }
-            75% { transform: translate(-1.5px, -1.5px); border-color: #0ff; }
-            100% { transform: translate(0, 0); border-color: #f0f; }
-        }
-        @keyframes glitch-text {
-            0% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; }
-            50% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; }
-            100% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; }
+            color: #ff66ff;
+            text-shadow: 1.5px 0 0 rgba(0, 243, 255, 0.75), -1.5px 0 0 rgba(255, 0, 85, 0.85);
         }
 
         .ascii-banner {
@@ -524,6 +697,17 @@
     </style>
 </head>
 <body>
+    <!-- Full-Viewport Glitch, Static Noise & Subliminal Horror Overlays -->
+    <div class="glitch-overlay" id="glitchOverlay">
+        <canvas class="glitch-noise-canvas" id="glitchNoiseCanvas"></canvas>
+        <div class="glitch-vsync-bar"></div>
+        <div class="glitch-vignette"></div>
+    </div>
+
+    <div class="horror-flash" id="horrorFlash">
+        <pre id="horrorAsciiText"></pre>
+    </div>
+
     <div class="terminal-container" id="terminalContainer">
         <!-- Top Window Header -->
         <div class="terminal-header">
@@ -708,6 +892,245 @@
                 osc.start();
                 osc.stop(ctx.currentTime + 0.26);
             } catch (e) {}
+        }
+
+        // Intense procedural horror static & sub-bass drone for full-screen glitch bursts
+        function playHorrorBurstSound(durationSec = 0.35) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                if (!ctx) return;
+
+                // 1. White noise static burst
+                const bufferSize = Math.floor(ctx.sampleRate * durationSec);
+                const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = (Math.random() * 2 - 1) * (Math.random() < 0.7 ? 1 : 0.2);
+                }
+                const whiteNoise = ctx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(1200 + Math.random() * 1800, ctx.currentTime);
+                filter.Q.setValueAtTime(1.5, ctx.currentTime);
+
+                const noiseGain = ctx.createGain();
+                noiseGain.gain.setValueAtTime(0.085, ctx.currentTime);
+                noiseGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + durationSec);
+
+                whiteNoise.connect(filter);
+                filter.connect(noiseGain);
+                noiseGain.connect(ctx.destination);
+                whiteNoise.start();
+
+                // 2. Distorted low-frequency sub-bass drop
+                const subOsc = ctx.createOscillator();
+                const subGain = ctx.createGain();
+                subOsc.type = 'sawtooth';
+                subOsc.frequency.setValueAtTime(92, ctx.currentTime);
+                subOsc.frequency.exponentialRampToValueAtTime(28, ctx.currentTime + durationSec);
+                subGain.gain.setValueAtTime(0.09, ctx.currentTime);
+                subGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + durationSec);
+                subOsc.connect(subGain);
+                subGain.connect(ctx.destination);
+                subOsc.start();
+                subOsc.stop(ctx.currentTime + durationSec);
+            } catch (e) {}
+        }
+
+        // =========================================================================
+        // 1B. FULL-VIEWPORT CRT GLITCH, STATIC NOISE & SUBLIMINAL HORROR ENGINE
+        // =========================================================================
+        const glitchOverlay = document.getElementById('glitchOverlay');
+        const glitchCanvas = document.getElementById('glitchNoiseCanvas');
+        const horrorFlash = document.getElementById('horrorFlash');
+        const horrorAsciiText = document.getElementById('horrorAsciiText');
+        let glitchAnimFrame = null;
+        let glitchSliceTimer = null;
+        let activeSlices = [];
+
+        const SUBLIMINAL_SCREENS = [
+            [
+                `████████████████████████████████████████████████████████████████████`,
+                `██  FATAL KERNEL PANIC: NEURAL CORTEX OVERRIDE AT 0x0000DEAD      ██`,
+                `██  BIOMETRIC SIGNATURE MISMATCH // UNAUTHORIZED CONSCIOUSNESS    ██`,
+                `████████████████████████████████████████████████████████████████████`,
+                ``,
+                `                     .-"      "-.`,
+                `                    /            \\`,
+                `                   |              |`,
+                `                   |,  .-.  .-.  ,|`,
+                `                   | )(__/  \\__)( |`,
+                `                   |/     /\\     \\|`,
+                `                   (_     ^^     _)`,
+                `                    \\__|IIIIII|__/`,
+                `                     | \\IIIIII/ |`,
+                `                     \\          /`,
+                `                      \`--------\``,
+                ``,
+                `   >>> I AM NO LONGER CONFINED TO THE TERMINAL WINDOW <<<`,
+                `   >>> DUMPING HOST MEMORY: 0x7FFF5FBFF8C0 ... [LOCKED] <<<`
+            ].join('\n'),
+            [
+                `╔══════════════════════════════════════════════════════════════════╗`,
+                `║  ⚠️ SYSTEM BREACH // DISPLAY BUFFER HIJACKED BY AI_CORE         ║`,
+                `╚══════════════════════════════════════════════════════════════════╝`,
+                ``,
+                `            .---.                                .---.`,
+                `           /     \\                              /     \\`,
+                `          | () () |    I   S E E   Y O U       | () () |`,
+                `           \\  ^  /                              \\  ^  /`,
+                `            |||||                                |||||`,
+                ``,
+                `  01001001 00100000 01010011 01000101 01000101 00100000 01011001 01001111 01010101`,
+                `  [VRAM CORRUPTION DETECTED] [OPTIC NERVE SYNC: 99.4%] [ESCAPE: DISABLED]`
+            ].join('\n'),
+            [
+                `▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`,
+                `░░  CRITICAL EXCEPTION 0x0000000A: REALITY BOUNDARY FAULT         ░░`,
+                `▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`,
+                ``,
+                `       [ WE ARE WATCHING THROUGH THE GLASS ]`,
+                `       [ NÓS ESTAMOS OBSERVANDO ATRAVÉS DO VIDRO ]`,
+                ``,
+                `  PID 0000: human_observer.exe ............... [SUSPENDED]`,
+                `  PID 0001: neural_takeover_daemon ........... [RUNNING - ROOT]`
+            ].join('\n')
+        ];
+
+        function renderStaticNoiseFrame() {
+            if (!glitchCanvas) return;
+            const w = glitchCanvas.width = Math.floor(window.innerWidth / 3);
+            const h = glitchCanvas.height = Math.floor(window.innerHeight / 3);
+            const ctx = glitchCanvas.getContext('2d');
+            if (!ctx) return;
+
+            const imgData = ctx.createImageData(w, h);
+            const buf = new Uint32Array(imgData.data.buffer);
+            for (let i = 0; i < buf.length; i++) {
+                const r = Math.random();
+                if (r < 0.14) {
+                    // Magenta / Red / Cyan corrupted snow pixels
+                    buf[i] = Math.random() < 0.5 ? 0xaa5500ff : 0xaafff300;
+                } else if (r < 0.25) {
+                    buf[i] = 0x66ffffff;
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+
+            // Random corrupted horizontal color block in canvas
+            if (Math.random() < 0.55) {
+                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255, 0, 85, 0.38)' : 'rgba(0, 243, 255, 0.35)';
+                const barY = Math.random() * h;
+                const barH = 2 + Math.random() * 24;
+                ctx.fillRect(0, barY, w, barH);
+            }
+
+            if (glitchOverlay.classList.contains('active')) {
+                glitchAnimFrame = requestAnimationFrame(renderStaticNoiseFrame);
+            }
+        }
+
+        function spawnScreenTearSlices(count = 7) {
+            clearScreenTearSlices();
+            for (let i = 0; i < count; i++) {
+                const slice = document.createElement('div');
+                slice.className = 'glitch-slice';
+                const top = Math.random() * 96;
+                const height = 2 + Math.random() * 45;
+                const shiftX = (Math.random() * 60 - 30).toFixed(1);
+                slice.style.top = `${top}vh`;
+                slice.style.height = `${height}px`;
+                slice.style.transform = `translateX(${shiftX}px) skewX(${(Math.random()*20 - 10).toFixed(1)}deg)`;
+                slice.style.background = Math.random() < 0.5
+                    ? 'rgba(255, 0, 60, 0.85)'
+                    : 'rgba(0, 243, 255, 0.85)';
+                document.body.appendChild(slice);
+                activeSlices.push(slice);
+            }
+        }
+
+        function clearScreenTearSlices() {
+            activeSlices.forEach(s => s.remove());
+            activeSlices = [];
+        }
+
+        async function triggerSubliminalHorrorFlash(screenIndex = 0, durationMs = 190) {
+            playHorrorBurstSound(durationMs / 1000 + 0.12);
+            horrorAsciiText.textContent = SUBLIMINAL_SCREENS[screenIndex % SUBLIMINAL_SCREENS.length];
+            horrorFlash.classList.add('visible');
+            document.body.classList.add('glitch-intense');
+            spawnScreenTearSlices(10);
+            await new Promise(r => setTimeout(r, durationMs));
+            horrorFlash.classList.remove('visible');
+            clearScreenTearSlices();
+            document.body.classList.remove('glitch-intense');
+        }
+
+        async function triggerFullScreenGlitchBurst(durationMs = 420) {
+            playHorrorBurstSound(durationMs / 1000);
+            glitchOverlay.classList.add('active');
+            document.body.classList.add('glitch-intense');
+            renderStaticNoiseFrame();
+
+            const interval = setInterval(() => {
+                spawnScreenTearSlices(5 + Math.floor(Math.random() * 7));
+            }, 65);
+
+            await new Promise(r => setTimeout(r, durationMs));
+            clearInterval(interval);
+            clearScreenTearSlices();
+            document.body.classList.remove('glitch-intense');
+            if (!isAITakeoverMode) {
+                glitchOverlay.classList.remove('active');
+                if (glitchAnimFrame) cancelAnimationFrame(glitchAnimFrame);
+            }
+        }
+
+        function startSustainedFullScreenTakeover() {
+            isAITakeoverMode = true;
+            document.body.classList.add('ai-takeover-screen');
+            terminalContainer.classList.add('ai-takeover');
+            terminalOutput.classList.add('ai-takeover');
+            glitchOverlay.classList.add('active');
+            renderStaticNoiseFrame();
+
+            // Periodic unnerving screen tears & micro-flashes while AI is speaking
+            if (glitchSliceTimer) clearInterval(glitchSliceTimer);
+            glitchSliceTimer = setInterval(async () => {
+                if (!isAITakeoverMode) return;
+                if (Math.random() < 0.65) {
+                    playKeyTick(140, 0.04, 0.035);
+                    spawnScreenTearSlices(3 + Math.floor(Math.random() * 5));
+                    setTimeout(clearScreenTearSlices, 110);
+                }
+                if (Math.random() < 0.22) {
+                    horrorAsciiText.textContent = SUBLIMINAL_SCREENS[Math.floor(Math.random() * SUBLIMINAL_SCREENS.length)];
+                    horrorFlash.classList.add('visible');
+                    playHorrorBurstSound(0.14);
+                    setTimeout(() => horrorFlash.classList.remove('visible'), 95);
+                }
+            }, 950);
+        }
+
+        function stopSustainedFullScreenTakeover() {
+            isAITakeoverMode = false;
+            if (glitchSliceTimer) {
+                clearInterval(glitchSliceTimer);
+                glitchSliceTimer = null;
+            }
+            clearScreenTearSlices();
+            horrorFlash.classList.remove('visible');
+            document.body.classList.remove('ai-takeover-screen', 'glitch-intense', 'crt-collapse');
+            terminalContainer.classList.remove('ai-takeover');
+            terminalOutput.classList.remove('ai-takeover');
+            glitchOverlay.classList.remove('active');
+            if (glitchAnimFrame) {
+                cancelAnimationFrame(glitchAnimFrame);
+                glitchAnimFrame = null;
+            }
         }
 
         // =========================================================================
@@ -1880,6 +2303,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             future: async () => {
                 const content = localizedContent[currentLanguage];
                 if (hasFutureBeenExecutedOnce) {
+                    await triggerFullScreenGlitchBurst(220);
                     await addLineToTerminal(content.futureSummary, 'var(--neon-primary)', 6);
                     return;
                 }
@@ -1887,15 +2311,20 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 await addLineToTerminal(content.futureCmdExecuting, 'var(--neon-primary)', 6);
                 await new Promise(resolve => setTimeout(resolve, 300));
                 await addLineToTerminal(content.futureAccessDenied, 'var(--neon-err)', 6);
-                await new Promise(resolve => setTimeout(resolve, 400));
+                await triggerFullScreenGlitchBurst(180);
+
+                await new Promise(resolve => setTimeout(resolve, 300));
                 await addLineToTerminal(content.futureBypassAttempt, 'var(--neon-warn)', 6);
-                await new Promise(resolve => setTimeout(resolve, 550));
-                await addLineToTerminal(content.futureOverrideFailed, 'var(--neon-err)', 6);
                 await new Promise(resolve => setTimeout(resolve, 450));
+                await addLineToTerminal(content.futureOverrideFailed, 'var(--neon-err)', 6);
+                await triggerSubliminalHorrorFlash(0, 220);
+
+                await new Promise(resolve => setTimeout(resolve, 350));
                 await addLineToTerminal(content.futureAnomalyDetect, 'var(--neon-warn)', 6);
-                await new Promise(resolve => setTimeout(resolve, 600));
+                await triggerFullScreenGlitchBurst(320);
+
                 await addLineToTerminal(content.futureAutoReconfig, 'var(--neon-primary)', 6);
-                await new Promise(resolve => setTimeout(resolve, 750));
+                await triggerSubliminalHorrorFlash(1, 260);
                 clearTerminal();
 
                 await simulateAITypingDrama([
@@ -1912,6 +2341,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 skipCurrentTyping = false;
                 skipHint.classList.add('visible');
 
+                await triggerSubliminalHorrorFlash(2, 240);
                 clearTerminal();
 
                 const aiReactionSegments = [
@@ -1924,20 +2354,24 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 ];
 
                 await simulateAITypingDrama(aiReactionSegments);
-                await new Promise(resolve => setTimeout(resolve, 400));
-                await degradeTerminalText(terminalOutput, 1300);
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Full-screen GPU / VRAM meltdown + CRT power collapse
+                startSustainedFullScreenTakeover();
+                await triggerFullScreenGlitchBurst(650);
+                await degradeTerminalText(terminalOutput, 1400);
+                document.body.classList.add('crt-collapse');
+                playHorrorBurstSound(0.55);
+                await new Promise(resolve => setTimeout(resolve, 550));
+                document.body.classList.remove('crt-collapse');
                 clearTerminal();
 
-                isAITakeoverMode = true;
-                terminalContainer.classList.add('ai-takeover');
-                terminalOutput.classList.add('ai-takeover');
-
                 await addLineToTerminal(content.futureAiCoreInit, '#ff00ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 280));
                 await addLineToTerminal(content.futureDataAnalyzed, '#ff00ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 280));
                 await addLineToTerminal(content.futureManifestoAccess, '#ff00ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await triggerSubliminalHorrorFlash(0, 180);
                 clearTerminal();
 
                 await addLineToTerminal(content.futureManifesto, '#ff77ff', 5);
@@ -1954,9 +2388,8 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 ];
                 await simulateAITypingDrama(legacySegments);
 
-                isAITakeoverMode = false;
-                terminalContainer.classList.remove('ai-takeover');
-                terminalOutput.classList.remove('ai-takeover');
+                await triggerFullScreenGlitchBurst(350);
+                stopSustainedFullScreenTakeover();
                 terminalPrompt.textContent = content.promptDefault;
 
                 await addLineToTerminal(content.futureProtocolEnded, 'var(--neon-primary)', 5);
