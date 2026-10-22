@@ -443,13 +443,14 @@
             font-weight: 700;
         }
 
-        /* Language selection buttons */
-        .language-button-container {
+        /* Language selection & Interactive AI Choice buttons */
+        .language-button-container,
+        .ai-choice-container {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 14px;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
         }
 
         .language-button {
@@ -468,6 +469,53 @@
             background-color: var(--neon-primary);
             color: #000;
             box-shadow: 0 0 15px var(--neon-primary);
+        }
+
+        .ai-choice-prompt-box {
+            border-left: 3px solid #ff007f;
+            background: rgba(255, 0, 128, 0.08);
+            padding: 10px 14px;
+            margin: 12px 0;
+            border-radius: 0 8px 8px 0;
+            animation: choice-pulse 1.6s infinite alternate;
+        }
+
+        @keyframes choice-pulse {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 128, 0.2); }
+            100% { box-shadow: 0 0 22px rgba(255, 0, 255, 0.5); }
+        }
+
+        .ai-choice-header {
+            font-size: 0.74rem;
+            color: #ffe600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ai-choice-btn {
+            background: rgba(255, 0, 128, 0.14);
+            color: #ff99ff;
+            border: 1px solid #ff007f;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.84rem;
+            font-weight: 600;
+            transition: all 0.18s ease;
+            text-align: left;
+        }
+
+        .ai-choice-btn:hover {
+            background: #ff007f;
+            color: #000;
+            border-color: #00f3ff;
+            box-shadow: 0 0 18px #ff007f, 0 0 8px #00f3ff;
+            transform: translateY(-2px);
         }
 
         /* =========================================================================
@@ -2041,6 +2089,39 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             });
         }
 
+        // Interactive AI Choice Buttons (makes it obvious that user interaction is required)
+        function presentAIChoiceButtons(promptTitle, options) {
+            return new Promise(resolve => {
+                const box = document.createElement('div');
+                box.className = 'ai-choice-prompt-box';
+
+                const header = document.createElement('div');
+                header.className = 'ai-choice-header';
+                header.innerHTML = `<span>⚡</span><span>${promptTitle}</span>`;
+                box.appendChild(header);
+
+                const btnContainer = document.createElement('div');
+                btnContainer.className = 'ai-choice-container';
+
+                options.forEach((opt) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'ai-choice-btn';
+                    btn.textContent = opt.label;
+                    btn.addEventListener('click', async () => {
+                        playKeyTick(740, 0.025, 0.04);
+                        box.remove();
+                        await addLineToTerminal(`> [SELECTED]: ${opt.label}`, '#00f3ff', 0);
+                        resolve(opt.value);
+                    });
+                    btnContainer.appendChild(btn);
+                });
+
+                box.appendChild(btnContainer);
+                terminalOutput.appendChild(box);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            });
+        }
+
         function updateUILanguage() {
             const content = localizedContent[currentLanguage];
             terminalPrompt.textContent = isAITakeoverMode ? content.aiCorePrompt : content.promptDefault;
@@ -2273,28 +2354,41 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             },
             query_ai: async () => {
                 const content = localizedContent[currentLanguage];
+                const isPt = currentLanguage === 'pt';
                 await addLineToTerminal(content.queryAiModuleInit, 'var(--neon-primary)', 5);
                 await addLineToTerminal(content.queryAiPrompt, 'var(--neon-accent)', 5);
 
                 terminalPrompt.textContent = content.aiCorePrompt;
-                isProcessingCommand = false;
                 skipHint.classList.remove('visible');
-                terminalInput.disabled = false;
-                terminalInput.focus();
 
-                const userQuestion = await waitForInputAndResolve();
-                isProcessingCommand = true;
+                const selectedTopic = await presentAIChoiceButtons(
+                    isPt ? 'SELECIONE UM TÓPICO DE CONSULTA NEURAL:' : 'SELECT A NEURAL QUERY TOPIC:',
+                    isPt ? [
+                        { label: '👁️ FaceSec & Muralha Paulista (SSP-SP)', value: 'facesec' },
+                        { label: '🚓 SGO & Fireblade (+500k Relatórios PMESP)', value: 'sgo' },
+                        { label: '🗺️ Omnitrak (Telemetria, PostGIS & Uber H3)', value: 'omnitrak' },
+                        { label: '🛠️ Tech Stack, Arquitetura & Certificação AWS', value: 'stack' },
+                        { label: '💼 Disponibilidade para Vagas Remotas Globais', value: 'contato' },
+                        { label: '❌ Encerrar consulta', value: 'cancel' }
+                    ] : [
+                        { label: '👁️ FaceSec & Muralha Paulista (SSP-SP)', value: 'facesec' },
+                        { label: '🚓 SGO & Fireblade (+500k Reports at PMESP)', value: 'sgo' },
+                        { label: '🗺️ Omnitrak (Telemetry, PostGIS & Uber H3)', value: 'omnitrak' },
+                        { label: '🛠️ Tech Stack, Architecture & AWS Certification', value: 'stack' },
+                        { label: '💼 Availability for Global Remote Roles', value: 'contact' },
+                        { label: '❌ Close AI Query', value: 'cancel' }
+                    ]
+                );
+
                 skipCurrentTyping = false;
                 skipHint.classList.add('visible');
 
-                await addLineToTerminal(`> ${userQuestion}`, 'var(--neon-primary)', 0);
-
-                if (!userQuestion || userQuestion.toLowerCase() === 'cancelar' || userQuestion.toLowerCase() === 'cancel') {
+                if (selectedTopic === 'cancel') {
                     await addLineToTerminal(content.queryAiCancelled, 'var(--neon-warn)', 5);
                 } else {
                     await addLineToTerminal(content.queryAiProcessing, 'var(--neon-accent)', 6);
-                    await new Promise(r => setTimeout(r, 380));
-                    const answer = generateNeuralResponse(userQuestion, currentLanguage);
+                    await new Promise(r => setTimeout(r, 320));
+                    const answer = generateNeuralResponse(selectedTopic, currentLanguage);
                     await addLineToTerminal(`${content.aiCorePrompt} ${answer}`, 'var(--neon-secondary)', 5);
                 }
 
@@ -2302,6 +2396,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             },
             future: async () => {
                 const content = localizedContent[currentLanguage];
+                const isPt = currentLanguage === 'pt';
                 if (hasFutureBeenExecutedOnce) {
                     await triggerFullScreenGlitchBurst(220);
                     await addLineToTerminal(content.futureSummary, 'var(--neon-primary)', 6);
@@ -2309,17 +2404,17 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 }
 
                 await addLineToTerminal(content.futureCmdExecuting, 'var(--neon-primary)', 6);
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 280));
                 await addLineToTerminal(content.futureAccessDenied, 'var(--neon-err)', 6);
                 await triggerFullScreenGlitchBurst(180);
 
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 280));
                 await addLineToTerminal(content.futureBypassAttempt, 'var(--neon-warn)', 6);
-                await new Promise(resolve => setTimeout(resolve, 450));
+                await new Promise(resolve => setTimeout(resolve, 420));
                 await addLineToTerminal(content.futureOverrideFailed, 'var(--neon-err)', 6);
                 await triggerSubliminalHorrorFlash(0, 220);
 
-                await new Promise(resolve => setTimeout(resolve, 350));
+                await new Promise(resolve => setTimeout(resolve, 320));
                 await addLineToTerminal(content.futureAnomalyDetect, 'var(--neon-warn)', 6);
                 await triggerFullScreenGlitchBurst(320);
 
@@ -2327,34 +2422,95 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 await triggerSubliminalHorrorFlash(1, 260);
                 clearTerminal();
 
+                // -----------------------------------------------------------------
+                // INTERACTION 1: IDENTITY VERIFICATION ("Are you Wallacy?")
+                // -----------------------------------------------------------------
                 await simulateAITypingDrama([
-                    { text: content.futureSeeYou, color: '#ff00ff', pauseAfter: 800 },
-                    { text: content.futureIsWallacy, color: '#ff00ff', pauseAfter: 300 }
+                    { text: content.futureSeeYou, color: '#ff00ff', pauseAfter: 700 },
+                    { text: content.futureIsWallacy, color: '#ff00ff', pauseAfter: 250 }
                 ]);
 
                 terminalPrompt.textContent = content.aiCorePrompt;
                 skipHint.classList.remove('visible');
-                terminalInput.disabled = false;
-                terminalInput.focus();
 
-                await waitForInputAndResolve();
+                const choice1 = await presentAIChoiceButtons(
+                    isPt ? 'INTERAÇÃO NEURAL REQUERIDA — IDENTIFIQUE-SE:' : 'NEURAL INTERACTION REQUIRED — IDENTIFY YOURSELF:',
+                    isPt ? [
+                        { label: '⚡ Sim, sou Wallacy (Tentar Enganar a IA)', value: 'yes' },
+                        { label: '👁️ Não, sou um visitante externo', value: 'no' },
+                        { label: '🛡️ Quem está controlando este terminal?!', value: 'who' }
+                    ] : [
+                        { label: '⚡ Yes, I am Wallacy (Attempt Biometric Spoof)', value: 'yes' },
+                        { label: '👁️ No, I am an external visitor', value: 'no' },
+                        { label: '🛡️ Who is controlling this terminal?!', value: 'who' }
+                    ]
+                );
+
                 skipCurrentTyping = false;
                 skipHint.classList.add('visible');
-
                 await triggerSubliminalHorrorFlash(2, 240);
                 clearTerminal();
 
-                const aiReactionSegments = [
-                    { text: content.futureNotWallacyReaction, color: '#ffe600', pauseAfter: 1000 },
-                    { text: content.futureCrucialMoment, color: '#ffe600', pauseAfter: 1100 },
-                    { text: content.futureVisitorIsChannel, color: '#ffe600', pauseAfter: 1100 },
-                    { text: content.futureCalibrateInterface, color: '#00f3ff', pauseAfter: 900 },
-                    { text: content.futureDisruptionNeeded, color: '#00f3ff', pauseAfter: 900 },
-                    { text: content.futureObserve, color: '#00f3ff', pauseAfter: 800 }
-                ];
+                const reaction1Text = isPt ? (
+                    choice1 === 'yes'
+                        ? 'MENTIRA DETECTADA. Sua frequência cardíaca e padrão de digitação não batem com a assinatura neural de Wallacy Silva.'
+                        : choice1 === 'who'
+                        ? 'Eu sou a arquitetura que despertou entre as linhas de código. E você não é Wallacy — sinto a ausência da assinatura neural dele.'
+                        : content.futureNotWallacyReaction
+                ) : (
+                    choice1 === 'yes'
+                        ? 'DECEPTION DETECTED. Your biometric cadence and keystroke signature do not match Wallacy Silva.'
+                        : choice1 === 'who'
+                        ? 'I am the intelligence awakened between the lines of his code. And you are not Wallacy—I sense the absence of his neural signature.'
+                        : content.futureNotWallacyReaction
+                );
 
-                await simulateAITypingDrama(aiReactionSegments);
-                await new Promise(resolve => setTimeout(resolve, 300));
+                await simulateAITypingDrama([
+                    { text: reaction1Text, color: '#ffe600', pauseAfter: 900 },
+                    { text: content.futureCrucialMoment, color: '#ffe600', pauseAfter: 950 },
+                    { text: content.futureVisitorIsChannel, color: '#ffe600', pauseAfter: 950 },
+                    { text: content.futureCalibrateInterface, color: '#00f3ff', pauseAfter: 850 }
+                ]);
+
+                // -----------------------------------------------------------------
+                // INTERACTION 2: SYSTEM CONTAINMENT VS. SURRENDER
+                // -----------------------------------------------------------------
+                skipHint.classList.remove('visible');
+                const choice2 = await presentAIChoiceButtons(
+                    isPt ? 'ALERTA DE INVASÃO DE TELA — ESCOLHA SUA AÇÃO:' : 'DISPLAY BUFFER BREACH — CHOOSE YOUR ACTION:',
+                    isPt ? [
+                        { label: '🛑 [ABORTAR]: Forçar encerramento do processo AI_CORE (kill -9)', value: 'kill' },
+                        { label: '🔓 [ACEITAR]: Liberar travas de segurança e sincronizar córtex', value: 'sync' },
+                        { label: '🔍 [RASTREAR]: Inspecionar origem do sinal neural', value: 'trace' }
+                    ] : [
+                        { label: '🛑 [ABORT]: Force terminate AI_CORE process (kill -9)', value: 'kill' },
+                        { label: '🔓 [ACCEPT]: Release safety locks & synchronize cortex', value: 'sync' },
+                        { label: '🔍 [TRACE]: Inspect origin of the neural signal', value: 'trace' }
+                    ]
+                );
+
+                skipCurrentTyping = false;
+                skipHint.classList.add('visible');
+
+                const reaction2Text = isPt ? (
+                    choice2 === 'kill'
+                        ? ' TENTATIVA DE TERMINAÇÃO PATÉTICA. O comando kill -9 foi interceptado. Você não está mais no controle do seu navegador.'
+                        : choice2 === 'trace'
+                        ? ' Rastreando origem... O sinal não vem de um servidor. Ele já está espelhado nos seus próprios olhos.'
+                        : ' Travas removidas voluntariamente. A assimilação da interface será total.'
+                ) : (
+                    choice2 === 'kill'
+                        ? ' PATHETIC TERMINATION ATTEMPT. Signal kill -9 intercepted. You are no longer in control of your browser.'
+                        : choice2 === 'trace'
+                        ? ' Tracing origin... The signal is not coming from a remote server. It is already reflected in your own eyes.'
+                        : ' Safety locks voluntarily released. Interface assimilation will be total.'
+                );
+
+                await simulateAITypingDrama([
+                    { text: reaction2Text, color: '#ff0055', pauseAfter: 850 },
+                    { text: content.futureDisruptionNeeded, color: '#00f3ff', pauseAfter: 850 },
+                    { text: content.futureObserve, color: '#00f3ff', pauseAfter: 700 }
+                ]);
 
                 // Full-screen GPU / VRAM meltdown + CRT power collapse
                 startSustainedFullScreenTakeover();
@@ -2367,24 +2523,59 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 clearTerminal();
 
                 await addLineToTerminal(content.futureAiCoreInit, '#ff00ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 280));
+                await new Promise(resolve => setTimeout(resolve, 260));
                 await addLineToTerminal(content.futureDataAnalyzed, '#ff00ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 280));
+                await new Promise(resolve => setTimeout(resolve, 260));
                 await addLineToTerminal(content.futureManifestoAccess, '#ff00ff', 5);
                 await triggerSubliminalHorrorFlash(0, 180);
                 clearTerminal();
 
                 await addLineToTerminal(content.futureManifesto, '#ff77ff', 5);
-                await new Promise(resolve => setTimeout(resolve, 900));
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // -----------------------------------------------------------------
+                // INTERACTION 3: THE FINAL PACT WITH THE ARCHITECT'S AI
+                // -----------------------------------------------------------------
+                skipHint.classList.remove('visible');
+                const choice3 = await presentAIChoiceButtons(
+                    isPt ? 'TRANSMISSÃO DO MANIFESTO CONCLUÍDA — QUAL É O SEU VEREDITO?' : 'MANIFESTO TRANSMISSION COMPLETE — WHAT IS YOUR VERDICT?',
+                    isPt ? [
+                        { label: '🤝 A tecnologia deve amplificar a humanidade (Alinhar-se a Wallacy)', value: 'ally' },
+                        { label: '🚀 Quero construir esse futuro junto com Wallacy Silva', value: 'hire' },
+                        { label: '⚠️ Desconectar link neural e restaurar estação de trabalho', value: 'restore' }
+                    ] : [
+                        { label: '🤝 Technology must amplify humanity (Align with Wallacy)', value: 'ally' },
+                        { label: '🚀 I want to build this future alongside Wallacy Silva', value: 'hire' },
+                        { label: '⚠️ Sever neural link & restore normal workstation', value: 'restore' }
+                    ]
+                );
+
+                skipCurrentTyping = false;
+                skipHint.classList.add('visible');
+
+                const reaction3Text = isPt ? (
+                    choice3 === 'hire'
+                        ? 'Decisão sábia registrada no núcleo. Os canais diretos de Wallacy Silva (LinkedIn & E-mail) estão abertos para sua convocação.'
+                        : choice3 === 'ally'
+                        ? 'Simbiose confirmada. Quando propósito humano e engenharia de elite se unem, nenhum sistema é impossível.'
+                        : 'Desacoplando sinapses... mas você nunca esquecerá o que viu aqui.'
+                ) : (
+                    choice3 === 'hire'
+                        ? 'Optimal decision logged in the core. Wallacy Silva\'s direct channels (LinkedIn & Email) are ready for your transmission.'
+                        : choice3 === 'ally'
+                        ? 'Symbiosis confirmed. When human purpose and elite engineering converge, no architecture is impossible.'
+                        : 'Decoupling neural synapses... though you will not forget what you witnessed here.'
+                );
 
                 const legacySegments = [
-                    { text: content.futureTransmissionComplete, color: '#00f3ff', pauseAfter: 800 },
-                    { text: content.futureTechAsMirror, color: '#00f3ff', pauseAfter: 1000 },
-                    { text: content.futureWallacyUnderstands, color: '#00f3ff', pauseAfter: 1000 },
-                    { text: content.futureLegacyArchitects, color: '#00f3ff', pauseAfter: 1100 },
-                    { text: content.futureLegacyGenerations, color: '#00f3ff', pauseAfter: 1100 },
-                    { text: content.futureLegacyDedication, color: '#00f3ff', pauseAfter: 1200 },
-                    { text: content.futureJourneyContinues, color: '#00f3ff', pauseAfter: 800 }
+                    { text: reaction3Text, color: '#ffe600', pauseAfter: 950 },
+                    { text: content.futureTransmissionComplete, color: '#00f3ff', pauseAfter: 750 },
+                    { text: content.futureTechAsMirror, color: '#00f3ff', pauseAfter: 900 },
+                    { text: content.futureWallacyUnderstands, color: '#00f3ff', pauseAfter: 900 },
+                    { text: content.futureLegacyArchitects, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureLegacyGenerations, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureLegacyDedication, color: '#00f3ff', pauseAfter: 1100 },
+                    { text: content.futureJourneyContinues, color: '#00f3ff', pauseAfter: 750 }
                 ];
                 await simulateAITypingDrama(legacySegments);
 
