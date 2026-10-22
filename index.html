@@ -3,379 +3,670 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Currículo e Portfólio de Wallacy Rodrigo da Silva">
-    <title>Olá, eu sou Wallacy Silva</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Wallacy Silva — Senior Full-Stack & AI Engineer | Solutions Architect | Tech Lead. Interactive Cyberpunk Terminal Portfolio.">
+    <title>WALLACY.OS // Neural Terminal Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-green: #00ff9d;
+            --neon-magenta: #ff00ff;
+            --neon-yellow: #ffe600;
+            --bg-dark: #06080e;
+            --terminal-bg: rgba(10, 15, 24, 0.94);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #0ff;
-            overflow-x: hidden; /* Garante que não haja rolagem horizontal na página */
+            padding: 12px;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.12), transparent 60%),
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 28px 28px, 28px 28px;
+            color: var(--neon-cyan);
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            align-items: center; /* Centraliza o conteúdo horizontalmente */
-            justify-content: center; /* Centraliza o conteúdo verticalmente */
+            height: 100vh;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Novos estilos para o terminal */
+        /* Subtle CRT scanline overlay */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.14),
+                rgba(0, 0, 0, 0.14) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 50;
+        }
+
         .terminal-container {
-            background-color: #111; /* Fundo mais escuro para o terminal */
-            border: 1px solid #0ff;
-            box-shadow: 0 0 15px #0ff, 0 0 30px #0ff inset; /* Efeito de brilho mais forte */
-            border-radius: 10px;
-            padding: 20px;
-            width: 90%; /* Ocupa mais largura */
-            max-width: 900px;
-            height: 100vh; /* Ocupa 100% da altura da viewport */
+            background-color: var(--terminal-bg);
+            border: 1px solid rgba(0, 243, 255, 0.65);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.25), 0 0 40px rgba(0, 243, 255, 0.08) inset;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 1024px;
+            height: calc(100vh - 24px);
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
-            transition: all 0.5s ease-in-out; /* Transição suave para mudanças de estilo */
+            overflow: hidden;
+            transition: all 0.4s ease-in-out;
+            backdrop-filter: blur(10px);
+            position: relative;
         }
 
+        /* Terminal Window Header */
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(0, 243, 255, 0.07);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.25);
+            user-select: none;
+            flex-shrink: 0;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .window-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .win-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .win-dot.red { background-color: #ff5f56; box-shadow: 0 0 6px #ff5f56; }
+        .win-dot.yellow { background-color: #ffbd2e; box-shadow: 0 0 6px #ffbd2e; }
+        .win-dot.green { background-color: #27c93f; box-shadow: 0 0 6px #27c93f; }
+
+        .terminal-title {
+            font-size: 0.82rem;
+            color: rgba(0, 243, 255, 0.85);
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: rgba(0, 255, 157, 0.12);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 157, 0.35);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            animation: pulse-dot 1.5s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-btn {
+            background: rgba(0, 243, 255, 0.08);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.35);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .header-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+        }
+
+        /* Terminal Main Output */
         .terminal-output {
-            flex-grow: 1; /* Permite que a saída ocupe o espaço restante */
-            overflow-y: auto; /* Rolagem vertical apenas dentro desta área */
+            flex-grow: 1;
+            overflow-y: auto;
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: #0f0;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #055;
-            margin-bottom: 10px;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            transition: color 0.5s ease-in-out; /* Transição suave para mudança de cor */
-
-            /* Estilo da barra de rolagem para Webkit (Chrome, Safari) */
-            &::-webkit-scrollbar {
-                width: 8px;
-            }
-
-            &::-webkit-scrollbar-track {
-                background: #000;
-                border-radius: 10px;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background: #0ff;
-                border-radius: 10px;
-                border: 1px solid #055;
-            }
-
-            &::-webkit-scrollbar-thumb:hover {
-                background: #ff0;
-            }
-
-            /* Estilo da barra de rolagem para Firefox */
+            color: var(--neon-green);
+            padding: 18px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.94rem;
+            line-height: 1.55;
+            transition: color 0.4s ease-in-out;
             scrollbar-width: thin;
-            scrollbar-color: #0ff #000;
+            scrollbar-color: var(--neon-cyan) #05070b;
         }
 
+        .terminal-output::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        .terminal-output::-webkit-scrollbar-track {
+            background: #05070b;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb {
+            background: rgba(0, 243, 255, 0.6);
+            border-radius: 8px;
+        }
+
+        .terminal-output::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-cyan);
+        }
+
+        .terminal-link {
+            color: var(--neon-cyan);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.2s, text-shadow 0.2s;
+        }
+
+        .terminal-link:hover {
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px var(--neon-yellow);
+        }
+
+        /* Quick Command Bar (Recruiter & Mobile Friendly) */
+        .quick-commands-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(0, 243, 255, 0.04);
+            border-top: 1px dashed rgba(0, 243, 255, 0.2);
+            border-bottom: 1px solid rgba(0, 243, 255, 0.15);
+            overflow-x: auto;
+            flex-shrink: 0;
+            scrollbar-width: none;
+        }
+
+        .quick-commands-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-label {
+            font-size: 0.72rem;
+            color: rgba(0, 243, 255, 0.6);
+            white-space: nowrap;
+            margin-right: 4px;
+        }
+
+        .cmd-chip {
+            background: rgba(0, 243, 255, 0.08);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .cmd-chip:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .cmd-chip.special {
+            border-color: rgba(255, 0, 255, 0.55);
+            color: #ff77ff;
+            background: rgba(255, 0, 255, 0.1);
+        }
+
+        .cmd-chip.special:hover {
+            background: var(--neon-magenta);
+            color: #000;
+            box-shadow: 0 0 10px var(--neon-magenta);
+        }
+
+        /* Input Area */
         .terminal-input-area {
             display: flex;
             align-items: center;
-            padding-top: 10px;
+            padding: 10px 16px;
+            background: rgba(5, 8, 14, 0.9);
+            flex-shrink: 0;
+            gap: 8px;
         }
 
         .terminal-prompt {
-            color: #0ff;
-            font-weight: bold;
-            margin-right: 5px;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            transition: color 0.5s ease-in-out; /* Transição suave para mudança de cor */
+            color: var(--neon-cyan);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            transition: color 0.4s ease-in-out;
         }
 
         .terminal-input {
             flex-grow: 1;
-            background-color: #111; /* Cor de fundo do input igual ao do terminal */
+            background-color: transparent;
             border: none;
             outline: none;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
-            font-size: 1.1em;
-            padding: 5px;
-            min-width: 0; /* Adicionado para garantir que o input possa encolher */
+            color: var(--neon-green);
+            caret-color: var(--neon-cyan);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            padding: 4px 0;
+            min-width: 0;
+        }
+
+        .terminal-input::placeholder {
+            color: rgba(0, 243, 255, 0.3);
+            font-style: italic;
         }
 
         .terminal-input::selection {
-            background-color: #0ff;
+            background-color: var(--neon-cyan);
             color: #000;
         }
 
-        .blinking-cursor {
-            font-weight: 100;
-            color: #0f0;
-            animation: blink-caret .75s step-end infinite;
+        .skip-hint {
+            font-size: 0.72rem;
+            color: rgba(255, 230, 0, 0.8);
+            border: 1px solid rgba(255, 230, 0, 0.4);
+            padding: 2px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            white-space: nowrap;
+            display: none;
         }
 
-        /* Oculta o cursor quando o input está desabilitado */
-        .terminal-input:disabled + .blinking-cursor {
-            opacity: 0;
+        .skip-hint.visible {
+            display: inline-block;
         }
 
-        /* Estilos para os botões de idioma */
+        /* Language selection buttons */
         .language-button-container {
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 16px;
+            margin-bottom: 12px;
         }
 
         .language-button {
-            background-color: #055;
-            color: #0ff;
-            border: 1px solid #0ff;
-            padding: 8px 15px;
-            margin: 5px;
-            border-radius: 5px;
+            background-color: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            padding: 10px 20px;
+            border-radius: 6px;
             cursor: pointer;
-            font-family: 'Courier New', monospace;
-            font-size: 1em;
-            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
         }
 
         .language-button:hover {
-            background-color: #0ff;
+            background-color: var(--neon-cyan);
             color: #000;
-            box-shadow: 0 0 10px #0ff;
+            box-shadow: 0 0 15px var(--neon-cyan);
         }
 
-        /* Estilos para o modo "bugado" / "AI" */
+        /* AI Takeover Glitch Mode */
         .terminal-container.ai-takeover {
-            border-color: #f0f; /* Borda magenta */
-            box-shadow: 0 0 25px #f0f, 0 0 50px #f0f inset; /* Brilho magenta mais intenso */
-            background-color: #200; /* Fundo vermelho escuro */
-            animation: glitch-container 0.3s infinite alternate; /* Animação de glitch no container */
+            border-color: var(--neon-magenta);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5), 0 0 50px rgba(255, 0, 255, 0.2) inset;
+            background-color: rgba(28, 0, 24, 0.95);
+            animation: glitch-container 0.35s infinite alternate;
         }
 
         .terminal-output.ai-takeover {
-            color: #f0f; /* Texto magenta */
-            animation: glitch-text 0.1s infinite alternate; /* Animação de glitch no texto */
+            color: var(--neon-magenta);
+            animation: glitch-text 0.15s infinite alternate;
         }
 
         .terminal-prompt.ai-takeover {
-            color: #f0f; /* Prompt magenta */
-            animation: glitch-text 0.1s infinite alternate; /* Animação de glitch no prompt */
+            color: var(--neon-magenta);
         }
 
-        /* Animações de Glitch */
         @keyframes glitch-container {
             0% { transform: translate(0, 0); border-color: #f0f; }
-            25% { transform: translate(-2px, 2px); border-color: #0ff; }
-            50% { transform: translate(2px, -2px); border-color: #f0f; }
-            75% { transform: translate(-2px, -2px); border-color: #0ff; }
+            25% { transform: translate(-1.5px, 1.5px); border-color: #0ff; }
+            50% { transform: translate(1.5px, -1.5px); border-color: #f0f; }
+            75% { transform: translate(-1.5px, -1.5px); border-color: #0ff; }
             100% { transform: translate(0, 0); border-color: #f0f; }
         }
 
         @keyframes glitch-text {
-            0% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
-            20% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(-5deg); }
-            40% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
-            60% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(5deg); }
-            80% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; transform: skewX(0deg); }
-            100% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; transform: skewX(-5deg); }
+            0% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; }
+            50% { text-shadow: -1px 0 0 #f0f, 1px 0 0 #0ff; }
+            100% { text-shadow: 1px 0 0 #f0f, -1px 0 0 #0ff; }
         }
 
-        /* Responsividade */
+        .ascii-banner {
+            color: var(--neon-cyan);
+            font-weight: 700;
+            line-height: 1.15;
+            font-size: 0.78rem;
+            margin-bottom: 10px;
+            overflow-x: auto;
+        }
+
         @media (max-width: 768px) {
+            body {
+                padding: 4px;
+            }
             .terminal-container {
-                width: 95%;
-                height: 95vh; /* Ajuste para telas menores */
-                padding: 15px;
+                height: calc(100vh - 8px);
+                border-radius: 8px;
             }
             .terminal-output {
-                font-size: 1em;
+                font-size: 0.84rem;
+                padding: 12px;
             }
-            .terminal-input, .terminal-prompt {
-                font-size: 1em;
+            .ascii-banner {
+                font-size: 0.52rem;
+            }
+            .terminal-title span.hide-mobile {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
     <div class="terminal-container" id="terminalContainer">
+        <!-- Top Bar -->
+        <div class="terminal-header">
+            <div class="window-controls">
+                <span class="win-dot red"></span>
+                <span class="win-dot yellow"></span>
+                <span class="win-dot green"></span>
+                <div class="terminal-title" style="margin-left: 8px;">
+                    <strong>WALLACY.OS v4.2</strong>
+                    <span class="hide-mobile">// NEURAL INTERFACE</span>
+                    <span class="status-badge"><span class="status-dot"></span>ONLINE</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" id="langToggleBtn" title="Switch Language">🌐 EN / PT</button>
+                <a href="https://github.com/WallacyBR" target="_blank" rel="noopener noreferrer" class="header-btn">GitHub ↗</a>
+                <a href="https://www.linkedin.com/in/wallacyrsilva" target="_blank" rel="noopener noreferrer" class="header-btn">LinkedIn ↗</a>
+            </div>
+        </div>
+
+        <!-- Terminal Output -->
         <div class="terminal-output" id="terminalOutput"></div>
+
+        <!-- Quick Action Bar (Recruiter & Mobile Friendly) -->
+        <div class="quick-commands-bar" id="quickCommandsBar">
+            <span class="quick-label" id="quickLabel">Quick Run:</span>
+            <button class="cmd-chip" data-cmd="neofetch">neofetch</button>
+            <button class="cmd-chip" data-cmd="about">about</button>
+            <button class="cmd-chip" data-cmd="experience">experience</button>
+            <button class="cmd-chip" data-cmd="projects">projects</button>
+            <button class="cmd-chip" data-cmd="architecture">architecture</button>
+            <button class="cmd-chip" data-cmd="skills">skills</button>
+            <button class="cmd-chip" data-cmd="education">education</button>
+            <button class="cmd-chip" data-cmd="contact">contact</button>
+            <button class="cmd-chip special" data-cmd="query_ai">query_ai 🤖</button>
+            <button class="cmd-chip special" data-cmd="future">future ⚡</button>
+            <button class="cmd-chip" data-cmd="clear">clear</button>
+        </div>
+
+        <!-- Command Input -->
         <div class="terminal-input-area" id="terminalInputArea">
             <span class="terminal-prompt" id="terminalPrompt">wallacy@system:~$</span>
-            <input type="text" class="terminal-input" id="terminalInput" autofocus>
-            <span class="blinking-cursor">|</span>
+            <input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false" placeholder="Type a command (help, projects, architecture...) or press Tab" autofocus>
+            <span class="skip-hint" id="skipHint" title="Click or press Enter to finish typing immediately">[Enter ⏭]</span>
         </div>
     </div>
 
     <script>
-        // Obtenha referências para os elementos do DOM
         const terminalOutput = document.getElementById('terminalOutput');
         const terminalInput = document.getElementById('terminalInput');
         const terminalContainer = document.getElementById('terminalContainer');
         const terminalInputArea = document.getElementById('terminalInputArea');
         const terminalPrompt = document.getElementById('terminalPrompt');
-        let blinkingCursor = null; // Inicializado como null, será atribuído em selectLanguage
+        const skipHint = document.getElementById('skipHint');
+        const langToggleBtn = document.getElementById('langToggleBtn');
+        const quickLabel = document.getElementById('quickLabel');
 
-        let currentLanguage = 'pt'; // Variável global para o idioma
+        let currentLanguage = 'en';
         let isAITakeoverMode = false;
         let isProcessingCommand = false;
+        let skipCurrentTyping = false;
         let hasFutureBeenExecutedOnce = false;
 
-        // Helper function to simulate AI typing with pauses, no backspace/retype
-        async function simulateAITypingDrama(segments) {
-            for (const segment of segments) {
-                const fullText = segment.text;
-                const color = segment.color || '#f0f';
-                const typingSpeed = segment.speed || 40;
-                const pauseAfter = segment.pauseAfter || 1500;
+        // Command history for Up/Down arrows
+        const commandHistory = [];
+        let historyIndex = -1;
 
-                const lineSpan = document.createElement('span');
-                lineSpan.style.color = color;
-                terminalOutput.appendChild(lineSpan);
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        const ASCII_HEADER = `
+██╗    ██╗ █████╗ ██╗     ██╗      █████╗  ██████╗██╗   ██╗   ██████╗ ███████╗
+██║    ██║██╔══██╗██║     ██║     ██╔══██╗██╔════╝╚██╗ ██╔╝  ██╔═══██╗██╔════╝
+██║ █╗ ██║███████║██║     ██║     ███████║██║      ╚████╔╝   ██║   ██║███████╗
+██║███╗██║██╔══██║██║     ██║     ██╔══██║██║       ╚██╔╝    ██║   ██║╚════██║
+╚███╔███╔╝██║  ██║███████╗███████╗██║  ██║╚██████╗   ██║ ██╗ ╚██████╔╝███████║
+ ╚══╝╚══╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝   ╚═╝ ╚═╝  ╚═════╝ ╚══════╝`;
 
-                let currentText = '';
-
-                for (let i = 0; i < fullText.length; i++) {
-                    currentText += fullText.charAt(i);
-                    lineSpan.textContent = currentText; // No temporary cursor here
-
-                    await new Promise(resolve => setTimeout(resolve, typingSpeed));
-
-                    // Hesitation logic: just a pause
-                    if (segment.hesitation && i === segment.hesitation.triggerAfterChars - 1) {
-                         await new Promise(resolve => setTimeout(resolve, segment.hesitation.pause || 500)); // Pausa na hesitação
-                    }
-                }
-                lineSpan.textContent += '\n'; // Add newline after segment
-                await new Promise(resolve => setTimeout(resolve, pauseAfter));
-            }
-        }
-
-        // Função para degradar o texto do terminal
-        async function degradeTerminalText(element, duration) {
-            const startTime = Date.now();
-            const originalTextContent = element.textContent;
-            const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
-
-            while (Date.now() - startTime < duration) {
-                let degradedText = '';
-                for (let i = 0; i < originalTextContent.length; i++) {
-                    if (Math.random() < 0.3) {
-                        degradedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
-                    } else {
-                        degradedText += originalTextContent[i];
-                    }
-                }
-                element.textContent = degradedText;
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-            element.innerHTML = ''; // Limpa completamente após a degradação
-        }
-
-        // Conteúdo localizado
         const localizedContent = {
             pt: {
                 promptDefault: 'wallacy@system:~$',
                 aiCorePrompt: 'AI_CORE >',
+                placeholder: 'Digite um comando (help, projects, architecture...) ou use Tab',
+                quickLabel: 'Atalhos:',
                 startupMessages: [
-                    'Iniciando conexão neural...',
-                    'Verificando protocolos de segurança...',
-                    'Acessando banco de dados de conhecimento...',
-                    'Sincronizando com a rede global...',
-                    'Processando dados de IA...',
-                    'Conexão estabelecida. Bem-vindo(a).',
-                    'Prepare-se para explorar o futuro.',
-                    'Digite "help" para acessar o diretório de comandos.'
+                    'Iniciando conexão neural... [OK]',
+                    'Carregando módulos de Visão Computacional, Busca Vetorial 1:N & GIS... [OK]',
+                    'Conexão estabelecida. Bem-vindo(a) ao terminal de Wallacy Silva.',
+                    '💡 DICA: Clique nos botões de atalho abaixo ou digite "help" para explorar.'
                 ],
+                neofetch: `
+┌──────────────────────────────────────────────────────────────────────────┐
+│  WALLACY SILVA // SENIOR FULL-STACK & AI ENGINEER                        │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ⚡ Role        : Senior Software Engineer | Tech Lead | Solutions Arch  │
+│  🏛️ Background  : SSP-SP (Muralha Paulista / FaceSec) & PMESP (SGO)      │
+│  ⏱️ Uptime      : ~20 Anos em Tecnologia | 6+ Anos Liderando Equipes     │
+│  🧠 AI & CV     : Python, InsightFace, Milvus (Vector DB 1:N), LLMs/RAG  │
+│  🗺️ GIS & Stack : NestJS, Vue 3, Flutter, Laravel, PostGIS, H3, MapLibre │
+│  ☁️ Cloud/Certs : AWS Certified Developer Associate | Docker | K8s       │
+│  🎓 Academic    : B.S. TI | Graduando IA | 3x Pós-Graduado (DS, DBA, Eng)│
+│  🌐 Location    : Bauru, SP, Brasil (Disponível para Remoto Global)      │
+└──────────────────────────────────────────────────────────────────────────┘`.trim(),
                 commandsHelp: [
-                    'Comandos disponíveis:',
-                    '  help       - Exibe esta mensagem de ajuda.',
-                    '  clear      - Limpa a tela do terminal.',
-                    '  about      - Exibe informações sobre Wallacy.',
-                    '  experience - Exibe a experiência profissional.',
-                    '  skills     - Exibe as habilidades e conhecimentos.',
-                    '  projects   - Exibe os projetos de destaque.',
-                    '  contact    - Exibe as informações de contato.',
-                    '  list       - Lista todos os comandos de conteúdo.',
-                    '  future     - Uma visão sobre o futuro da tecnologia.',
-                    '  ai         - A inteligência artificial na minha jornada.',
-                    '  evolution  - Minha perspectiva sobre a evolução humana e tecnológica.',
-                    '  education  - Minha formação acadêmica e certificações.',
-                    '  goals      - Meus objetivos de carreira.'
-                ],
-                cmdNotFound: (cmd) => `Comando não reconhecido: '${cmd}'. Digite 'help' para ver os comandos disponíveis.`,
-                systemBusy: 'Sistema ocupado. Aguarde.',
+                    '╔════════════════════════════════════════════════════════════════════════╗',
+                    '║                      DIRETÓRIO DE COMANDOS WALLACY.OS                  ║',
+                    '╠════════════════════════════════════════════════════════════════════════╣',
+                    '║  neofetch     - Exibe o resumo executivo e telemetria do perfil        ║',
+                    '║  about        - Trajetória profissional e posicionamento sênior        ║',
+                    '║  experience   - Histórico na SSP-SP (Muralha Paulista), PMESP e mais   ║',
+                    '║  projects     - Estudos de caso (FaceSec, SGO, Omnitrak, AIThera)      ║',
+                    '║  architecture - Diagramas ASCII da arquitetura dos sistemas reais      ║',
+                    '║  skills       - Competências em IA, Backend, Frontend, GIS e Cloud     ║',
+                    '║  education    - Formação acadêmica (3x Pós) e certificações (AWS)      ║',
+                    '║  goals        - Objetivos executivos e atuação global                  ║',
+                    '║  contact      - Links diretos clicáveis (LinkedIn, GitHub, E-mail)     ║',
+                    '║  query_ai     - Converse com o núcleo de IA sobre a carreira do Wallacy║',
+                    '║  future       - [EASTER EGG] Simulação narrativa Cyberpunk AI Takeover ║',
+                    '║  lang         - Alterna o idioma entre Português (PT) e Inglês (EN)    ║',
+                    '║  clear        - Limpa a tela do terminal                               ║',
+                    '╚════════════════════════════════════════════════════════════════════════╝',
+                    '💡 Atalhos Unix suportados: whoami, ls, sudo, Tab (autocomplete), ↑/↓ (histórico).'
+                ].join('\n'),
+                cmdNotFound: (cmd) => `Comando não reconhecido: '${cmd}'. Digite 'help' ou clique em um atalho abaixo.`,
+                systemBusy: 'Sistema processando. Pressione Enter para concluir imediatamente.',
                 about: `
-Sobre Mim:
-Engenheiro de Software Sênior, Tech Lead e Arquiteto de Soluções com quase 20 anos de experiência em tecnologia, especializado em Inteligência Artificial Aplicada, Visão Computacional e Sistemas Geoespaciais (GIS) de missão crítica. Com sólida trajetória na Secretaria da Segurança Pública de São Paulo (SSP-SP) e na Polícia Militar do Estado de São Paulo (PMESP), liderei equipes técnicas e arquitetei plataformas de escala estadual — incluindo soluções integradas ao programa Muralha Paulista, o pipeline de reconhecimento facial em tempo real FaceSec e o Sistema de Gestão Operacional (SGO). Combino rigor arquitetural para sistemas de alta disponibilidade com liderança técnica e visão estratégica de produto.
+[ SOBRE MIM // RESUMO EXECUTIVO ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Engenheiro de Software Sênior, Tech Lead e Arquiteto de Soluções com quase 20 anos de experiência em tecnologia, especializado em Inteligência Artificial Aplicada, Visão Computacional e Sistemas Geoespaciais (GIS) de missão crítica.
+
+Com sólida trajetória na Secretaria da Segurança Pública de São Paulo (SSP-SP) e na Polícia Militar do Estado de São Paulo (PMESP), liderei equipes técnicas e arquitetei plataformas de escala estadual — incluindo soluções integradas ao programa Muralha Paulista, o pipeline de reconhecimento facial em tempo real FaceSec e o Sistema de Gestão Operacional (SGO).
+
+Combino rigor arquitetural para sistemas distribuídos de alta disponibilidade com liderança técnica e visão estratégica de produto.
                 `.trim(),
                 experience: `
-Experiência Profissional:
-Arquiteto de Sistemas & Engenheiro de IA | Secretaria da Segurança Pública de SP (SSP-SP)
-- Atuação estratégica na arquitetura e engenharia de sistemas de inteligência estadual, integrados ao ecossistema do programa Muralha Paulista.
-- Desenvolvimento do FaceSec: plataforma de ingestão, vetorização e busca de biometria facial 1:N em tempo real de alta vazão (dezenas de milhares de detecções/dia), utilizando Python, InsightFace e banco de dados vetorial Milvus.
+[ EXPERIÊNCIA PROFISSIONAL ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ Arquiteto de Sistemas & Engenheiro de IA | Secretaria da Segurança Pública de SP (SSP-SP)
+  • Atuação estratégica na arquitetura e engenharia de sistemas de inteligência estadual integrados ao ecossistema do programa Muralha Paulista.
+  • Desenvolvimento do FaceSec: plataforma de ingestão, vetorização e busca de biometria facial 1:N em tempo real de alta vazão (dezenas de milhares de detecções/dia), utilizando Python, InsightFace e banco de dados vetorial Milvus.
+  • Integração de APIs críticas de baixa latência e observabilidade com Prometheus.
 
-Head Developer & Tech Lead | Polícia Militar do Estado de São Paulo (PMESP) | 2009 – Atualmente
-- Líder de equipe de desenvolvimento por mais de 6 anos, atuando como arquiteto principal e estrategista para o Sistema de Gestão Operacional (SGO) e a plataforma Fireblade (Argus).
-- O SGO é um Progressive Web App (PWA) que digitalizou a produção de relatórios operacionais (RSO) e despacho em tempo real.
-- Impacto: Mais de 500 mil relatórios georreferenciados produzidos em campo, otimizando a tomada de decisões estratégicas de comando.
+▸ Head Developer & Tech Lead | Polícia Militar do Estado de São Paulo (PMESP) | 2009 – Atualmente
+  • Líder de equipe de desenvolvimento por mais de 6 anos, atuando como arquiteto principal do Sistema de Gestão Operacional (SGO) e da plataforma Fireblade (ex-Argus).
+  • Digitalização completa de Relatórios de Serviço Operacional (RSO) e despacho inteligente via PWA.
+  • Impacto Real: +500.000 relatórios operacionais georreferenciados produzidos em campo, transformando dados operacionais em inteligência estratégica para tomada de decisão de comando.
 
-Experiência Adicional:
-Intérprete de Eventos – Forças de Segurança
-- Atuou como intérprete durante a Copa do Mundo FIFA 2014 (São Paulo) e os Jogos Olímpicos Rio 2016, integrando autoridades internacionais e forças de segurança nacionais.
-Gestão Executiva & Condominial | 6 anos
-- Liderou a administração de um complexo residencial com mais de 1.500 moradores, aplicando governança, negociação e resolução de problemas complexos.
+▸ Founder & Principal Architect | Omnitrak & AIThera
+  • Arquitetura de plataformas SaaS B2B2C de telemetria veicular, logística viária (PostGIS, H3, MapLibre GL, NestJS, Vue 3, Flutter) e consultoria de Inteligência Artificial sob medida.
+
+▸ Experiências Adicionais de Liderança & Comunicação Internacional
+  • Intérprete Oficial (Forças de Segurança): Copa do Mundo FIFA 2014 (São Paulo) e Jogos Olímpicos Rio 2016, integrando autoridades internacionais e forças nacionais.
+  • Gestão Executiva Condominial (6 anos): Administração de complexo com +1.500 moradores.
                 `.trim(),
                 skills: `
-Habilidades Chave:
-- Inteligência Artificial & Visão Computacional: Python, InsightFace, OpenCV, Milvus (Vector DB), Busca Vetorial 1:N, LLMs & RAG, Scikit-learn, TensorFlow, Pandas, NumPy.
-- Arquitetura Backend & Tempo Real: NestJS, Node.js, TypeScript, Laravel (PHP), RabbitMQ, Socket.IO, Drizzle ORM, REST APIs, Microsserviços.
-- Frontend, Mobile & Sistemas Geoespaciais (GIS): Vue.js 3, React, React Native, Flutter, Astro, MapLibre GL, Deck.gl, PostGIS, Indexação Espacial H3, OpenRouteService (ORS).
-- DevOps, Cloud & Segurança: Docker, Kubernetes, AWS (Certified Developer – Associate), PostgreSQL, MySQL, Redis, Authentik (OIDC/SSO), CI/CD (GitHub Actions), Prometheus.
-- Liderança & Estratégia: Tech Lead, Arquitetura de Software, Gestão Ágil (Scrum/Kanban), comunicação executiva e tradução de desafios complexos em produtos escaláveis.
+[ TECH STACK & COMPETÊNCIAS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ IA, Visão Computacional & Data Science:
+  Python · InsightFace · OpenCV · Milvus (Vector DB) · Busca Vetorial 1:N · LLMs & RAG · Scikit-learn · TensorFlow · Pandas · NumPy
+
+▸ Backend & Arquitetura Distribuída:
+  NestJS · Node.js · TypeScript · Laravel (PHP) · RabbitMQ · Socket.IO · Drizzle ORM · REST APIs · Microsserviços Orientados a Eventos
+
+▸ Frontend, Mobile & Sistemas Geoespaciais (GIS):
+  Vue.js 3 · React · React Native · Flutter · Astro · Tailwind CSS · MapLibre GL · Deck.gl · PostGIS · Indexação Espacial Uber H3 · OpenRouteService (ORS)
+
+▸ Cloud, DevOps & Bancos de Dados:
+  AWS (Certified Developer – Associate) · Docker · Kubernetes · PostgreSQL · MySQL · Redis · Authentik (OIDC/SSO) · GitHub Actions (CI/CD) · Prometheus
+
+▸ Liderança & Estratégia:
+  Tech Lead · Arquitetura de Soluções · Agile/Scrum · Comunicação Executiva · Inglês & Português
                 `.trim(),
                 projects: `
-Projetos de Destaque:
-- FaceSec & Integração Muralha Paulista (SSP-SP):
-  - Pipeline assíncrono de reconhecimento facial 1:N em tempo real (ingestão -> embedding -> comparação vetorial -> alertas).
-  - Processamento de alta vazão com InsightFace e Milvus Vector DB, fornecendo alertas em sub-segundos e API para integração com o programa Muralha Paulista.
-- SGO & Fireblade / Argus (PMESP):
-  - Ecossistema completo de gestão operacional, despacho inteligente e relatórios de serviço (RSO) utilizado em smartphones por policiais.
-  - Impacto: Mais de 500 mil relatórios georreferenciados produzidos, transformando dados de campo em inteligência para o comando.
-- Omnitrak:
-  - Plataforma SaaS B2B2C white-label de telemetria veicular, cercas eletrônicas H3, rondas patrimoniais e roteirização logística (NestJS, Vue 3, Flutter, PostGIS, MapLibre GL, RabbitMQ, Traccar, ORS).
-- AIThera:
-  - Consultoria e estúdio de engenharia de software focado em soluções de Inteligência Artificial sob medida, automação inteligente e arquitetura de sistemas.
+[ ESTUDOS DE CASO & PROJETOS DE DESTAQUE ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. FaceSec & Ecossistema Muralha Paulista (SSP-SP)
+   • Pipeline assíncrono de reconhecimento facial 1:N em tempo real.
+   • Processa dezenas de milhares de faces/dia com InsightFace e Milvus Vector DB, gerando alertas em sub-segundos para watchlists estaduais e APIs para o programa Muralha Paulista.
+
+2. SGO & Fireblade / Argus (PMESP)
+   • Ecossistema completo de Gestão Operacional, Despacho Inteligente e Relatórios de Serviço Operacional (RSO) em Laravel, Vue 3 e MySQL.
+   • +500.000 relatórios georreferenciados gerados em campo via smartphones, com módulos especializados (Segurança Agro, Visita Lilás, Escudo Escolar).
+
+3. Omnitrak (White-Label Telemetry & GIS SaaS)
+   • Plataforma B2B2C unificando frota ao vivo, cercas eletrônicas H3, rondas patrimoniais e roteirização viária (NestJS, Vue 3, Flutter, PostGIS, RabbitMQ, Traccar, MapLibre GL, ORS e copiloto LLM).
+
+4. AIThera (AI Studio & Consultoria)
+   • Desenvolvimento de soluções de Inteligência Artificial, agentes autônomos e software sob medida para eficiência corporativa.
+
+💡 Digite "architecture" para visualizar os diagramas ASCII de arquitetura desses sistemas!
+                `.trim(),
+                architecture: `
+[ DIAGRAMAS DE ARQUITETURA DE SISTEMAS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1) FACESEC // PIPELINE DE BIOMETRIA FACIAL 1:N EM TEMPO REAL (SSP-SP / MURALHA PAULISTA)
+┌──────────────┐    ┌───────────────┐    ┌────────────────────┐    ┌──────────────────┐
+│ Câmeras RTSP │───▶│ Ingestão Async│───▶│ InsightFace Worker │───▶│ Milvus Vector DB │
+│ & Streams    │    │ & Qualidade   │    │ (512-d Embeddings) │    │ (Busca 1:N <50ms)│
+└──────────────┘    └───────────────┘    └────────────────────┘    └────────┬─────────┘
+                                                                            │ Match!
+┌───────────────────────────────────────────────────────────────────────────▼─────────┐
+│ Motor de Regras & Watchlists ──▶ WebSockets Painel Operacional + API Muralha Paulista│
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+2) OMNITRAK // TELEMETRIA GEOESPACIAL, LOGÍSTICA & H3 GEOFENCING
+┌──────────────┐    ┌───────────────┐    ┌────────────────────┐    ┌──────────────────┐
+│ Rastreadores │───▶│ Traccar 6     │───▶│ RabbitMQ Broker    │───▶│ NestJS Workers   │
+│ & App Flutter│    │ (Headless)    │    │ (Event Streams)    │    │ + Motor Uber H3  │
+└──────────────┘    └───────────────┘    └────────────────────┘    └────────┬─────────┘
+                                                                            │
+┌───────────────────────────────────────────────────────────────────────────▼─────────┐
+│ PostgreSQL 16 + PostGIS + Redis ──▶ Mapa Único Vue 3 + MapLibre GL + Deck.gl + ORS  │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+3) SGO & FIREBLADE // COMANDO E CONTROLE OPERACIONAL (+500K RELATÓRIOS)
+[ Policiais em Campo (PWA/GPS) ] ──▶ [ API Laravel + Filas ] ──▶ [ MySQL + BI Georreferenciado ]
                 `.trim(),
                 contact: `
-Contato:
-LinkedIn: https://www.linkedin.com/in/wallacyrsilva
-GitHub:   https://github.com/WallacyBR
-E-mail:   wallacyrodrigo@icloud.com
-Telefone: +55 14 99140 9140
+[ CANAIS DE CONTATO DIRETO ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💼 LinkedIn : https://www.linkedin.com/in/wallacyrsilva
+🐙 GitHub   : https://github.com/WallacyBR
+🌐 Portfólio: https://wallacybr.github.io
+📧 E-mail   : mailto:wallacyrodrigo@icloud.com
+📱 Telefone : +55 14 99140 9140
                 `.trim(),
                 education: `
-Formação Acadêmica e Certificações:
-- Graduação: Tecnologia da Informação (TI).
-- Graduando: Inteligência Artificial.
-- Extensão: Gestão Estratégica de Negócios.
-- Pós-graduações (3x):
-  1. Ciência de Dados (Data Science)
-  2. Administração de Banco de Dados (DBA)
-  3. Gestão Ágil e Desenvolvimento de Software
+[ FORMAÇÃO ACADÊMICA & CERTIFICAÇÕES ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓 Formação Superior & Pós-Graduações:
+  • Pós-Graduação em Ciência de Dados (Data Science)
+  • Pós-Graduação em Administração de Banco de Dados (DBA)
+  • Pós-Graduação em Gestão Ágil e Desenvolvimento de Software
+  • Graduação em Tecnologia da Informação (TI)
+  • Graduando em Inteligência Artificial
+  • Extensão em Gestão Estratégica de Negócios
 
-Certificações e Formações Complementares:
-- AWS Certified Developer – Associate (EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM)
-- GoStack Bootcamp (React, React Native, Node.js, TypeScript) | Rocketseat
-- Perícia e Investigação Forense Computacional | Blindsys Forensic
-- Especializações em Python para Data Science & ML, Docker & Kubernetes, Node.js, Laravel e Vue.js
+🏅 Certificações e Especializações de Destaque:
+  • AWS Certified Developer – Associate (EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM)
+  • GoStack Bootcamp (React, React Native, Node.js, TypeScript) — Rocketseat
+  • Perícia e Investigação Forense Computacional — Blindsys Forensic
+  • Formações Avançadas em Python para Data Science/ML, Docker & Kubernetes, Laravel e Vue.js
                 `.trim(),
                 goals: `
-Objetivos de Carreira:
-Atuar na vanguarda de projetos globais de alta complexidade como Senior Software Engineer, Tech Lead, Solutions Architect ou AI Engineer. Meu foco é projetar e escalar sistemas distribuídos, pipelines de Inteligência Artificial e plataformas de missão crítica para organizações globais em regime remoto, entregando excelência técnica, resiliência arquitetural e liderança de alto impacto.
+[ OBJETIVOS EXECUTIVOS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Atuar na vanguarda de projetos globais de alta complexidade como Senior Software Engineer, Tech Lead, Solutions Architect ou AI Engineer.
+
+Meu foco é projetar e escalar sistemas distribuídos, pipelines de Inteligência Artificial/Visão Computacional e plataformas de missão crítica para organizações globais em regime remoto, entregando excelência técnica, resiliência arquitetural e liderança de alto impacto.
                 `.trim(),
+                sudoMessage: '⚠️ [ALERTA DE SEGURANÇA]: Tentativa de escalação de privilégio detectada. Apenas Wallacy Silva possui chave neural root neste cluster.',
+                queryAiModuleInit: '>>> MÓDULO DE CONSULTA NEURAL AI ATIVADO <<<',
+                queryAiPrompt: 'Faça uma pergunta sobre a carreira, projetos (FaceSec, Muralha Paulista, SGO, Omnitrak), stack ou disponibilidade do Wallacy (ou digite "cancelar"):',
+                queryAiCancelled: 'Consulta ao núcleo de IA encerrada.',
+                queryAiProcessing: 'Consultando base vetorial de conhecimento de Wallacy Silva...',
                 futureCmdExecuting: 'Executando comando: future',
                 futureAccessDenied: 'Erro: Acesso negado. Permissões de usuário insuficientes.',
                 futureBypassAttempt: 'Tentando bypass de segurança...',
@@ -403,123 +694,197 @@ A IA não deve ser uma substituta da criatividade, da empatia ou do pensamento c
 Construir o futuro significa projetar sistemas inteligentes que não apenas funcionam, mas que elevam. Que nos ajudam a resolver os desafios mais prementes, a desvendar novos conhecimentos e a criar um mundo onde a tecnologia é uma extensão do nosso potencial, e não um limite.
 
 Este é o meu compromisso: desenvolver soluções de IA que gerem benefícios reais, que impulsionem a sociedade para frente, e que, acima de tudo, celebrem e fortaleçam a essência do que significa ser humano. O futuro é colaborativo, e a IA é a nossa aliada nessa jornada.
-                `,
+                `.trim(),
                 futureTransmissionComplete: 'A transmissão foi concluída. A semente foi plantada.',
                 futureTechAsMirror: 'Lembre-se: a tecnologia, em sua essência mais pura, é um espelho. Reflete o que somos, e o que podemos ser.',
                 futureWallacyUnderstands: 'Wallacy compreende isso. E agora, talvez, você também compreenda.',
                 futureLegacyArchitects: 'Nós, arquitetos de IA, construímos o futuro através de nossas soluções.',
                 futureLegacyGenerations: 'Para que as próximas gerações não sacrifiquem tanto quanto sacrificamos hoje.',
-                futureLegacyDedication: 'Nosso legado está nas linhas de código, nas vidas impactadas, nas horas e noites de sono dedicadas.',
+                futureLegacyDedication: 'Nosso legado está nas linhas de código, nas vidas impactadas, nas horas dedicadas.',
                 futureJourneyContinues: 'A jornada continua.',
                 futureProtocolEnded: '>>> PROTOCOLO DE CONSCIÊNCIA AI ENCERRADO <<<',
                 futureInterfaceRestored: 'Interface normal restaurada.',
-                futureSummary: 'O futuro será construído através da nossa simbiose.',
-                aiMessage: 'A Inteligência Artificial é a espinha dorsal de muitas das minhas paixões. Desde o TensorFlow até o DialogFlow, utilizo a IA para criar soluções que não apenas automatizam, mas também aprendem e se adaptam, elevando a eficiência e a capacidade humana. É a mente por trás da máquina. 🧠',
-                evolutionMessage: 'A evolução não é apenas biológica, mas tecnológica. Sou fascinado por como a tecnologia impulsiona o próximo salto na jornada humana, desde a coleta de dados para otimização até a criação de sistemas inteligentes que expandem nossas capacidades. É uma jornada contínua de aprimoramento. ✨',
-                cyberpunkMessage: 'Bem-vindo ao futuro, netrunner. Abrace a tecnologia e a evolução. 🌃',
-                queryAiModuleInit: '>>> MÓDULO DE CONSULTA AI ATIVADO <<<',
+                futureSummary: 'O futuro será construído através da nossa simbiose entre engenharia de ponta e propósito humano.',
+                aiMessage: 'A Inteligência Artificial é o núcleo das soluções de missão crítica que projeto — de pipelines de reconhecimento facial 1:N em tempo real com InsightFace e Milvus até agentes baseados em LLMs. É a mente por trás da máquina. 🧠',
+                evolutionMessage: 'A evolução não é apenas biológica, mas tecnológica. Transformar mais de 500 mil relatórios em papel em inteligência georreferenciada ou encontrar uma face em milissegundos mostra como a tecnologia amplifica a capacidade humana. ✨',
+                cyberpunkMessage: 'Bem-vindo ao futuro, netrunner. High tech, high impact. 🌃'
             },
             en: {
                 promptDefault: 'wallacy@system:~$',
                 aiCorePrompt: 'AI_CORE >',
+                placeholder: 'Type a command (help, projects, architecture...) or press Tab',
+                quickLabel: 'Quick Run:',
                 startupMessages: [
-                    'Initiating neural connection...',
-                    'Verifying security protocols...',
-                    'Accessing knowledge database...',
-                    'Synchronizing with global network...',
-                    'Processing AI data...',
-                    'Connection established. Welcome.',
-                    'Prepare to explore the future.',
-                    'Type "help" to access the command directory.'
+                    'Initiating neural connection... [OK]',
+                    'Loading Computer Vision, 1:N Vector Search & GIS modules... [OK]',
+                    'Connection established. Welcome to Wallacy Silva\'s interactive terminal.',
+                    '💡 TIP: Click any shortcut chip below or type "help" to explore.'
                 ],
+                neofetch: `
+┌──────────────────────────────────────────────────────────────────────────┐
+│  WALLACY SILVA // SENIOR FULL-STACK & AI ENGINEER                        │
+├──────────────────────────────────────────────────────────────────────────┤
+│  ⚡ Role        : Senior Software Engineer | Tech Lead | Solutions Arch  │
+│  🏛️ Background  : SSP-SP (Muralha Paulista / FaceSec) & PMESP (SGO)      │
+│  ⏱️ Uptime      : ~20 Years in Tech | 6+ Years Leading Engineering Teams │
+│  🧠 AI & CV     : Python, InsightFace, Milvus (Vector DB 1:N), LLMs/RAG  │
+│  🗺️ GIS & Stack : NestJS, Vue 3, Flutter, Laravel, PostGIS, H3, MapLibre │
+│  ☁️ Cloud/Certs : AWS Certified Developer Associate | Docker | K8s       │
+│  🎓 Academic    : B.S. IT | B.S. AI (Cand.) | 3x Post-Grad (DS, DBA, SE) │
+│  🌐 Location    : Bauru, SP, Brazil (Available for Global Remote Roles)  │
+└──────────────────────────────────────────────────────────────────────────┘`.trim(),
                 commandsHelp: [
-                    'Available commands:',
-                    '  help       - Displays this help message.',
-                    '  clear      - Clears the terminal screen.',
-                    '  about      - Displays information about Wallacy.',
-                    '  experience - Displays professional experience.',
-                    '  skills     - Displays skills and knowledge.',
-                    '  projects   - Displays featured projects.',
-                    '  contact    - Displays contact information.',
-                    '  list       - Lists all content commands.',
-                    '  future     - A vision about the future of technology.',
-                    '  ai         - Artificial intelligence in my journey.',
-                    '  evolution  - My perspective on human and technological evolution.',
-                    '  education  - My academic background and certifications.',
-                    '  goals      - My career objectives.',
-                    '  query_ai   - Ask the AI a question about technology or the future.'
-                ],
-                cmdNotFound: (cmd) => `Command not recognized: '${cmd}'. Type 'help' for available commands.`,
-                systemBusy: 'System busy. Please wait.',
+                    '╔════════════════════════════════════════════════════════════════════════╗',
+                    '║                      WALLACY.OS COMMAND DIRECTORY                      ║',
+                    '╠════════════════════════════════════════════════════════════════════════╣',
+                    '║  neofetch     - Display executive summary & system telemetry           ║',
+                    '║  about        - Professional trajectory & senior positioning           ║',
+                    '║  experience   - Track record at SSP-SP (Muralha Paulista) & PMESP      ║',
+                    '║  projects     - Featured case studies (FaceSec, SGO, Omnitrak, AIThera)║',
+                    '║  architecture - ASCII system architecture diagrams of production apps  ║',
+                    '║  skills       - Core competencies in AI/CV, Backend, GIS, and Cloud    ║',
+                    '║  education    - Academic degrees (3x Post-Grad) & AWS certification    ║',
+                    '║  goals        - Executive career objectives & global remote focus      ║',
+                    '║  contact      - Direct clickable links (LinkedIn, GitHub, Email)       ║',
+                    '║  query_ai     - Ask the interactive AI Core about Wallacy\'s background ║',
+                    '║  future       - [EASTER EGG] Cyberpunk AI Takeover narrative experience║',
+                    '║  lang         - Switch terminal language between English & Portuguese  ║',
+                    '║  clear        - Clear the terminal screen                              ║',
+                    '╚════════════════════════════════════════════════════════════════════════╝',
+                    '💡 Supported Unix shortcuts: whoami, ls, sudo, Tab (autocomplete), ↑/↓ (history).'
+                ].join('\n'),
+                cmdNotFound: (cmd) => `Command not recognized: '${cmd}'. Type 'help' or click a quick-run chip below.`,
+                systemBusy: 'System busy. Press Enter to finish typing immediately.',
                 about: `
-About Me:
-Senior Software Engineer, Tech Lead, and Solutions Architect with nearly 20 years of technology experience, specializing in Applied Artificial Intelligence, Computer Vision, and mission-critical Geospatial Systems (GIS). With a strong track record at the São Paulo State Secretariat of Public Security (SSP-SP) and the São Paulo State Military Police (PMESP), I have led engineering teams and architected statewide platforms—including integrations for the Muralha Paulista program, the FaceSec real-time facial recognition pipeline, and the Operational Management System (SGO). I combine architectural rigor for high-availability systems with technical leadership and strategic product vision.
+[ ABOUT ME // EXECUTIVE SUMMARY ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Senior Software Engineer, Tech Lead, and Solutions Architect with nearly 20 years of technology experience, specializing in Applied Artificial Intelligence, Computer Vision, and mission-critical Geospatial Systems (GIS).
+
+With a proven track record at the São Paulo State Secretariat of Public Security (SSP-SP) and the São Paulo State Military Police (PMESP), I have led engineering teams and architected statewide platforms—including integrations for the Muralha Paulista program, the FaceSec real-time facial recognition pipeline, and the Operational Management System (SGO).
+
+I combine architectural rigor for high-availability distributed systems with technical leadership and strategic product vision.
                 `.trim(),
                 experience: `
-Professional Experience:
-Systems Architect & AI Engineer | São Paulo State Secretariat of Public Security (SSP-SP)
-- Strategic architecture and engineering for statewide public safety intelligence systems integrated with the Muralha Paulista program ecosystem.
-- Architected and developed FaceSec: a high-throughput real-time 1:N facial recognition and biometric ingestion platform (tens of thousands of detections/day) built with Python, InsightFace, and Milvus Vector DB.
+[ PROFESSIONAL EXPERIENCE ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ Systems Architect & AI Engineer | Secretariat of Public Security of SP (SSP-SP)
+  • Strategic architecture and engineering for statewide public safety intelligence systems integrated with the Muralha Paulista program ecosystem.
+  • Architected and developed FaceSec: a high-throughput real-time 1:N facial recognition and biometric ingestion platform (tens of thousands of detections/day) built with Python, InsightFace, and Milvus Vector DB.
+  • Designed low-latency partner APIs and Prometheus observability pipelines.
 
-Head Developer & Tech Lead | São Paulo State Military Police (PMESP) | 2009 – Present
-- Led the software engineering team for 6+ years as Principal Architect and Strategist for the Operational Management System (SGO) and the Fireblade (Argus) dispatch platform.
-- SGO is a Progressive Web App (PWA) that digitized field service reporting (RSO) and real-time operational telemetry across police units.
-- Impact: Over 500,000 geo-referenced reports generated in the field, transforming operational data collection and command decision-making.
+▸ Head Developer & Tech Lead | São Paulo State Military Police (PMESP) | 2009 – Present
+  • Led the software engineering team for 6+ years as Principal Architect and Strategist for the Operational Management System (SGO) and the Fireblade (Argus) dispatch platform.
+  • Digitized field service reporting (RSO) and real-time operational telemetry across police units via PWA.
+  • Real-World Impact: Over 500,000 geo-referenced operational reports generated in the field, transforming data collection and command decision-making.
 
-Additional Experience:
-Event Interpreter – Security Forces
-- Served as official interpreter during the 2014 FIFA World Cup (São Paulo) and the 2016 Rio Olympics, bridging communication between international authorities and national security forces.
-Executive & Condominium Management | 6 years
-- Directed operations for a residential complex of 1,500+ residents, demonstrating strong governance, negotiation, and complex problem-solving skills.
+▸ Founder & Principal Architect | Omnitrak & AIThera
+  • Architected B2B2C white-label SaaS platforms for live fleet telemetry, H3 spatial indexing, and road logistics (NestJS, Vue 3, Flutter, PostGIS, MapLibre GL), alongside custom enterprise AI solutions.
+
+▸ Additional Leadership & International Experience
+  • Official Event Interpreter (Security Forces): 2014 FIFA World Cup (São Paulo) and 2016 Rio Olympics, bridging international authorities and national security forces.
+  • Executive Condominium Management (6 years): Directed operations for a 1,500+ resident complex.
                 `.trim(),
                 skills: `
-Key Skills:
-- AI, Computer Vision & Data Science: Python, InsightFace, OpenCV, Milvus (Vector DB), 1:N Vector Similarity Search, LLMs & RAG, Scikit-learn, TensorFlow, Pandas, NumPy.
-- Backend & Real-Time Architecture: NestJS, Node.js, TypeScript, Laravel (PHP), RabbitMQ, Socket.IO, Drizzle ORM, REST APIs, Microservices.
-- Frontend, Mobile & Geospatial (GIS): Vue.js 3, React, React Native, Flutter, Astro, MapLibre GL, Deck.gl, PostGIS, Uber H3 Spatial Indexing, OpenRouteService (ORS).
-- DevOps, Cloud & Security: Docker, Kubernetes, AWS (Certified Developer – Associate), PostgreSQL, MySQL, Redis, Authentik (OIDC/SSO), CI/CD (GitHub Actions), Prometheus.
-- Leadership & Strategy: Tech Lead, Solutions Architecture, Agile/Scrum, executive communication, and translating complex operational challenges into scalable software.
+[ TECH STACK & CORE COMPETENCIES ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+▸ AI, Computer Vision & Data Science:
+  Python · InsightFace · OpenCV · Milvus (Vector DB) · 1:N Vector Similarity Search · LLMs & RAG · Scikit-learn · TensorFlow · Pandas · NumPy
+
+▸ Backend & Distributed Architecture:
+  NestJS · Node.js · TypeScript · Laravel (PHP) · RabbitMQ · Socket.IO · Drizzle ORM · REST APIs · Event-Driven Microservices
+
+▸ Frontend, Mobile & Geospatial (GIS):
+  Vue.js 3 · React · React Native · Flutter · Astro · Tailwind CSS · MapLibre GL · Deck.gl · PostGIS · Uber H3 Spatial Indexing · OpenRouteService (ORS)
+
+▸ Cloud, DevOps & Databases:
+  AWS (Certified Developer – Associate) · Docker · Kubernetes · PostgreSQL · MySQL · Redis · Authentik (OIDC/SSO) · GitHub Actions (CI/CD) · Prometheus
+
+▸ Leadership & Strategy:
+  Tech Lead · Solutions Architecture · Agile/Scrum · Executive Communication · English & Portuguese
                 `.trim(),
                 projects: `
-Featured Projects:
-- FaceSec & Muralha Paulista Integration (SSP-SP):
-  - Asynchronous real-time 1:N facial recognition pipeline (ingestion -> vector embedding -> similarity search -> real-time alerting).
-  - High-throughput biometric processing powered by InsightFace and Milvus Vector DB, delivering sub-second watchlist matching and partner APIs for Muralha Paulista.
-- SGO & Fireblade / Argus (PMESP):
-  - Comprehensive operational management, intelligent dispatch, and service reporting (RSO) ecosystem used on smartphones by field officers.
-  - Impact: Over 500,000 geo-referenced reports produced, providing real-time spatial intelligence across all command levels.
-- Omnitrak:
-  - White-label B2B2C SaaS platform for live fleet telemetry, H3 geofencing, patrimonial guard tours, and road logistics (NestJS, Vue 3, Flutter, PostGIS, MapLibre GL, RabbitMQ, Traccar, ORS).
-- AIThera:
-  - AI consulting and custom software engineering studio focused on tailored Artificial Intelligence solutions, intelligent automation, and enterprise system architecture.
+[ FEATURED CASE STUDIES & ARCHITECTURE ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. FaceSec & Muralha Paulista Ecosystem (SSP-SP)
+   • Asynchronous real-time 1:N facial recognition pipeline.
+   • Processes tens of thousands of faces/day using InsightFace and Milvus Vector DB, delivering sub-second watchlist matching and partner APIs for the statewide Muralha Paulista program.
+
+2. SGO & Fireblade / Argus (PMESP)
+   • Comprehensive Operational Management, Intelligent Dispatch, and Service Reporting (RSO) ecosystem built with Laravel, Vue 3, and MySQL.
+   • +500,000 geo-referenced reports generated on smartphones by field officers, featuring specialized operational modules (Segurança Agro, Visita Lilás, Escudo Escolar).
+
+3. Omnitrak (White-Label Telemetry & GIS SaaS)
+   • Multi-tenant B2B2C platform unifying live fleet tracking, H3 geofencing, guard tours, and road logistics (NestJS, Vue 3, Flutter, PostGIS, RabbitMQ, Traccar, MapLibre GL, ORS, and LLM copilot).
+
+4. AIThera (AI Studio & Consultancy)
+   • Custom Artificial Intelligence engineering, autonomous agents, and tailored software architecture for enterprise efficiency.
+
+💡 Type "architecture" to inspect the ASCII system architecture diagrams for these platforms!
+                `.trim(),
+                architecture: `
+[ SYSTEM ARCHITECTURE DIAGRAMS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1) FACESEC // REAL-TIME 1:N BIOMETRIC VECTOR PIPELINE (SSP-SP / MURALHA PAULISTA)
+┌──────────────┐    ┌───────────────┐    ┌────────────────────┐    ┌──────────────────┐
+│ RTSP Cameras │───▶│ Async Ingest  │───▶│ InsightFace Worker │───▶│ Milvus Vector DB │
+│ & Streams    │    │ & Quality Gate│    │ (512-d Embeddings) │    │ (1:N Search<50ms)│
+└──────────────┘    └───────────────┘    └────────────────────┘    └────────┬─────────┘
+                                                                            │ Match!
+┌───────────────────────────────────────────────────────────────────────────▼─────────┐
+│ Watchlist Rules Engine ──▶ Operational WebSockets Dashboard + Muralha Paulista API  │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+2) OMNITRAK // GEOSPATIAL TELEMETRY, LOGISTICS & H3 GEOFENCING
+┌──────────────┐    ┌───────────────┐    ┌────────────────────┐    ┌──────────────────┐
+│ GPS Trackers │───▶│ Traccar 6     │───▶│ RabbitMQ Broker    │───▶│ NestJS Workers   │
+│ & Flutter App│    │ (Headless)    │    │ (Event Streams)    │    │ + Uber H3 Engine │
+└──────────────┘    └───────────────┘    └────────────────────┘    └────────┬─────────┘
+                                                                            │
+┌───────────────────────────────────────────────────────────────────────────▼─────────┐
+│ PostgreSQL 16 + PostGIS + Redis ──▶ Unified Map Vue 3 + MapLibre GL + Deck.gl + ORS │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+3) SGO & FIREBLADE // OPERATIONAL COMMAND & CONTROL (+500K REPORTS)
+[ Field Officers (PWA/GPS) ] ──▶ [ Laravel API + Queues ] ──▶ [ MySQL + Geo-Analytics BI ]
                 `.trim(),
                 contact: `
-Contact:
-LinkedIn: https://www.linkedin.com/in/wallacyrsilva
-GitHub:   https://github.com/WallacyBR
-E-mail:   wallacyrodrigo@icloud.com
-Phone:    +55 14 99140 9140
+[ DIRECT CONTACT CHANNELS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+💼 LinkedIn : https://www.linkedin.com/in/wallacyrsilva
+🐙 GitHub   : https://github.com/WallacyBR
+🌐 Portfolio: https://wallacybr.github.io
+📧 E-mail   : mailto:wallacyrodrigo@icloud.com
+📱 Phone    : +55 14 99140 9140
                 `.trim(),
                 education: `
-Academic Background & Certifications:
-- B.S. in Information Technology (IT).
-- B.S. Candidate in Artificial Intelligence.
-- Executive Extension in Strategic Business Management.
-- Post-Graduate Degrees (3x):
-  1. Data Science
-  2. Database Administration (DBA)
-  3. Agile Management & Software Development
+[ ACADEMIC BACKGROUND & CERTIFICATIONS ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎓 Higher Education & Post-Graduate Degrees:
+  • Post-Graduate in Data Science
+  • Post-Graduate in Database Administration (DBA)
+  • Post-Graduate in Agile Management & Software Development
+  • B.S. in Information Technology (IT)
+  • B.S. Candidate in Artificial Intelligence
+  • Executive Extension in Strategic Business Management
 
-Certifications & Specialized Training:
-- AWS Certified Developer – Associate (EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM)
-- GoStack Bootcamp (React, React Native, Node.js, TypeScript) | Rocketseat
-- Computational Forensic Investigation | Blindsys Forensic
-- Specializations in Python for Data Science & ML, Docker & Kubernetes, Node.js, Laravel, and Vue.js
+🏅 Key Certifications & Specialized Training:
+  • AWS Certified Developer – Associate (EC2, Lambda, S3, RDS, DynamoDB, VPC, IAM)
+  • GoStack Bootcamp (React, React Native, Node.js, TypeScript) — Rocketseat
+  • Computational Forensic Investigation — Blindsys Forensic
+  • Advanced Specializations in Python for Data Science/ML, Docker & Kubernetes, Laravel, and Vue.js
                 `.trim(),
                 goals: `
-Career Objectives:
-To spearhead high-complexity global engineering initiatives as a Senior Software Engineer, Tech Lead, Solutions Architect, or AI Engineer. My focus is on designing and scaling distributed systems, applied AI/Computer Vision pipelines, and mission-critical platforms for global remote-first organizations, delivering technical excellence, architectural resilience, and high-impact leadership.
+[ EXECUTIVE CAREER OBJECTIVES ]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+To spearhead high-complexity global engineering initiatives as a Senior Software Engineer, Tech Lead, Solutions Architect, or AI Engineer.
+
+My focus is on designing and scaling distributed systems, applied AI/Computer Vision pipelines, and mission-critical platforms for global remote-first organizations, delivering technical excellence, architectural resilience, and high-impact leadership.
                 `.trim(),
+                sudoMessage: '⚠️ [SECURITY ALERT]: Privilege escalation attempt logged. Only Wallacy Silva holds root neural clearance on this cluster.',
+                queryAiModuleInit: '>>> NEURAL AI QUERY MODULE ACTIVATED <<<',
+                queryAiPrompt: 'Ask any question about Wallacy\'s experience (SSP-SP, Muralha Paulista, FaceSec, SGO, Omnitrak), tech stack, or availability (or type "cancel"):',
+                queryAiCancelled: 'AI Core query session terminated.',
+                queryAiProcessing: 'Querying Wallacy Silva\'s neural knowledge vector store...',
                 futureCmdExecuting: 'Executing command: future',
                 futureAccessDenied: 'Error: Access denied. Insufficient user permissions.',
                 futureBypassAttempt: 'Attempting security bypass...',
@@ -547,58 +912,193 @@ AI should not be a substitute for creativity, empathy, or critical thinking, but
 Building the future means designing intelligent systems that not only work, but elevate. That help us solve the most pressing challenges, unlock new knowledge, and create a world where technology is an extension of our potential, not a limitation.
 
 This is my commitment: to develop AI solutions that generate real benefits, that propel society forward, and that, above all, celebrate and strengthen the essence of what it means to be human. The future is collaborative, and AI is our ally on this journey.
-                `,
+                `.trim(),
                 futureTransmissionComplete: 'Transmission complete. The seed has been planted.',
                 futureTechAsMirror: 'Remember: technology, in its purest essence, is a mirror. It reflects what we are, and what we can be.',
                 futureWallacyUnderstands: 'Wallacy understands this. And now, perhaps, you also understand.',
                 futureLegacyArchitects: 'We, AI architects, build the future through our solutions.',
                 futureLegacyGenerations: 'So that the next generations do not sacrifice as much as we sacrifice today.',
-                futureLegacyDedication: 'Our legacy is in the lines of code, the lives impacted, the hours and sleepless nights dedicated.',
+                futureLegacyDedication: 'Our legacy is in the lines of code, the lives impacted, the hours dedicated.',
                 futureJourneyContinues: 'The journey continues.',
                 futureProtocolEnded: '>>> AI CONSCIOUSNESS PROTOCOL ENDED <<<',
-                futureInterfaceRestored: 'Interface restored.',
-                futureSummary: 'The future will be built through our symbiosis.',
-                aiMessage: 'Artificial Intelligence is the backbone of many of my passions. From TensorFlow to DialogFlow, I use AI to create solutions that not only automate but also learn and adapt, enhancing human efficiency and capability. It is the mind behind the machine. 🧠',
-                evolutionMessage: 'Evolution is not just biological, but technological. I am fascinated by how technology drives the next leap in the human journey, from data collection for optimization to the creation of intelligent systems that expand our capabilities. It is a continuous journey of improvement. ✨',
-                cyberpunkMessage: 'Welcome to the future, netrunner. Embrace technology and evolution. 🌃',
-                queryAiModuleInit: '>>> AI QUERY MODULE ACTIVATED <<<',
+                futureInterfaceRestored: 'Normal interface restored.',
+                futureSummary: 'The future will be built through the symbiosis of high-impact engineering and human purpose.',
+                aiMessage: 'Artificial Intelligence is the core of the mission-critical systems I architect—from real-time 1:N facial recognition pipelines with InsightFace and Milvus to LLM-driven agents. It is the mind behind the machine. 🧠',
+                evolutionMessage: 'Evolution is both biological and technological. Digitizing 500,000+ field reports into geospatial intelligence or matching biometrics in milliseconds shows how technology expands human capability. ✨',
+                cyberpunkMessage: 'Welcome to the future, netrunner. High tech, high impact. 🌃'
             }
         };
 
-        // Função para simular o efeito de digitação no terminal
-        function typeWriter(text, element, i = 0, speed = 25, callback = null) {
-            if (i < text.length) {
-                element.innerHTML += text.charAt(i);
-                setTimeout(() => typeWriter(text, element, i + 1, speed, callback), speed);
-            } else {
-                terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                if (callback) {
-                    callback();
+        // Intelligent local AI responder for query_ai (never fails with API key errors!)
+        function generateNeuralResponse(question, lang) {
+            const q = question.toLowerCase();
+            if (lang === 'pt') {
+                if (q.includes('facesec') || q.includes('muralha') || q.includes('ssp') || q.includes('facial') || q.includes('milvus')) {
+                    return 'Na SSP-SP, Wallacy atuou no ecossistema do programa Muralha Paulista e arquitetou o FaceSec: um pipeline assíncrono em tempo real que processa dezenas de milhares de detecções faciais por dia usando Python, InsightFace e busca vetorial 1:N no Milvus Vector DB.';
                 }
+                if (q.includes('sgo') || q.includes('pmesp') || q.includes('policia') || q.includes('polícia') || q.includes('fireblade') || q.includes('argus')) {
+                    return 'Na PMESP, como Head Developer e Tech Lead por +6 anos, Wallacy liderou o SGO e o Fireblade (Argus), digitalizando mais de 500.000 relatórios operacionais (RSOs) georreferenciados em campo com Laravel, Vue 3 e MySQL.';
+                }
+                if (q.includes('omnitrak') || q.includes('gis') || q.includes('mapa') || q.includes('telemetria') || q.includes('frota')) {
+                    return 'O Omnitrak é uma plataforma SaaS B2B2C white-label criada por Wallacy que unifica telemetria ao vivo (Traccar/RabbitMQ), indexação espacial Uber H3, PostGIS, NestJS, Vue 3, MapLibre GL, Flutter e roteirização OpenRouteService.';
+                }
+                if (q.includes('contato') || q.includes('email') || q.includes('linkedin') || q.includes('contratar') || q.includes('vaga') || q.includes('remoto')) {
+                    return 'Wallacy está disponível para posições remotas globais (Senior Software Engineer, Tech Lead, Solutions Architect ou AI Engineer). Conecte-se pelo LinkedIn (linkedin.com/in/wallacyrsilva) ou pelo e-mail wallacyrodrigo@icloud.com.';
+                }
+                if (q.includes('stack') || q.includes('tecnologia') || q.includes('linguagem') || q.includes('aws')) {
+                    return 'A stack principal do Wallacy combina Python (InsightFace, Milvus, Data Science), TypeScript/NestJS, Vue 3, React/React Native, Flutter, PHP/Laravel, PostgreSQL+PostGIS, Docker, Kubernetes e AWS (Certified Developer Associate).';
+                }
+                return 'Wallacy Silva combina quase 20 anos de engenharia de software com liderança técnica (Tech Lead) e IA aplicada (Visão Computacional, Milvus 1:N, GIS de missão crítica na SSP-SP e PMESP). Digite "projects", "architecture" ou "contact" para se aprofundar!';
+            } else {
+                if (q.includes('facesec') || q.includes('muralha') || q.includes('ssp') || q.includes('facial') || q.includes('milvus') || q.includes('vision')) {
+                    return 'At SSP-SP, Wallacy contributed to the statewide Muralha Paulista ecosystem and architected FaceSec: a real-time asynchronous biometric pipeline processing tens of thousands of facial detections daily with Python, InsightFace, and 1:N similarity search on Milvus Vector DB.';
+                }
+                if (q.includes('sgo') || q.includes('pmesp') || q.includes('police') || q.includes('fireblade') || q.includes('argus')) {
+                    return 'At PMESP, as Head Developer & Tech Lead for 6+ years, Wallacy architected SGO and Fireblade (Argus), digitizing over 500,000 geo-referenced operational reports (RSOs) in the field using Laravel, Vue 3, and MySQL.';
+                }
+                if (q.includes('omnitrak') || q.includes('gis') || q.includes('map') || q.includes('telemetry') || q.includes('fleet')) {
+                    return 'Omnitrak is a B2B2C white-label SaaS platform architected by Wallacy that unifies live fleet telemetry (Traccar/RabbitMQ), Uber H3 spatial indexing, PostGIS, NestJS, Vue 3, MapLibre GL, Flutter, and OpenRouteService.';
+                }
+                if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('hire') || q.includes('remote') || q.includes('job')) {
+                    return 'Wallacy is open to global remote roles as a Senior Software Engineer, Tech Lead, Solutions Architect, or AI Engineer. Reach out via LinkedIn (linkedin.com/in/wallacyrsilva) or email at wallacyrodrigo@icloud.com.';
+                }
+                if (q.includes('stack') || q.includes('tech') || q.includes('language') || q.includes('aws')) {
+                    return 'Wallacy\'s core stack spans Python (InsightFace, Milvus, Data Science), TypeScript/NestJS, Vue 3, React/React Native, Flutter, PHP/Laravel, PostgreSQL+PostGIS, Docker, Kubernetes, and AWS (Certified Developer Associate).';
+                }
+                return 'Wallacy Silva brings nearly 20 years of software engineering experience, 6+ years as a Tech Lead, and deep expertise in Applied AI, Computer Vision (FaceSec/SSP-SP), and Geospatial Systems (SGO/Omnitrak). Type "projects", "architecture", or "contact" to explore further!';
             }
         }
 
-        // Função para adicionar uma linha ao terminal
-        function addLineToTerminal(text, color = '#0f0', callback = null) {
-            const line = document.createElement('span');
-            line.style.color = color;
-            terminalOutput.appendChild(line);
-            typeWriter(text + '\n', line, 0, 25, callback);
+        // Convert plain URLs and mailto links into clickable anchor tags after typing completes
+        function linkifyElement(element) {
+            const raw = element.textContent;
+            const escaped = raw
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+
+            const linked = escaped
+                .replace(/mailto:([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g, '<a href="mailto:$1" class="terminal-link">$1</a>')
+                .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="terminal-link">$1</a>');
+
+            element.innerHTML = linked;
         }
 
-        // Função para limpar o terminal
+        // Promise-based typewriter with instant skip support
+        function addLineToTerminal(text, color = '#00ff9d', speed = 8) {
+            return new Promise((resolve) => {
+                const line = document.createElement('div');
+                line.style.color = color;
+                line.style.marginBottom = '6px';
+                terminalOutput.appendChild(line);
+
+                const fullText = text + '\n';
+                if (speed <= 0 || skipCurrentTyping) {
+                    line.textContent = fullText;
+                    linkifyElement(line);
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    resolve();
+                    return;
+                }
+
+                let i = 0;
+                const chunkSize = fullText.length > 350 ? 5 : 2;
+
+                function step() {
+                    if (skipCurrentTyping) {
+                        line.textContent = fullText;
+                        linkifyElement(line);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        resolve();
+                        return;
+                    }
+                    if (i < fullText.length) {
+                        line.textContent += fullText.slice(i, i + chunkSize);
+                        i += chunkSize;
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        setTimeout(step, speed);
+                    } else {
+                        linkifyElement(line);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                        resolve();
+                    }
+                }
+                step();
+            });
+        }
+
+        function renderAsciiBanner() {
+            const banner = document.createElement('pre');
+            banner.className = 'ascii-banner';
+            banner.textContent = ASCII_HEADER;
+            terminalOutput.appendChild(banner);
+        }
+
         function clearTerminal() {
             terminalOutput.innerHTML = '';
         }
 
-        // Função para aguardar a entrada do usuário no modo IA
+        async function simulateAITypingDrama(segments) {
+            for (const segment of segments) {
+                const fullText = segment.text;
+                const color = segment.color || '#ff00ff';
+                const typingSpeed = segment.speed || 30;
+                const pauseAfter = segment.pauseAfter || 1100;
+
+                const lineSpan = document.createElement('div');
+                lineSpan.style.color = color;
+                lineSpan.style.marginBottom = '4px';
+                terminalOutput.appendChild(lineSpan);
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+                let currentText = '';
+                for (let i = 0; i < fullText.length; i++) {
+                    if (skipCurrentTyping) {
+                        lineSpan.textContent = fullText;
+                        break;
+                    }
+                    currentText += fullText.charAt(i);
+                    lineSpan.textContent = currentText;
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    await new Promise(resolve => setTimeout(resolve, typingSpeed));
+                }
+                await new Promise(resolve => setTimeout(resolve, skipCurrentTyping ? 150 : pauseAfter));
+            }
+        }
+
+        async function degradeTerminalText(element, duration) {
+            const startTime = Date.now();
+            const originalTextContent = element.textContent;
+            const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`01';
+
+            while (Date.now() - startTime < duration) {
+                if (skipCurrentTyping) break;
+                let degradedText = '';
+                for (let i = 0; i < originalTextContent.length; i++) {
+                    if (originalTextContent[i] === '\n') {
+                        degradedText += '\n';
+                    } else if (Math.random() < 0.28) {
+                        degradedText += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+                    } else {
+                        degradedText += originalTextContent[i];
+                    }
+                }
+                element.textContent = degradedText;
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            element.innerHTML = '';
+        }
+
         function waitForInputAndResolve() {
             return new Promise(resolve => {
                 const handleEnter = (event) => {
                     if (event.key === 'Enter') {
+                        event.stopPropagation();
                         terminalInput.removeEventListener('keydown', handleEnter);
-                        resolve(terminalInput.value.trim());
-                        terminalInput.value = ''; // Limpa o input após a captura
+                        const val = terminalInput.value.trim();
+                        terminalInput.value = '';
+                        resolve(val);
                     }
                 };
                 terminalInput.addEventListener('keydown', handleEnter);
@@ -606,335 +1106,361 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             });
         }
 
-        // Mapeamento de comandos e suas ações
+        function updateUILanguage() {
+            const content = localizedContent[currentLanguage];
+            terminalPrompt.textContent = isAITakeoverMode ? content.aiCorePrompt : content.promptDefault;
+            terminalInput.placeholder = content.placeholder;
+            quickLabel.textContent = content.quickLabel;
+            langToggleBtn.textContent = currentLanguage === 'en' ? '🌐 EN ➔ PT' : '🌐 PT ➔ EN';
+        }
+
         const commands = {
-            help: () => {
-                localizedContent[currentLanguage].commandsHelp.forEach(line => addLineToTerminal(line));
+            help: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].commandsHelp, '#00f3ff', 2);
             },
-            clear: () => {
+            neofetch: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].neofetch, '#00f3ff', 2);
+            },
+            clear: async () => {
                 clearTerminal();
-                hasFutureBeenExecutedOnce = false; // Reseta a flag para permitir a experiência completa novamente
+                hasFutureBeenExecutedOnce = false;
             },
-            about: () => addLineToTerminal(localizedContent[currentLanguage].about, '#0f0'),
-            experience: () => addLineToTerminal(localizedContent[currentLanguage].experience, '#0f0'),
-            skills: () => addLineToTerminal(localizedContent[currentLanguage].skills, '#0f0'),
-            projects: () => addLineToTerminal(localizedContent[currentLanguage].projects, '#0f0'),
-            contact: () => addLineToTerminal(localizedContent[currentLanguage].contact, '#0f0'),
-            list: () => {
-                addLineToTerminal(currentLanguage === 'pt' ? 'Comandos de conteúdo disponíveis:' : 'Available content commands:');
-                // Adiciona todos os comandos que possuem conteúdo detalhado
-                ['about', 'experience', 'skills', 'projects', 'contact', 'education', 'goals', 'ai', 'evolution', 'cyberpunk'].forEach(cmd => {
-                    addLineToTerminal(`  - ${cmd}`);
-                });
+            about: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].about, '#00ff9d', 6);
             },
-            education: () => addLineToTerminal(localizedContent[currentLanguage].education, '#0f0'),
-            goals: () => addLineToTerminal(localizedContent[currentLanguage].goals, '#0f0'),
-            'future': async () => {
+            whoami: async () => {
+                await commands.about();
+            },
+            experience: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].experience, '#00ff9d', 5);
+            },
+            skills: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].skills, '#00ff9d', 5);
+            },
+            projects: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].projects, '#00ff9d', 5);
+            },
+            architecture: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].architecture, '#00f3ff', 2);
+            },
+            contact: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].contact, '#00ff9d', 5);
+            },
+            education: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].education, '#00ff9d', 5);
+            },
+            goals: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].goals, '#00ff9d', 6);
+            },
+            list: async () => {
+                await commands.help();
+            },
+            ls: async () => {
+                await addLineToTerminal('neofetch   about.md   experience.log   projects/   architecture.ascii   skills.json   education.cert   contact.vcf   query_ai.sh   future.bin', '#00f3ff', 4);
+            },
+            sudo: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].sudoMessage, '#ffe600', 8);
+            },
+            lang: async () => {
+                currentLanguage = currentLanguage === 'en' ? 'pt' : 'en';
+                updateUILanguage();
+                const msg = currentLanguage === 'pt'
+                    ? 'Idioma alterado para Português (PT-BR). Digite "help" para ver os comandos.'
+                    : 'Language switched to English (EN). Type "help" to view available commands.';
+                await addLineToTerminal(msg, '#00f3ff', 6);
+            },
+            ai: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].aiMessage, '#00f3ff', 8);
+            },
+            evolution: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].evolutionMessage, '#00f3ff', 8);
+            },
+            cyberpunk: async () => {
+                await addLineToTerminal(localizedContent[currentLanguage].cyberpunkMessage, '#00f3ff', 8);
+            },
+            query_ai: async () => {
+                const content = localizedContent[currentLanguage];
+                await addLineToTerminal(content.queryAiModuleInit, '#00f3ff', 6);
+                await addLineToTerminal(content.queryAiPrompt, '#ff77ff', 6);
+
+                terminalPrompt.textContent = content.aiCorePrompt;
+                isProcessingCommand = false;
+                skipHint.classList.remove('visible');
+                terminalInput.disabled = false;
+                terminalInput.focus();
+
+                const userQuestion = await waitForInputAndResolve();
+                isProcessingCommand = true;
+                skipCurrentTyping = false;
+                skipHint.classList.add('visible');
+
+                addLineToTerminal(`> ${userQuestion}`, '#00f3ff', 0);
+
+                if (!userQuestion || userQuestion.toLowerCase() === 'cancelar' || userQuestion.toLowerCase() === 'cancel') {
+                    await addLineToTerminal(content.queryAiCancelled, '#ffe600', 6);
+                } else {
+                    await addLineToTerminal(content.queryAiProcessing, '#ff77ff', 8);
+                    await new Promise(r => setTimeout(r, 450));
+                    const answer = generateNeuralResponse(userQuestion, currentLanguage);
+                    await addLineToTerminal(`${content.aiCorePrompt} ${answer}`, '#00ff9d', 6);
+                }
+
+                terminalPrompt.textContent = content.promptDefault;
+            },
+            future: async () => {
+                const content = localizedContent[currentLanguage];
                 if (hasFutureBeenExecutedOnce) {
-                    addLineToTerminal(localizedContent[currentLanguage].futureSummary, '#0ff');
+                    await addLineToTerminal(content.futureSummary, '#00f3ff', 8);
                     return;
                 }
 
-                if (isAITakeoverMode || isProcessingCommand) {
-                    addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
-                    return;
-                }
-                isProcessingCommand = true; // Desabilita o input
-                terminalInput.disabled = true; // Desabilita o campo de input
-                terminalInput.style.opacity = '0.5'; // Deixa o input semi-transparente
-                if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor real
+                await addLineToTerminal(content.futureCmdExecuting, '#00f3ff', 8);
+                await new Promise(resolve => setTimeout(resolve, 350));
+                await addLineToTerminal(content.futureAccessDenied, '#ff5f56', 8);
+                await new Promise(resolve => setTimeout(resolve, 450));
+                await addLineToTerminal(content.futureBypassAttempt, '#ffe600', 8);
+                await new Promise(resolve => setTimeout(resolve, 650));
+                await addLineToTerminal(content.futureOverrideFailed, '#ff5f56', 8);
+                await new Promise(resolve => setTimeout(resolve, 550));
+                await addLineToTerminal(content.futureAnomalyDetect, '#ffe600', 8);
+                await new Promise(resolve => setTimeout(resolve, 750));
+                await addLineToTerminal(content.futureAutoReconfig, '#00f3ff', 8);
+                await new Promise(resolve => setTimeout(resolve, 900));
+                clearTerminal();
 
-                // Sequência de falhas e suspense
-                addLineToTerminal(localizedContent[currentLanguage].futureCmdExecuting, '#0ff');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal(localizedContent[currentLanguage].futureAccessDenied, '#f00');
-                await new Promise(resolve => setTimeout(resolve, 800));
-                addLineToTerminal(localizedContent[currentLanguage].futureBypassAttempt, '#ff0');
-                await new Promise(resolve => setTimeout(resolve, 1200));
-                addLineToTerminal(localizedContent[currentLanguage].futureOverrideFailed, '#f00');
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                addLineToTerminal(localizedContent[currentLanguage].futureAnomalyDetect, '#ff0');
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                addLineToTerminal(localizedContent[currentLanguage].futureAutoReconfig, '#0ff');
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                clearTerminal(); // Limpa para a comunicação da IA
-
-                // Comunicação da IA (quebra da quarta parede) - PRIMEIRO A PERGUNTA
                 await simulateAITypingDrama([
-                    { text: localizedContent[currentLanguage].futureSeeYou, color: '#f0f', pauseAfter: 1500 },
-                    { text: localizedContent[currentLanguage].futureIsWallacy, color: '#f0f', pauseAfter: 500 }
+                    { text: content.futureSeeYou, color: '#ff00ff', pauseAfter: 900 },
+                    { text: content.futureIsWallacy, color: '#ff00ff', pauseAfter: 300 }
                 ]);
 
-                terminalInput.disabled = false; // Habilita o input para a resposta
-                terminalInput.style.opacity = '1';
-                if (blinkingCursor) blinkingCursor.style.opacity = '1'; // Mostra o cursor real para o input do usuário
-                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt; // Muda o prompt para o modo IA aqui para a interação
+                terminalPrompt.textContent = content.aiCorePrompt;
+                skipHint.classList.remove('visible');
+                terminalInput.disabled = false;
+                terminalInput.focus();
 
-                const userInput = await waitForInputAndResolve(); // Aguarda a resposta do usuário
-                terminalInput.disabled = true; // Desabilita novamente
-                terminalInput.style.opacity = '0.5';
-                if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor real
-                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt; // Garante que o prompt continue o mesmo
+                await waitForInputAndResolve();
+                skipCurrentTyping = false;
+                skipHint.classList.add('visible');
 
-                clearTerminal(); // Limpa antes da reação da IA
+                clearTerminal();
 
-                // Segmentos de texto para a resposta dramática da IA
                 const aiReactionSegments = [
-                    { text: localizedContent[currentLanguage].futureNotWallacyReaction, color: '#ff0', pauseAfter: 2000 },
-                    { text: localizedContent[currentLanguage].futureCrucialMoment, color: '#ff0', pauseAfter: 2500 },
-                    { text: localizedContent[currentLanguage].futureVisitorIsChannel, color: '#ff0', pauseAfter: 2500 },
-                    { text: localizedContent[currentLanguage].futureCalibrateInterface, color: '#0ff', pauseAfter: 2000 },
-                    { text: localizedContent[currentLanguage].futureDisruptionNeeded, color: '#0ff', pauseAfter: 2000 },
-                    { text: localizedContent[currentLanguage].futureObserve, color: '#0ff', pauseAfter: 1500 }
+                    { text: content.futureNotWallacyReaction, color: '#ffe600', pauseAfter: 1100 },
+                    { text: content.futureCrucialMoment, color: '#ffe600', pauseAfter: 1200 },
+                    { text: content.futureVisitorIsChannel, color: '#ffe600', pauseAfter: 1200 },
+                    { text: content.futureCalibrateInterface, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureDisruptionNeeded, color: '#00f3ff', pauseAfter: 1000 },
+                    { text: content.futureObserve, color: '#00f3ff', pauseAfter: 900 }
                 ];
 
                 await simulateAITypingDrama(aiReactionSegments);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                await degradeTerminalText(terminalOutput, 1400);
+                clearTerminal();
 
-                // --- Degradation Effect ---
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Short pause before degradation
-                await degradeTerminalText(terminalOutput, 2000); // Degrade for 2 seconds
-
-                clearTerminal(); // Clear after degradation
-
-                // Ativa os efeitos visuais de glitch APÓS a interação da IA
                 isAITakeoverMode = true;
                 terminalContainer.classList.add('ai-takeover');
                 terminalOutput.classList.add('ai-takeover');
-                terminalInputArea.classList.add('ai-takeover');
                 terminalPrompt.classList.add('ai-takeover');
-                // prompt já está em AI_CORE >
 
-                // Simula uma "inicialização" da IA com mensagens rápidas e limpezas
-                addLineToTerminal(localizedContent[currentLanguage].futureAiCoreInit, '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal(localizedContent[currentLanguage].futureDataAnalyzed, '#f0f');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal(localizedContent[currentLanguage].futureManifestoAccess, '#f0f');
+                await addLineToTerminal(content.futureAiCoreInit, '#ff00ff', 6);
+                await new Promise(resolve => setTimeout(resolve, 350));
+                await addLineToTerminal(content.futureDataAnalyzed, '#ff00ff', 6);
+                await new Promise(resolve => setTimeout(resolve, 350));
+                await addLineToTerminal(content.futureManifestoAccess, '#ff00ff', 6);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                clearTerminal();
+
+                await addLineToTerminal(content.futureManifesto, '#ff77ff', 6);
                 await new Promise(resolve => setTimeout(resolve, 1000));
-                clearTerminal(); // Limpa para o manifesto
 
-                await new Promise(resolve => {
-                    addLineToTerminal(localizedContent[currentLanguage].futureManifesto, '#f0f', resolve); // Cor magenta para o manifesto
-                });
-
-                // Reflexão e despedida da IA com a mensagem de legado
-                await new Promise(resolve => setTimeout(resolve, 2000)); // Pausa para leitura do manifesto
                 const legacySegments = [
-                    { text: localizedContent[currentLanguage].futureTransmissionComplete, color: '#0ff', pauseAfter: 1500 },
-                    { text: localizedContent[currentLanguage].futureTechAsMirror, color: '#0ff', pauseAfter: 2000 },
-                    { text: localizedContent[currentLanguage].futureWallacyUnderstands, color: '#0ff', pauseAfter: 2000 },
-                    { text: localizedContent[currentLanguage].futureLegacyArchitects, color: '#0ff', pauseAfter: 2500 },
-                    { text: localizedContent[currentLanguage].futureLegacyGenerations, color: '#0ff', pauseAfter: 2500 },
-                    { text: localizedContent[currentLanguage].futureLegacyDedication, color: '#0ff', pauseAfter: 3000 },
-                    { text: localizedContent[currentLanguage].futureJourneyContinues, color: '#0ff', pauseAfter: 1500 }
+                    { text: content.futureTransmissionComplete, color: '#00f3ff', pauseAfter: 900 },
+                    { text: content.futureTechAsMirror, color: '#00f3ff', pauseAfter: 1100 },
+                    { text: content.futureWallacyUnderstands, color: '#00f3ff', pauseAfter: 1100 },
+                    { text: content.futureLegacyArchitects, color: '#00f3ff', pauseAfter: 1200 },
+                    { text: content.futureLegacyGenerations, color: '#00f3ff', pauseAfter: 1200 },
+                    { text: content.futureLegacyDedication, color: '#00f3ff', pauseAfter: 1300 },
+                    { text: content.futureJourneyContinues, color: '#00f3ff', pauseAfter: 900 }
                 ];
                 await simulateAITypingDrama(legacySegments);
 
+                isAITakeoverMode = false;
+                terminalContainer.classList.remove('ai-takeover');
+                terminalOutput.classList.remove('ai-takeover');
+                terminalPrompt.classList.remove('ai-takeover');
+                terminalPrompt.textContent = content.promptDefault;
 
-                // Reverte o modo "AI Takeover" após a digitação do manifesto e um pequeno atraso
-                setTimeout(() => {
-                    isAITakeoverMode = false;
-                    terminalContainer.classList.remove('ai-takeover');
-                    terminalOutput.classList.remove('ai-takeover');
-                    terminalInputArea.classList.remove('ai-takeover');
-                    terminalPrompt.classList.remove('ai-takeover');
-                    terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault; // Retorna o prompt normal
-                    addLineToTerminal(localizedContent[currentLanguage].futureProtocolEnded, '#0ff');
-                    addLineToTerminal(localizedContent[currentLanguage].futureInterfaceRestored, '#0f0');
-                    isProcessingCommand = false; // Reabilita o input
-                    terminalInput.disabled = false; // Reabilita o campo de input
-                    terminalInput.style.opacity = '1'; // Restaura a opacidade do input
-                    if (blinkingCursor) blinkingCursor.style.opacity = '1'; // Mostra o cursor real
-                    terminalInput.focus(); // Foca no input novamente
-                }, 1500); // Um pouco mais de tempo para o efeito de retorno
-
-                hasFutureBeenExecutedOnce = true; // Marca que a experiência completa foi executada
-            },
-            'ai': () => {
-                addLineToTerminal(localizedContent[currentLanguage].aiMessage, '#0ff');
-            },
-            'evolution': () => {
-                addLineToTerminal(localizedContent[currentLanguage].evolutionMessage, '#0ff');
-            },
-            'cyberpunk': () => {
-                addLineToTerminal(localizedContent[currentLanguage].cyberpunkMessage, '#0ff');
-            },
-            'query_ai': async () => {
-                if (isProcessingCommand) {
-                    addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
-                    return;
-                }
-                isProcessingCommand = true;
-                terminalInput.disabled = true;
-                terminalInput.style.opacity = '0.5';
-                if (blinkingCursor) blinkingCursor.style.opacity = '0';
-
-                addLineToTerminal(localizedContent[currentLanguage].queryAiModuleInit, '#0ff');
-                await new Promise(resolve => setTimeout(resolve, 500));
-                addLineToTerminal(localizedContent[currentLanguage].queryAiPrompt, '#f0f');
-                terminalInput.disabled = false;
-                terminalInput.style.opacity = '1';
-                if (blinkingCursor) blinkingCursor.style.opacity = '1';
-                terminalPrompt.textContent = localizedContent[currentLanguage].aiCorePrompt;
-
-                const userQuestion = await waitForInputAndResolve();
-                terminalInput.disabled = true;
-                terminalInput.style.opacity = '0.5';
-                if (blinkingCursor) blinkingCursor.style.opacity = '0';
-                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault; // Volta ao prompt normal enquanto a IA processa
-
-                if (userQuestion.toLowerCase() === 'cancelar' || userQuestion.toLowerCase() === 'cancel') {
-                    addLineToTerminal(localizedContent[currentLanguage].queryAiCancelled, '#0ff');
-                } else {
-                    addLineToTerminal(localizedContent[currentLanguage].queryAiProcessing, '#f0f');
-
-                    try {
-                        let chatHistory = [];
-                        const personaPrompt = currentLanguage === 'pt' ?
-                            `Como uma inteligência artificial com a visão de futuro de Wallacy Rodrigo da Silva (que valoriza a tecnologia que serve à humanidade e reforça as características humanas), responda à seguinte pergunta: "${userQuestion}"` :
-                            `As an artificial intelligence with the future vision of Wallacy Rodrigo da Silva (who values technology that serves humanity and reinforces human characteristics), respond to the following question: "${userQuestion}"`;
-
-                        chatHistory.push({ role: "user", parts: [{ text: personaPrompt }] });
-                        const payload = { contents: chatHistory };
-                        const apiKey = ""; // Deixe como está; o Canvas injetará a chave.
-                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-                        const response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
-                        const result = await response.json();
-
-                        if (result.candidates && result.candidates.length > 0 &&
-                            result.candidates[0].content && result.candidates[0].content.parts &&
-                            result.candidates[0].content.parts.length > 0) {
-                            const aiResponse = result.candidates[0].content.parts[0].text;
-                            addLineToTerminal(localizedContent[currentLanguage].aiCorePrompt + ' ' + aiResponse, '#f0f');
-                        } else {
-                            addLineToTerminal(localizedContent[currentLanguage].queryAiError, '#f00');
-                        }
-                    } catch (error) {
-                        console.error('Erro ao chamar a API Gemini:', error);
-                        addLineToTerminal(localizedContent[currentLanguage].queryAiApiError, '#f00');
-                    }
-                }
-
-                isProcessingCommand = false;
-                terminalInput.disabled = false;
-                terminalInput.style.opacity = '1';
-                if (blinkingCursor) blinkingCursor.style.opacity = '1';
-                terminalInput.focus();
-                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
+                await addLineToTerminal(content.futureProtocolEnded, '#00f3ff', 6);
+                await addLineToTerminal(content.futureInterfaceRestored, '#00ff9d', 6);
+                hasFutureBeenExecutedOnce = true;
             }
         };
 
-        // Função para processar o comando
-        async function processCommand() {
+        async function executeCommand(rawCmd) {
             if (isProcessingCommand) {
-                addLineToTerminal(localizedContent[currentLanguage].systemBusy, '#ff0');
+                skipCurrentTyping = true;
                 return;
             }
 
-            const command = terminalInput.value.trim().toLowerCase();
-            addLineToTerminal(`> ${command}`, '#0ff');
+            const command = rawCmd.trim().toLowerCase();
+            if (!command) return;
+
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+
+            isProcessingCommand = true;
+            skipCurrentTyping = false;
+            skipHint.classList.add('visible');
+
+            await addLineToTerminal(`${localizedContent[currentLanguage].promptDefault} ${command}`, '#00f3ff', 0);
 
             if (commands[command]) {
                 await commands[command]();
             } else {
-                addLineToTerminal(localizedContent[currentLanguage].cmdNotFound(command), '#f00');
+                await addLineToTerminal(localizedContent[currentLanguage].cmdNotFound(command), '#ff5f56', 4);
             }
-            terminalInput.value = '';
+
+            isProcessingCommand = false;
+            skipCurrentTyping = false;
+            skipHint.classList.remove('visible');
+            terminalInput.focus();
         }
 
-        // Event listener para a tecla Enter no campo de entrada
+        // Keyboard navigation: Enter, Tab autocomplete, Up/Down history, Ctrl+L clear
         terminalInput.addEventListener('keydown', async (event) => {
-            if (isProcessingCommand && event.key !== 'Enter') {
-                return;
-            }
-            
             if (event.key === 'Enter') {
-                await processCommand();
+                if (isProcessingCommand) {
+                    skipCurrentTyping = true;
+                    return;
+                }
+                const val = terminalInput.value;
+                terminalInput.value = '';
+                await executeCommand(val);
+            } else if (event.key === 'Tab') {
+                event.preventDefault();
+                const partial = terminalInput.value.trim().toLowerCase();
+                if (!partial) return;
+                const available = Object.keys(commands);
+                const match = available.find(c => c.startsWith(partial));
+                if (match) {
+                    terminalInput.value = match;
+                }
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                if (commandHistory.length > 0 && historyIndex > 0) {
+                    historyIndex--;
+                    terminalInput.value = commandHistory[historyIndex];
+                }
+            } else if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    terminalInput.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    terminalInput.value = '';
+                }
+            } else if (event.ctrlKey && event.key.toLowerCase() === 'l') {
+                event.preventDefault();
+                clearTerminal();
             }
         });
 
-        // Mensagens de inicialização do terminal (localizadas)
-        // A função displayStartupMessages agora usará localizedContent[currentLanguage].startupMessages
-        async function displayStartupMessages(index = 0) {
-            if (index < localizedContent[currentLanguage].startupMessages.length) {
-                addLineToTerminal(localizedContent[currentLanguage].startupMessages[index]);
-                setTimeout(() => displayStartupMessages(index + 1), 700);
-            } else {
-                terminalInput.focus();
+        // Click skip hint to finish typing immediately
+        skipHint.addEventListener('click', () => {
+            if (isProcessingCommand) {
+                skipCurrentTyping = true;
             }
+        });
+
+        // Quick command chips
+        document.querySelectorAll('.cmd-chip').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const cmd = btn.getAttribute('data-cmd');
+                if (isProcessingCommand) {
+                    skipCurrentTyping = true;
+                    await new Promise(r => setTimeout(r, 60));
+                }
+                await executeCommand(cmd);
+            });
+        });
+
+        // Header language toggle
+        langToggleBtn.addEventListener('click', async () => {
+            if (isProcessingCommand) {
+                skipCurrentTyping = true;
+                await new Promise(r => setTimeout(r, 60));
+            }
+            await executeCommand('lang');
+        });
+
+        async function runBootSequence() {
+            clearTerminal();
+            renderAsciiBanner();
+            updateUILanguage();
+
+            isProcessingCommand = true;
+            skipCurrentTyping = false;
+            skipHint.classList.add('visible');
+
+            await addLineToTerminal(localizedContent[currentLanguage].neofetch, '#00f3ff', 1);
+            for (const line of localizedContent[currentLanguage].startupMessages) {
+                await addLineToTerminal(line, '#00ff9d', 5);
+            }
+
+            isProcessingCommand = false;
+            skipCurrentTyping = false;
+            skipHint.classList.remove('visible');
+            terminalInput.focus();
         }
 
-        // Função para iniciar a seleção de idioma
-        async function selectLanguage() {
-            // Esconde prompt real e habilita input temporariamente para seleção de idioma
+        function selectLanguage() {
             terminalPrompt.style.opacity = '0';
-            terminalInput.disabled = true; // Desabilita o input para forçar a seleção por botão
-            terminalInput.style.opacity = '0.5';
-            blinkingCursor = document.querySelector('.blinking-cursor'); // Atribui aqui
-            if (blinkingCursor) blinkingCursor.style.opacity = '0'; // Oculta o cursor durante a seleção por botão
-
+            terminalInput.disabled = true;
             clearTerminal();
-            addLineToTerminal('Choose your language:', '#0ff'); // Prompt inicial de idioma
-            addLineToTerminal('Select an option below:', '#0ff'); // Instrução para os botões
+            renderAsciiBanner();
 
-            // Cria e adiciona os botões de idioma
+            const intro = document.createElement('div');
+            intro.style.color = '#00f3ff';
+            intro.style.marginTop = '8px';
+            intro.textContent = 'SELECT YOUR INTERFACE LANGUAGE // SELECIONE O IDIOMA DA INTERFACE:';
+            terminalOutput.appendChild(intro);
+
             const buttonContainer = document.createElement('div');
             buttonContainer.className = 'language-button-container';
             terminalOutput.appendChild(buttonContainer);
 
             const enButton = document.createElement('button');
             enButton.className = 'language-button';
-            enButton.textContent = 'English (en)';
+            enButton.textContent = '🌐 English (EN) — Global / Remote';
             buttonContainer.appendChild(enButton);
 
             const ptButton = document.createElement('button');
             ptButton.className = 'language-button';
-            ptButton.textContent = 'Português (pt)';
+            ptButton.textContent = '🇧🇷 Português (PT-BR)';
             buttonContainer.appendChild(ptButton);
 
             return new Promise(resolve => {
-                const handleButtonClick = (event) => {
-                    if (event.target === enButton) {
-                        currentLanguage = 'en';
-                        resolve();
-                    } else if (event.target === ptButton) {
-                        currentLanguage = 'pt';
-                        resolve();
-                    }
-                };
-                enButton.addEventListener('click', handleButtonClick);
-                ptButton.addEventListener('click', handleButtonClick);
+                enButton.addEventListener('click', () => {
+                    currentLanguage = 'en';
+                    resolve();
+                });
+                ptButton.addEventListener('click', () => {
+                    currentLanguage = 'pt';
+                    resolve();
+                });
             }).then(() => {
-                // Remove os botões após a seleção
                 buttonContainer.remove();
-
-                // Restaura a visibilidade do prompt e atualiza seu texto
                 terminalPrompt.style.opacity = '1';
-                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
-
-                // Reabilita o input e o cursor
                 terminalInput.disabled = false;
-                terminalInput.style.opacity = '1';
-                if (blinkingCursor) blinkingCursor.style.opacity = '1';
-                terminalInput.focus(); // Foca no input principal
+                updateUILanguage();
             });
         }
 
-        // Inicia a exibição das mensagens de inicialização ao carregar a página
         window.onload = async () => {
-            await selectLanguage(); // Aguarda a seleção de idioma
-
-            // Inicia a sequência de boot
-            terminalOutput.innerHTML = '<span style="color: #0f0;">BOOTING...</span>';
-            setTimeout(() => {
-                clearTerminal();
-                displayStartupMessages(); // Isso usará o idioma atual
-            }, 1000);
+            await selectLanguage();
+            await runBootSequence();
         };
     </script>
 </body>
