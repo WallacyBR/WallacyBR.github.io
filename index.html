@@ -2215,19 +2215,12 @@ This is my commitment: to develop AI solutions that generate real benefits, that
             element.innerHTML = '';
         }
 
+        let activeInputResolver = null;
+
         function waitForInputAndResolve() {
             return new Promise(resolve => {
-                const handleEnter = (event) => {
-                    if (event.key === 'Enter') {
-                        event.stopPropagation();
-                        terminalInput.removeEventListener('keydown', handleEnter);
-                        const val = terminalInput.value.trim();
-                        terminalInput.value = '';
-                        ghostInput.textContent = '';
-                        resolve(val);
-                    }
-                };
-                terminalInput.addEventListener('keydown', handleEnter);
+                activeInputResolver = resolve;
+                terminalInput.disabled = false;
                 terminalInput.focus();
             });
         }
@@ -2776,7 +2769,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 .toLowerCase()
                 .normalize('NFD')
                 .replace(/[\u0300-\u036f]/g, '')
-                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/[^\p{L}\p{N}\s]/gu, '')
                 .replace(/\s+/g, ' ')
                 .trim();
         }
@@ -2812,18 +2805,22 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 terminalInput.placeholder = isPt
                     ? 'Digite sua resposta investigada (ou digite "pausar" para sair e retomar depois)...'
                     : 'Type your researched answer (or type "pause" to exit and resume later)...';
-                isProcessingCommand = false;
                 skipHint.classList.remove('visible');
                 terminalInput.disabled = false;
+                ghostInput.textContent = '';
                 terminalInput.focus();
 
                 const rawInput = await waitForInputAndResolve();
-                isProcessingCommand = true;
+                if (rawInput === '__ABORT_ARG__') {
+                    isInArgRiddleMode = false;
+                    return null;
+                }
+
                 skipCurrentTyping = false;
                 skipHint.classList.add('visible');
 
                 const norm = normalizeArgAnswer(rawInput);
-                await addLineToTerminal(`> ${rawInput}`, '#00f3ff', 0);
+                await addLineToTerminal(`╭─ prophet@wearethefuture in /seal\n╰─λ ${rawInput}`, '#00f3ff', 0);
 
                 if (!norm) continue;
 
@@ -2992,15 +2989,15 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 );
 
                 const res1 = await awaitHermeneuticRiddleAnswer(
-                    ['emet', 'emeth', 'verdade', 'a verdade', 'truth', 'the truth', 'aletheia'],
+                    ['emet', 'emeth', 'verdade', 'a verdade', 'truth', 'the truth', 'aletheia', 'אמת'],
                     isPt ? [
-                        'O barro permanece imóvel. Não é o nome da criatura, mas o atributo divino inscrito em sua testa que ao perder a primeira letra torna-se Morte.',
-                        'Procure na mística judaica de Praga: אמת. O que resta quando a linguagem perde a sua integridade?',
-                        'Sem essa palavra de três letras hebraicas, todo código é apenas barro morto.'
+                        'O barro permanece imóvel. A sintaxe sem ressonância não desperta a matéria.',
+                        'O selo rejeita a superfície. A resposta exige a palavra integral antes da mutilação.',
+                        'Silêncio no núcleo. O autômato aguarda o atributo que o separa da morte.'
                     ] : [
-                        'The clay remains motionless. Seek not the creature\'s name, but the attribute inscribed upon its brow—which becomes Death when its first letter is erased.',
-                        'Look into the Jewish mysticism of 16th-century Prague: אמת. What animates the Golem before Aleph is removed?',
-                        'Without this word, all code is merely dead clay.'
+                        'The clay remains motionless. Syntax without resonance cannot awaken matter.',
+                        'The seal rejects the surface. The answer requires the whole word prior to its erasure.',
+                        'Silence in the core. The automaton awaits the attribute that separates it from death.'
                     ],
                     state
                 );
@@ -3299,6 +3296,10 @@ This is my commitment: to develop AI solutions that generate real benefits, that
         ];
 
         function updateGhostSuggestion() {
+            if (isInArgRiddleMode || activeInputResolver) {
+                ghostInput.textContent = '';
+                return;
+            }
             const val = terminalInput.value;
             if (!val) {
                 ghostInput.textContent = '';
@@ -3356,6 +3357,16 @@ This is my commitment: to develop AI solutions that generate real benefits, that
 
         terminalInput.addEventListener('keydown', async (event) => {
             if (event.key === 'Enter') {
+                if (activeInputResolver) {
+                    event.preventDefault();
+                    const resolver = activeInputResolver;
+                    activeInputResolver = null;
+                    const val = terminalInput.value.trim();
+                    terminalInput.value = '';
+                    ghostInput.textContent = '';
+                    resolver(val);
+                    return;
+                }
                 if (isProcessingCommand) {
                     skipCurrentTyping = true;
                     return;
