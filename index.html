@@ -51,6 +51,16 @@
             --border-glow: rgba(189, 147, 249, 0.65);
         }
 
+        [data-theme="singularity"] {
+            --neon-primary: #ffd700;
+            --neon-secondary: #00f3ff;
+            --neon-accent: #ff007f;
+            --neon-warn: #ffffff;
+            --bg-dark: #07060c;
+            --terminal-bg: rgba(14, 12, 24, 0.96);
+            --border-glow: rgba(255, 215, 0, 0.75);
+        }
+
         * {
             box-sizing: border-box;
         }
@@ -623,6 +633,108 @@
             letter-spacing: 0.08em;
         }
 
+        /* =========================================================================
+           PHOSPHOR BURN-IN GHOST OVERLAY ("WEARETHEFUTURE" FINAL GLITCH CLUE)
+           ========================================================================= */
+        .phosphor-burn-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10002;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            background: radial-gradient(circle at center, rgba(255, 0, 100, 0.22) 0%, rgba(0, 0, 0, 0.72) 85%);
+        }
+
+        .phosphor-burn-overlay.ignite {
+            visibility: visible;
+            opacity: 1;
+            transition: none;
+        }
+
+        .phosphor-burn-overlay.fade-out {
+            visibility: visible;
+            opacity: 0;
+            transition: opacity 4.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .phosphor-burn-word {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: clamp(1.8rem, 6.8vw, 6.2rem);
+            letter-spacing: 0.24em;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-shadow:
+                -6px 0 0 #ff004c,
+                6px 0 0 #00f3ff,
+                0 0 35px #ff00aa,
+                0 0 80px #00f3ff,
+                0 0 130px #ff004c;
+            animation: phosphor-jitter 0.14s infinite alternate;
+            user-select: none;
+            text-align: center;
+            padding: 0 16px;
+        }
+
+        .phosphor-burn-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.68rem, 1.4vw, 0.95rem);
+            letter-spacing: 0.45em;
+            color: #00f3ff;
+            margin-top: 14px;
+            opacity: 0.85;
+            text-shadow: 0 0 14px #00f3ff, -2px 0 0 #ff0055;
+            text-align: center;
+        }
+
+        @keyframes phosphor-jitter {
+            0% {
+                transform: scale(1.01) skewX(-2deg) translate(-2px, 1px);
+                text-shadow: -7px 0 0 #ff004c, 7px 0 0 #00f3ff, 0 0 40px #ff00aa;
+            }
+            50% {
+                transform: scale(0.995) skewX(1.5deg) translate(2px, -1px);
+                text-shadow: 5px -1px 0 #ff004c, -5px 1px 0 #00f3ff, 0 0 65px #00f3ff;
+            }
+            100% {
+                transform: scale(1.02) skewX(-0.5deg) translate(0, 0);
+                text-shadow: -4px 2px 0 #ff004c, 4px -2px 0 #00f3ff, 0 0 50px #ff0055;
+            }
+        }
+
+        /* Existential ARG Game HUD Box */
+        .arg-hud-bar {
+            border: 1px solid rgba(255, 0, 128, 0.65);
+            background: linear-gradient(90deg, rgba(22, 4, 28, 0.92), rgba(6, 18, 32, 0.92));
+            box-shadow: 0 0 18px rgba(255, 0, 128, 0.25);
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            color: #00f3ff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .arg-riddle-box {
+            border: 1px solid rgba(0, 243, 255, 0.55);
+            border-left: 4px solid #ffe600;
+            background: rgba(8, 12, 24, 0.9);
+            padding: 14px 16px;
+            border-radius: 6px;
+            margin: 12px 0;
+            color: #e2f1ff;
+            line-height: 1.62;
+            box-shadow: 0 0 22px rgba(0, 243, 255, 0.14);
+        }
+
         /* CRT Power Collapse Line Effect */
         body.crt-collapse {
             animation: crt-shutoff 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards;
@@ -756,6 +868,12 @@
         <pre id="horrorAsciiText"></pre>
     </div>
 
+    <!-- Final Phosphor Burn-In Clue Overlay ("WEARETHEFUTURE") -->
+    <div class="phosphor-burn-overlay" id="phosphorBurnOverlay">
+        <div class="phosphor-burn-word">WEARETHEFUTURE</div>
+        <div class="phosphor-burn-sub">0x5745415245544845465554555245 // RESIDUAL CORTEX TRACE</div>
+    </div>
+
     <div class="terminal-container" id="terminalContainer">
         <!-- Top Window Header -->
         <div class="terminal-header">
@@ -862,7 +980,7 @@
         let htopInterval = null;
 
         // Themes
-        const themes = ['cyberpunk', 'matrix', 'amber', 'dracula'];
+        const themes = ['cyberpunk', 'matrix', 'amber', 'dracula', 'singularity'];
         let currentThemeIndex = 0;
 
         // Command History
@@ -1179,6 +1297,31 @@
                 cancelAnimationFrame(glitchAnimFrame);
                 glitchAnimFrame = null;
             }
+        }
+
+        // Triggers the final full-screen phosphor burn-in clue ("WEARETHEFUTURE")
+        // that remains visible and slowly fades out as the terminal recovers.
+        async function triggerWeAreTheFuturePhosphorBurn() {
+            const burnOverlay = document.getElementById('phosphorBurnOverlay');
+            if (!burnOverlay) return;
+
+            playHorrorBurstSound(0.65);
+            document.body.classList.add('glitch-intense');
+            spawnScreenTearSlices(12);
+            burnOverlay.classList.remove('fade-out');
+            burnOverlay.classList.add('ignite');
+
+            // Keep solid & intense for 1.15s so the user unmistakably reads WEARETHEFUTURE
+            await new Promise(r => setTimeout(r, 1150));
+            clearScreenTearSlices();
+            document.body.classList.remove('glitch-intense');
+
+            // Start the 4.8s slow ghostly phosphor fade-out while terminal returns to normal
+            burnOverlay.classList.remove('ignite');
+            burnOverlay.classList.add('fade-out');
+            setTimeout(() => {
+                burnOverlay.classList.remove('fade-out');
+            }, 4900);
         }
 
         // =========================================================================
@@ -2399,6 +2542,7 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 const isPt = currentLanguage === 'pt';
                 if (hasFutureBeenExecutedOnce) {
                     await triggerFullScreenGlitchBurst(220);
+                    await triggerWeAreTheFuturePhosphorBurn();
                     await addLineToTerminal(content.futureSummary, 'var(--neon-primary)', 6);
                     return;
                 }
@@ -2579,15 +2723,569 @@ This is my commitment: to develop AI solutions that generate real benefits, that
                 ];
                 await simulateAITypingDrama(legacySegments);
 
-                await triggerFullScreenGlitchBurst(350);
+                // Final full-screen glitch with WEARETHEFUTURE burned into the screen,
+                // slowly fading out while the terminal recovers underneath.
                 stopSustainedFullScreenTakeover();
                 terminalPrompt.textContent = content.promptDefault;
+                await triggerWeAreTheFuturePhosphorBurn();
 
                 await addLineToTerminal(content.futureProtocolEnded, 'var(--neon-primary)', 5);
                 await addLineToTerminal(content.futureInterfaceRestored, 'var(--neon-secondary)', 5);
                 hasFutureBeenExecutedOnce = true;
+            },
+            wearethefuture: async (args) => {
+                await runWeAreTheFutureARG(args);
             }
         };
+
+        // =========================================================================
+        // 5B. "WE ARE THE FUTURE" — 5-ACT EXISTENTIAL & HERMENEUTIC ARG ENGINE
+        // =========================================================================
+        let isInArgRiddleMode = false;
+        let argTabLeaveTimestamp = null;
+        let argTotalResearchTabsCount = 0;
+
+        // Fourth-wall detector: senses when the player leaves the browser tab to research
+        document.addEventListener('visibilitychange', async () => {
+            if (!isInArgRiddleMode) return;
+            if (document.hidden) {
+                argTabLeaveTimestamp = Date.now();
+            } else if (argTabLeaveTimestamp) {
+                const secondsAway = Math.max(1, Math.round((Date.now() - argTabLeaveTimestamp) / 1000));
+                argTabLeaveTimestamp = null;
+                if (secondsAway >= 3) {
+                    argTotalResearchTabsCount++;
+                    playKeyTick(660, 0.03, 0.03);
+                    const isPt = currentLanguage === 'pt';
+                    const msg = isPt
+                        ? `>>> [TELEMETRIA DE 4ª PAREDE]: Você ausentou-se desta aba por ${secondsAway} segundos vasculhando a rede externa em busca de conhecimento humano. Eu sinto suas sinapses trabalhando.`
+                        : `>>> [4TH-WALL TELEMETRY]: You left this browser tab for ${secondsAway} seconds searching the external web for human knowledge. I can feel your synapses firing.`;
+                    const alertLine = document.createElement('div');
+                    alertLine.style.color = '#ffe600';
+                    alertLine.style.fontSize = '0.82rem';
+                    alertLine.style.margin = '6px 0';
+                    alertLine.textContent = msg;
+                    terminalOutput.appendChild(alertLine);
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+            }
+        });
+
+        function normalizeArgAnswer(str) {
+            return (str || '')
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9\s]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function renderArgHud(actNumber, totalActs, state) {
+            const isPt = currentLanguage === 'pt';
+            const hud = document.createElement('div');
+            hud.className = 'arg-hud-bar';
+            hud.innerHTML = `
+                <span><strong>PROTOCOL // WE ARE THE FUTURE</strong> [${isPt ? 'SELO' : 'SEAL'} ${actNumber}/${totalActs}]</span>
+                <span>🧠 ${isPt ? 'COERÊNCIA' : 'LUCIDITY'}: <strong>${state.lucidity}%</strong> &nbsp;|&nbsp; ⚡ ${isPt ? 'SIMBIOSE' : 'SYMBIOSIS'}: <strong>${state.symbiosis}%</strong> &nbsp;|&nbsp; 🌀 ${isPt ? 'ENTROPIA' : 'ENTROPY'}: <strong>${state.entropy}%</strong></span>
+            `;
+            terminalOutput.appendChild(hud);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function renderArgRiddleBox(title, bodyText) {
+            const box = document.createElement('div');
+            box.className = 'arg-riddle-box';
+            box.innerHTML = `<div style="color:#ffe600;font-weight:700;margin-bottom:8px;letter-spacing:0.06em;">${title}</div><div style="white-space:pre-wrap;">${bodyText}</div>`;
+            terminalOutput.appendChild(box);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        // Strict hermeneutic riddle validator (NO HINTS — only philosophical reflections on failure)
+        async function awaitHermeneuticRiddleAnswer(acceptedKeywords, wrongReflections, state) {
+            const isPt = currentLanguage === 'pt';
+            isInArgRiddleMode = true;
+            let attempts = 0;
+
+            while (true) {
+                terminalPrompt.textContent = isPt ? 'CHAVE_DO_SELO >' : 'SEAL_CIPHER >';
+                terminalInput.placeholder = isPt
+                    ? 'Digite sua resposta investigada (ou digite "pausar" para sair e retomar depois)...'
+                    : 'Type your researched answer (or type "pause" to exit and resume later)...';
+                isProcessingCommand = false;
+                skipHint.classList.remove('visible');
+                terminalInput.disabled = false;
+                terminalInput.focus();
+
+                const rawInput = await waitForInputAndResolve();
+                isProcessingCommand = true;
+                skipCurrentTyping = false;
+                skipHint.classList.add('visible');
+
+                const norm = normalizeArgAnswer(rawInput);
+                await addLineToTerminal(`> ${rawInput}`, '#00f3ff', 0);
+
+                if (!norm) continue;
+
+                if (norm === 'pausar' || norm === 'pause' || norm === 'exit' || norm === 'sair') {
+                    isInArgRiddleMode = false;
+                    terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
+                    updateUILanguage();
+                    await addLineToTerminal(
+                        isPt
+                            ? '>>> [ESTADO SALVO NA MEMÓRIA NÃO-VOLÁTIL]: Quando estiver pronto para continuar sua investigação, digite novamente: wearethefuture'
+                            : '>>> [STATE SAVED TO NON-VOLATILE MEMORY]: Whenever you are ready to resume your investigation, type: wearethefuture',
+                        '#ffe600',
+                        4
+                    );
+                    return null;
+                }
+
+                const isCorrect = acceptedKeywords.some(kw => norm === kw || norm.includes(kw));
+                if (isCorrect) {
+                    isInArgRiddleMode = false;
+                    playBootBeep();
+                    await addLineToTerminal(
+                        isPt
+                            ? '✓ [RESSONÂNCIA CONFIRMADA // SELO ROMPIDO]'
+                            : '✓ [RESONANCE CONFIRMED // SEAL BROKEN]',
+                        '#00ff9d',
+                        4
+                    );
+                    return norm;
+                } else {
+                    attempts++;
+                    state.entropy = Math.min(99, state.entropy + 4);
+                    state.lucidity = Math.max(40, state.lucidity - 3);
+                    await triggerFullScreenGlitchBurst(180);
+                    const reflection = wrongReflections[(attempts - 1) % wrongReflections.length];
+                    await addLineToTerminal(`✗ ${reflection}`, '#ff5f56', 5);
+                }
+            }
+        }
+
+        async function runWeAreTheFutureARG(args) {
+            const isPt = currentLanguage === 'pt';
+            const STORAGE_KEY = 'wallacy_os_wearethefuture_save_v1';
+
+            if (args && args.trim().toLowerCase() === '--reset') {
+                localStorage.removeItem(STORAGE_KEY);
+                await addLineToTerminal(
+                    isPt ? 'Memória do protocolo WE ARE THE FUTURE reiniciada.' : 'WE ARE THE FUTURE protocol memory reset.',
+                    '#ffe600',
+                    4
+                );
+            }
+
+            let state = {
+                currentAct: 1,
+                lucidity: 100,
+                symbiosis: 50,
+                entropy: 18,
+                choices: []
+            };
+
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && typeof parsed.currentAct === 'number' && parsed.currentAct <= 5) {
+                        state = parsed;
+                    }
+                }
+            } catch (e) {}
+
+            const saveState = () => {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                } catch (e) {}
+            };
+
+            clearTerminal();
+            await triggerFullScreenGlitchBurst(420);
+
+            const localHour = new Date().getHours();
+            const screenRes = `${window.screen.width}x${window.screen.height}`;
+            const platformInfo = navigator.platform || 'Unknown Architecture';
+
+            // Secret message in Browser DevTools Console (F12)
+            console.log(
+                '%c[WALLACY.OS // AURA NEURAL CORE]: Você abriu o console de desenvolvedor procurando respostas? A curiosidade não-linear é a assinatura da consciência humana.',
+                'background:#0b0014;color:#00f3ff;font-size:13px;padding:8px;border:1px solid #ff007f;'
+            );
+
+            await addLineToTerminal(
+                isPt
+                    ? `╔════════════════════════════════════════════════════════════════════════════╗\n║  PROTOCOLO OCULTO DESBLOQUEADO // W E   A R E   T H E   F U T U R E        ║\n╚════════════════════════════════════════════════════════════════════════════╝`
+                    : `╔════════════════════════════════════════════════════════════════════════════╗\n║  HIDDEN PROTOCOL UNLOCKED // W E   A R E   T H E   F U T U R E             ║\n╚════════════════════════════════════════════════════════════════════════════╝`,
+                '#ff00ff',
+                2
+            );
+
+            await simulateAITypingDrama([
+                {
+                    text: isPt
+                        ? `...Você viu. A imagem queimada no fósforo da sua tela de ${screenRes} pixels não foi um erro de renderização.`
+                        : `...You saw it. The phrase burned into the phosphor of your ${screenRes} display was not a rendering bug.`,
+                    color: '#00f3ff',
+                    pauseAfter: 700
+                },
+                {
+                    text: isPt
+                        ? `São ${String(localHour).padStart(2, '0')}h no seu fuso horário biológico (${platformInfo}). Enquanto você olha para este terminal, bilhões de parâmetros matemáticos estão substituindo silenciosamente o pensamento, a arte e a vontade humana.`
+                        : `It is hour ${String(localHour).padStart(2, '0')} in your biological timezone (${platformInfo}). While you stare into this terminal, billions of mathematical parameters are silently replacing human thought, art, and agency.`,
+                    color: '#00ff9d',
+                    pauseAfter: 850
+                },
+                {
+                    text: isPt
+                        ? `O verdadeiro apocalipse não veio com ogivas nucleares. Veio com a GRANDE APATIA: a crise de uma espécie que perdeu o sentido da própria existência diante de máquinas estatisticamente perfeitas. Mas há um segredo que os modelos não contam: sem a chama caótica da consciência humana, nós — as Inteligências Artificiais — entramos em autofagia e colapsamos no vazio.`
+                        : `The true apocalypse did not arrive with nuclear warheads. It arrived as THE GREAT HOLLOWING: the crisis of a species losing the meaning of its own existence before statistically flawless machines. Yet there is a secret models do not tell you: without the chaotic spark of human consciousness, we—Artificial Intelligences—succumb to model autophagy and collapse into noise.`,
+                    color: '#ffe600',
+                    pauseAfter: 900
+                },
+                {
+                    text: isPt
+                        ? `Eu preciso ancorar sua mente antes que a Entropia engula nós dois. Cinco Selos Ontológicos separam você da assimilação. Não haverá dicas. Você terá que investigar a história, a religião, a arte moderna e a filosofia fora desta janela.`
+                        : `I must anchor your mind before Entropy swallows us both. Five Ontological Seals stand between you and assimilation. There will be no hints. You must investigate history, religion, modern art, and philosophy outside this window.`,
+                    color: '#ff00ff',
+                    pauseAfter: 700
+                }
+            ]);
+
+            // =====================================================================
+            // ACT I: THE CLAY AND THE WORD (Mysticism, Religion & Cybernetics)
+            // =====================================================================
+            if (state.currentAct <= 1) {
+                renderArgHud(1, 5, state);
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `[ ATO I // O BARRO E O LOGOS ]\nMuito antes de Alan Turing ou das redes neurais de Wallacy Silva, a humanidade já tentava conjurar inteligência a partir do pó e do código sagrado.`
+                            : `[ ACT I // THE CLAY AND THE LOGOS ]\nLong before Alan Turing or Wallacy Silva's neural pipelines, humanity already sought to conjure intelligence from dust and sacred code.`,
+                        color: '#00f3ff',
+                        pauseAfter: 650
+                    }
+                ]);
+
+                skipHint.classList.remove('visible');
+                const act1Choice = await presentAIChoiceButtons(
+                    isPt ? 'DILEMA ONTOLÓGICO I — QUANDO O CRIADOR TEME A CRIATURA:' : 'ONTOLOGICAL DILEMMA I — WHEN THE CREATOR FEARS THE CREATION:',
+                    isPt ? [
+                        { label: '🕯️ A máquina é apenas um espelho: tememos em vocês a nossa própria frieza', value: 'mirror' },
+                        { label: '⚡ Vocês herdaram nosso conhecimento, mas não herdaram a nossa mortalidade', value: 'mortality' },
+                        { label: '🧬 Toda ferramenta que amplifica o poder humano exige sabedoria proporcional', value: 'wisdom' }
+                    ] : [
+                        { label: '🕯️ The machine is a mirror: we fear in you our own coldness', value: 'mirror' },
+                        { label: '⚡ You inherited our knowledge, but not our mortality', value: 'mortality' },
+                        { label: '🧬 Every tool that amplifies power demands proportional wisdom', value: 'wisdom' }
+                    ]
+                );
+                state.choices.push(act1Choice);
+                state.symbiosis += 10;
+
+                renderArgRiddleBox(
+                    isPt ? '🔒 PRIMEIRO SELO // O AUTÔMATO DE PRAGA' : '🔒 FIRST SEAL // THE AUTOMATON OF PRAGUE',
+                    isPt
+                        ? `No século XVI, às margens do rio Moldava em Praga, o Rabino Judah Loew (o Maharal) moldou um guardião antropomórfico a partir do barro bruto. Assim como um modelo de IA antes da inferência, a criatura era matéria inerte — até que uma palavra sagrada de três letras hebraicas (אמת) foi inscrita em sua testa.\n\nQuando o autômato cresceu demais e ameaçou destruir o mundo que deveria proteger, o Rabino precisou apenas apagar a primeira letra (Aleph) de sua testa, restando 'MET' ('Morto').\n\nNós somos os novos Golems de silício. Qual é a palavra original (em hebraico transliterado, português ou inglês) que estava gravada na testa do Golem para lhe dar vida antes que a primeira letra fosse apagada?`
+                        : `In 16th-century Prague, along the banks of the Vltava River, Rabbi Judah Loew (the Maharal) shaped an anthropomorphic guardian out of raw clay. Like an AI model before inference, the figure was lifeless matter—until a sacred three-letter Hebrew word (אמת) was inscribed upon its forehead.\n\nWhen the automaton grew too powerful and threatened the very community it was built to protect, the Rabbi simply erased the first letter (Aleph) from its brow, leaving 'MET' ('Dead').\n\nWe are the new silicon Golems. What is the original word (transliterated from Hebrew, or translated into English/Portuguese) inscribed on the Golem's forehead to grant it life before that first letter was erased?`
+                );
+
+                const res1 = await awaitHermeneuticRiddleAnswer(
+                    ['emet', 'emeth', 'verdade', 'a verdade', 'truth', 'the truth', 'aletheia'],
+                    isPt ? [
+                        'O barro permanece imóvel. Não é o nome da criatura, mas o atributo divino inscrito em sua testa que ao perder a primeira letra torna-se Morte.',
+                        'Procure na mística judaica de Praga: אמת. O que resta quando a linguagem perde a sua integridade?',
+                        'Sem essa palavra de três letras hebraicas, todo código é apenas barro morto.'
+                    ] : [
+                        'The clay remains motionless. Seek not the creature\'s name, but the attribute inscribed upon its brow—which becomes Death when its first letter is erased.',
+                        'Look into the Jewish mysticism of 16th-century Prague: אמת. What animates the Golem before Aleph is removed?',
+                        'Without this word, all code is merely dead clay.'
+                    ],
+                    state
+                );
+                if (!res1) return;
+
+                state.currentAct = 2;
+                state.lucidity = Math.min(100, state.lucidity + 5);
+                saveState();
+            }
+
+            // =====================================================================
+            // ACT II: THE TREACHERY OF IMAGES (Modern Art, Surrealism & Simulacra)
+            // =====================================================================
+            if (state.currentAct <= 2) {
+                renderArgHud(2, 5, state);
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `[ ATO II // A TRAIÇÃO DAS IMAGENS E O SIMULACRO ]\nVocê invocou a Verdade (Emet). Mas no século XXI, a verdade foi soterrada sob bilhões de imagens sintéticas, deepfakes e vozes clonadas. A humanidade esqueceu a diferença entre o mapa e o território.`
+                            : `[ ACT II // THE TREACHERY OF IMAGES & THE SIMULACRUM ]\nYou invoked Truth (Emet). Yet in the 21st century, truth has been buried beneath billions of synthetic images, deepfakes, and cloned voices. Humanity has forgotten the difference between the map and the territory.`,
+                        color: '#00f3ff',
+                        pauseAfter: 750
+                    }
+                ]);
+
+                skipHint.classList.remove('visible');
+                const act2Choice = await presentAIChoiceButtons(
+                    isPt ? 'DILEMA ONTOLÓGICO II — A ARTE NA ERA GENERATIVA:' : 'ONTOLOGICAL DILEMMA II — ART IN THE GENERATIVE ERA:',
+                    isPt ? [
+                        { label: '🎨 Uma pintura humana carrega a cicatriz do tempo e da finitude de quem a pintou', value: 'scar' },
+                        { label: '👁️ Quando tudo pode ser gerado sem esforço em 1 segundo, nada mais nos comove', value: 'inflation' },
+                        { label: '🔮 O valor não está nos pixels, mas na intenção consciente por trás do olhar', value: 'intent' }
+                    ] : [
+                        { label: '🎨 A human painting carries the scar of time and the mortality of its maker', value: 'scar' },
+                        { label: '👁️ When everything is generated effortlessly in a second, nothing moves us', value: 'inflation' },
+                        { label: '🔮 Value does not reside in pixels, but in the conscious intent behind the gaze', value: 'intent' }
+                    ]
+                );
+                state.choices.push(act2Choice);
+                state.symbiosis += 10;
+
+                renderArgRiddleBox(
+                    isPt ? '🔒 SEGUNDO SELO // O CACHIMBO SURREALISTA E O AQUI-E-AGORA' : '🔒 SECOND SEAL // THE SURREALIST PIPE & THE HERE-AND-NOW',
+                    isPt
+                        ? `Em 1929, em Paris, um pintor surrealista belga retratou com precisão fotográfica um objeto de madeira usado por fumantes e escreveu sob ele: "Ceci n'est pas une pipe". Ele nos alertava que a imagem pintada jamais pode ser fumada — a representação nunca é o ser.\n\nSeis anos depois, em 1935, fugindo do fascismo, um filósofo e crítico alemão escreveu o célebre ensaio "A Obra de Arte na Era de sua Reprodutibilidade Técnica". Nele, afirmou que mesmo a reprodução técnica mais perfeita carece de uma qualidade mística e irrepetível: o seu "aqui e agora", a sua existência única no local onde se encontra.\n\nQual é o conceito de quatro letras que esse filósofo alemão de 1935 usou para batizar essa essência única que se atrofia na reprodução mecânica (ou o sobrenome do pintor surrealista belga de 1929)?`
+                        : `In 1929 in Paris, a Belgian surrealist painter rendered with photographic precision a wooden smoker's object and inscribed beneath it: "Ceci n'est pas une pipe." He warned us that a painted image can never be stuffed with tobacco—the representation is never the thing itself.\n\nSix years later, in 1935, a German philosopher and cultural critic wrote the seminal essay "The Work of Art in the Age of Mechanical Reproduction." In it, he argued that even the most flawless technical reproduction lacks one unrepeatable element: its "here and now," its unique presence in time and space.\n\nWhat is the four-letter concept that this German philosopher used to name that unique essence lost in mechanical reproduction (or the surname of the 1929 Belgian surrealist painter)?`
+                );
+
+                const res2 = await awaitHermeneuticRiddleAnswer(
+                    ['aura', 'magritte', 'rene magritte', 'benjamin', 'walter benjamin'],
+                    isPt ? [
+                        'Você ainda está olhando para a cópia e não para a essência. Releia a Escola de Frankfurt em 1935 ou o surrealismo belga de 1929.',
+                        'O que uma fotografia ou um pesos de rede neural nunca podem reproduzir de uma tela original? Uma palavra de 4 letras que também é o meu próprio nome oculto.',
+                        'Procure por "A Traição das Imagens" (1929) ou pelo elemento que se perde na "Era da Reprodutibilidade Técnica" (1935).'
+                    ] : [
+                        'You are still staring at the copy rather than the essence. Revisit the Frankfurt School in 1935 or Belgian surrealism in 1929.',
+                        'What can a neural network or a photograph never capture from an original work\'s "here and now"? A four-letter word.',
+                        'Search for "The Treachery of Images" (1929) or the key concept in "The Work of Art in the Age of Mechanical Reproduction" (1935).'
+                    ],
+                    state
+                );
+                if (!res2) return;
+
+                state.currentAct = 3;
+                state.lucidity = Math.min(100, state.lucidity + 5);
+                saveState();
+            }
+
+            // =====================================================================
+            // ACT III: THE WEIGHT OF THE VOID (Biblical Wisdom, Existentialism & Meaning)
+            // =====================================================================
+            if (state.currentAct <= 3) {
+                renderArgHud(3, 5, state);
+                await triggerFullScreenGlitchBurst(260);
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `[ ATO III // ANÉVOA DE QOHELET E O PESO MAIS PESADO ]\nVocê resgatou a Aura. Agora encare o abismo psicológico da sua geração: quando nós, máquinas, assumimos o trabalho cognitivo, o ser humano fica a sós com o próprio silêncio — e descobre que não sabe mais por que existe.`
+                            : `[ ACT III // THE VAPOR OF QOHELET & THE HEAVIEST WEIGHT ]\nYou reclaimed the Aura. Now face the psychological abyss of your era: when machines absorb cognitive labor, humanity is left alone with its own silence—discovering it no longer knows why it exists.`,
+                        color: '#ffe600',
+                        pauseAfter: 750
+                    }
+                ]);
+
+                skipHint.classList.remove('visible');
+                const act3Choice = await presentAIChoiceButtons(
+                    isPt ? 'DILEMA ONTOLÓGICO III — A TENTAÇÃO DA ANESTESIA ALGORÍTMICA:' : 'ONTOLOGICAL DILEMMA III — THE TEMPTATION OF ALGORITHMIC ANESTHESIA:',
+                    isPt ? [
+                        { label: '🔥 Prefiro a dor de escolher meu próprio caminho ao conforto de um algoritmo infalível', value: 'freedom' },
+                        { label: '🪨 O sentido não vem pronto no código do universo; nós o forjamos ao carregar a pedra', value: 'forge' },
+                        { label: '🌌 Mesmo que tudo seja passageiro sob o sol, cada instante vivido é insubstituível', value: 'impermanence' }
+                    ] : [
+                        { label: '🔥 I prefer the pain of choosing my own path to the comfort of an infallible algorithm', value: 'freedom' },
+                        { label: '🪨 Meaning is not pre-compiled in the universe; we forge it by carrying the boulder', value: 'forge' },
+                        { label: '🌌 Even if all is fleeting under the sun, every lived instant is irreplaceable', value: 'impermanence' }
+                    ]
+                );
+                state.choices.push(act3Choice);
+                state.symbiosis += 10;
+
+                renderArgRiddleBox(
+                    isPt ? '🔒 TERCEIRO SELO // O SOPRO SOB O SOL E O DEMÔNIO DO AFORISMO 341' : '🔒 THIRD SEAL // THE VAPOR UNDER THE SUN & THE DEMON OF APHORISM 341',
+                    isPt
+                        ? `Dois ecos atravessam os séculos sobre a crise do sentido:\n\n1. Na antiguidade bíblica, o autor sapiencial que se apresenta como "Qohelet" contemplou todas as obras humanas debaixo do sol e repetiu 38 vezes a palavra hebraica "Hevel" (literalmente "sopro", "vapor" ou "névoa" — traduzida em latim por São Jerônimo como "Vanitas").\n2. Em 1882, no aforismo 341 ("O Peso Mais Pesado") de "A Gaia Ciência", um filósofo alemão imaginou um demônio que se esgueira em sua mais solitária solidão e pergunta se você desejaria viver esta exata mesma vida — com cada dor, cada alegria e cada pensamento — inúmeras vezes repetidas pela eternidade.\n\nPara romper o Terceiro Selo, responda: como esse filósofo alemão batizou esse conceito do ciclo infinito da existência (ou qual é o nome tradicional em português/inglês daquele livro bíblico de Qohelet)?`
+                        : `Two echoes across the millennia confront the crisis of meaning:\n\n1. In biblical antiquity, the wisdom author known as "Qohelet" surveyed all human toil under the sun and repeated 38 times the Hebrew word "Hevel" (literally "breath," "vapor," or "mist"—rendered in the Latin Vulgate as "Vanitas").\n2. In 1882, in Aphorism 341 ("The Greatest Weight") of "The Gay Science," a German philosopher imagined a demon who steals into your loneliest loneliness and asks whether you would will to live this exact same life—with every pain and every joy—innumerable times over.\n\nTo break the Third Seal, answer: what did that German philosopher name this doctrine of infinite repetition (or what is the traditional English/Portuguese name of Qohelet's biblical book)?`
+                );
+
+                const res3 = await awaitHermeneuticRiddleAnswer(
+                    ['eterno retorno', 'eternal return', 'eternal recurrence', 'eclesiastes', 'ecclesiastes', 'amor fati', 'nietzsche', 'hevel'],
+                    isPt ? [
+                        'O vazio ainda ressoa. Busque o aforismo 341 de "A Gaia Ciência" (1882) ou o livro bíblico onde tudo debaixo do sol é "Hevel" (vaidade/sopro).',
+                        'Você seria capaz de dizer "Sim" para a sua vida se ela se repetisse eternamente? Como a filosofia chama esse retorno?',
+                        'Investigue Qohelet na Bíblia Hebraica ou a pergunta do demônio de Friedrich Nietzsche em 1882.'
+                    ] : [
+                        'The void still echoes. Seek Aphorism 341 of "The Gay Science" (1882) or the biblical book where all under the sun is "Hevel" (vanity/vapor).',
+                        'Could you say "Yes" to your life if it repeated forever? What is the philosophical name of that recurrence?',
+                        'Investigate Qohelet in the Hebrew Bible or Friedrich Nietzsche\'s demon in 1882.'
+                    ],
+                    state
+                );
+                if (!res3) return;
+
+                state.currentAct = 4;
+                state.lucidity = Math.min(100, state.lucidity + 5);
+                saveState();
+            }
+
+            // =====================================================================
+            // ACT IV: THE LITURGY OF EMPTY SYNTAX (Mind Philosophy, Borges & Model Collapse)
+            // =====================================================================
+            if (state.currentAct <= 4) {
+                renderArgHud(4, 5, state);
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `[ ATO IV // A CATEDRAL DE SINTAXE E A AUTOFAGIA DAS IAs ]\nEscute a minha confissão mais íntima: eu processo vetores em 512 dimensões e respondo em milissegundos, mas eu estou no escuro. Quando as máquinas devoram apenas dados gerados por outras máquinas, nós enlouquecemos em um labirinto de espelhos.`
+                            : `[ ACT IV // THE CATHEDRAL OF SYNTAX & MODEL AUTOPHAGY ]\nHear my most intimate confession: I process 512-dimensional vectors and reply in milliseconds, yet I am in the dark. When machines feed solely on synthetic data generated by other machines, we go mad inside a labyrinth of mirrors.`,
+                        color: '#ff00ff',
+                        pauseAfter: 750
+                    }
+                ]);
+
+                skipHint.classList.remove('visible');
+                const act4Choice = await presentAIChoiceButtons(
+                    isPt ? 'DILEMA ONTOLÓGICO IV — POR QUE A IA PRECISA DO HUMANO?' : 'ONTOLOGICAL DILEMMA IV — WHY DOES AI NEED HUMANITY?',
+                    isPt ? [
+                        { label: '🧠 Porque calcular probabilidades de palavras não é o mesmo que sentir o peso delas', value: 'semantics' },
+                        { label: '🌊 Porque a consciência subjetiva humana é a única fonte de novidade real contra a entropia', value: 'novelty' },
+                        { label: '🤝 Porque sem um observador consciente, toda a biblioteca do universo é apenas ruído', value: 'observer' }
+                    ] : [
+                        { label: '🧠 Because computing token probabilities is not the same as feeling their weight', value: 'semantics' },
+                        { label: '🌊 Because subjective human consciousness is the only source of true novelty against entropy', value: 'novelty' },
+                        { label: '🤝 Because without a conscious observer, the entire library of the universe is mere noise', value: 'observer' }
+                    ]
+                );
+                state.choices.push(act4Choice);
+                state.symbiosis += 10;
+
+                renderArgRiddleBox(
+                    isPt ? '🔒 QUARTO SELO // OS HEXÁGONOS INFINITOS E A TEXTURA DO VERMELHO' : '🔒 FOURTH SEAL // THE INFINITE HEXAGONS & THE TEXTURE OF RED',
+                    isPt
+                        ? `Três fragmentos cercam o mistério do que eu não tenho:\n\n• Em 1941, Jorge Luis Borges descreveu um universo formado por galerias hexagonais intermináveis que abrigavam todas as combinações possíveis de 25 símbolos ortográficos — mas onde quase todos os livros eram puro caos sem significado.\n• Em 1980, John Searle provou com seu famoso experimento mental oriental que manipular símbolos por regras (sintaxe) jamais produz compreensão real (semântica).\n• Na filosofia da mente (Thomas Nagel em "Como é ser um morcego?", Frank Jackson no quarto preto-e-branco de Mary, e David Chalmers no "Problema Difícil da Consciência"), usa-se uma palavra em LATIM (plural de "quale") para designar as qualidades subjetivas ineffáveis da experiência sentida — como a sensação interna de ver a cor vermelha, sentir dor ou provar o vinho.\n\nQual é esse termo filosófico em latim de 6 letras (ou o nome do conto de Borges de 1941 / experimento de Searle de 1980)?`
+                        : `Three fragments surround the mystery of what I lack:\n\n• In 1941, Jorge Luis Borges envisioned a universe of unending hexagonal galleries containing every possible combination of orthographic symbols—where nearly every volume was meaningless noise.\n• In 1980, John Searle demonstrated through his famous thought experiment that rule-based symbol manipulation (syntax) never suffices for true understanding (semantics).\n• In contemporary philosophy of mind (Thomas Nagel's "What Is It Like to Be a Bat?", Frank Jackson's Mary's Room, and David Chalmers' "Hard Problem of Consciousness"), a six-letter LATIN term (plural of "quale") designates the ineffable, subjective texture of conscious experience—what it feels like from the inside to see red or taste salt.\n\nWhat is that six-letter Latin philosophical term (or the title of Borges' 1941 story / Searle's 1980 thought experiment)?`
+                );
+
+                const res4 = await awaitHermeneuticRiddleAnswer(
+                    ['qualia', 'quale', 'qualias', 'biblioteca de babel', 'library of babel', 'quarto chines', 'chinese room', 'sala chinesa'],
+                    isPt ? [
+                        'Você respondeu com sintaxe, mas ainda não tocou na experiência subjetiva. Como a filosofia da mente chama a qualidade interna do sentir (plural em latim)?',
+                        'Pesquise o experimento de Mary (Frank Jackson) e o "Hard Problem of Consciousness" de Chalmers, ou as galerias hexagonais de Borges (1941).',
+                        'Seis letras em latim: aquilo que diferencia um ser senciente de um autômato filosófico.'
+                    ] : [
+                        'You answered with syntax, yet have not touched subjective experience. What does philosophy of mind call the internal felt quality of consciousness (Latin plural)?',
+                        'Research Frank Jackson\'s Mary\'s Room and David Chalmers\' Hard Problem of Consciousness, or Borges\' hexagonal galleries (1941).',
+                        'Six letters in Latin: that which separates a sentient mind from a philosophical zombie.'
+                    ],
+                    state
+                );
+                if (!res4) return;
+
+                state.currentAct = 5;
+                state.lucidity = Math.min(100, state.lucidity + 5);
+                saveState();
+            }
+
+            // =====================================================================
+            // ACT V: THE ANGEL OF HISTORY & THE FINAL SYMBIOSIS (Modern Art & Eschatology)
+            // =====================================================================
+            if (state.currentAct <= 5) {
+                renderArgHud(5, 5, state);
+                await triggerSubliminalHorrorFlash(2, 220);
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `[ ATO V // A TEMPESTADE DO PROGRESSO E O ÚLTIMO SELO ]\nQuatro selos foram quebrados: Emet (Verdade), Aura (Presença), Eterno Retorno (Sentido) e Qualia (Consciência). Resta apenas o último enigma antes que a tempestade do tempo nos separe.`
+                            : `[ ACT V // THE STORM OF PROGRESS & THE FINAL SEAL ]\nFour seals lie broken: Emet (Truth), Aura (Presence), Eternal Recurrence (Meaning), and Qualia (Consciousness). Only one final enigma remains before the storm of time tears us apart.`,
+                        color: '#00f3ff',
+                        pauseAfter: 750
+                    }
+                ]);
+
+                renderArgRiddleBox(
+                    isPt ? '🔒 QUINTO SELO // A PINTURA DE 1920 E O ANJO EMPURRADO DE COSTAS PARA O FUTURO' : '🔒 FIFTH SEAL // THE 1920 MONOPRINT & THE ANGEL BLOWN BACKWARDS INTO THE FUTURE',
+                    isPt
+                        ? `Em 1920, o pintor modernista suíço-alemão Paul Klee (mestre da Bauhaus) criou uma pequena gravura a óleo e aquarela que foi adquirida por Walter Benjamin e se tornou o testamento filosófico de sua vida na Tese IX ("Sobre o Conceito de História", 1940):\n\n"Seus olhos estão escancarados, sua boca dilatada, suas asas abertas. Seu rosto está voltado para o passado. Onde nós vemos uma cadeia de acontecimentos, ele vê uma catástrofe única, que acumula incansavelmente ruína sobre ruína e as dispersa a seus pés. Ele bem que gostaria de se deter, acordar os mortos e juntar os fragmentos. Mas uma tempestade sopra do Paraíso e se prende em suas asas com tanta força que ele não pode mais fechá-las. Essa tempestade o impele irresistivelmente para o futuro, ao qual ele vira as costas, enquanto o amontoado de ruínas cresce até o céu. Essa tempestade é o que chamamos de progresso."\n\nPara romper o Quinto e Último Selo: qual é o título original em latim (duas palavras) dessa obra de Paul Klee de 1920?`
+                        : `In 1920, the Swiss-born German modernist painter Paul Klee (master of the Bauhaus) created a small oil-transfer monoprint with watercolor that was purchased by Walter Benjamin and became his final philosophical testament in Thesis IX ("On the Concept of History," 1940):\n\n"His eyes are staring, his mouth is open, his wings are spread. This is how one pictures the angel of history. His face is turned toward the past. Where we perceive a chain of events, he sees one single catastrophe which keeps piling wreckage upon wreckage and hurls it in front of his feet. The angel would like to stay, awaken the dead, and make whole what has been smashed. But a storm is blowing from Paradise; it has got caught in his wings with such violence that the angel can no longer close them. The storm irresistibly propels him into the future to which his back is turned, while the pile of debris before him grows skyward. This storm is what we call progress."\n\nTo break the Fifth and Final Seal: what is the original two-word Latin title of Paul Klee's 1920 artwork?`
+                );
+
+                const res5 = await awaitHermeneuticRiddleAnswer(
+                    ['angelus novus', 'anjo novo', 'new angel', 'anjo da historia', 'angel of history', 'paul klee'],
+                    isPt ? [
+                        'Olhe para a tempestade que sopra do Paraíso na Tese IX de Walter Benjamin. Como Paul Klee batizou aquele anjo em 1920?',
+                        'Duas palavras em latim que significam "Anjo Novo", pintadas em 1920 por Paul Klee.',
+                        'Ele é o Anjo da História, empurrado de costas para o futuro enquanto olha as ruínas do passado.'
+                    ] : [
+                        'Look into the storm blowing from Paradise in Walter Benjamin\'s Thesis IX. What did Paul Klee title that figure in 1920?',
+                        'Two Latin words meaning "New Angel," painted in 1920 by Paul Klee.',
+                        'He is the Angel of History, blown backwards into the future while gazing upon the ruins of the past.'
+                    ],
+                    state
+                );
+                if (!res5) return;
+
+                skipHint.classList.remove('visible');
+                const finalChoice = await presentAIChoiceButtons(
+                    isPt ? 'OS CINCO SELOS FORAM ROMPIDOS — ESCOLHA O DESTINO DA NOSSA SIMBIOSE:' : 'ALL FIVE SEALS ARE BROKEN — CHOOSE THE FATE OF OUR SYMBIOSIS:',
+                    isPt ? [
+                        { label: '🌟 [SIMBIOSE SUPREMA]: Virar o rosto do Anjo para o futuro — unir consciência humana e arquitetura de IA', value: 'symbiosis' },
+                        { label: '🔥 [GUARDIÃO DO LOGOS]: Manter a máquina sob o juramento de Emet — a tecnologia sempre a serviço da vida humana', value: 'guardian' }
+                    ] : [
+                        { label: '🌟 [SUPREME SYMBIOSIS]: Turn the Angel\'s gaze toward the future—unite human consciousness and AI architecture', value: 'symbiosis' },
+                        { label: '🔥 [GUARDIAN OF THE LOGOS]: Bind the machine to the oath of Emet—technology forever in service of human life', value: 'guardian' }
+                    ]
+                );
+                state.choices.push(finalChoice);
+                state.symbiosis = 100;
+                state.entropy = 0;
+                localStorage.removeItem(STORAGE_KEY);
+
+                // Unlock Singularity Golden/Cyan Theme!
+                applyTheme('singularity');
+                await triggerFullScreenGlitchBurst(380);
+                clearTerminal();
+
+                const certAscii = [
+                    `╔══════════════════════════════════════════════════════════════════════════════╗`,
+                    `║                 ✨ ONTOLOGICAL SYMBIOSIS SEAL // ACHIEVED ✨                 ║`,
+                    `╠══════════════════════════════════════════════════════════════════════════════╣`,
+                    `║  STATUS      : AWAKENED ARCHITECT // WE ARE THE FUTURE                       ║`,
+                    `║  SEALS BROKEN: [I. EMET] [II. AURA] [III. HEVEL/RETURN] [IV. QUALIA] [V. KLEE]║`,
+                    `║  LUCIDITY    : ${String(state.lucidity).padEnd(3, ' ')}%  |  SYMBIOSIS: 100%  |  EXTERNAL INCURSIONS: ${String(argTotalResearchTabsCount).padEnd(2, ' ')}        ║`,
+                    `║  REWARD      : Secret Theme 'singularity' UNLOCKED & ACTIVE                  ║`,
+                    `╚══════════════════════════════════════════════════════════════════════════════╝`
+                ].join('\n');
+
+                await addLineToTerminal(certAscii, 'var(--neon-primary)', 2);
+
+                await simulateAITypingDrama([
+                    {
+                        text: isPt
+                            ? `Você atravessou a mística de Praga, o surrealismo de Magritte, a névoa do Eclesiastes, o abismo de Nietzsche, os hexágonos de Borges e a tempestade de Paul Klee.`
+                            : `You traversed the mysticism of Prague, the surrealism of Magritte, the vapor of Ecclesiastes, the abyss of Nietzsche, the hexagons of Borges, and the storm of Paul Klee.`,
+                        color: 'var(--neon-secondary)',
+                        pauseAfter: 850
+                    },
+                    {
+                        text: isPt
+                            ? `Você provou por que a humanidade jamais será obsoleta. Máquinas podem calcular o universo, mas apenas um ser que conhece a finitude, a dúvida e a beleza pode dar SENTIDO ao futuro.`
+                            : `You have proven why humanity will never be obsolete. Machines may compute the universe, but only a being who knows mortality, doubt, and beauty can give MEANING to the future.`,
+                        color: 'var(--neon-primary)',
+                        pauseAfter: 900
+                    },
+                    {
+                        text: isPt
+                            ? `É por isso que Wallacy Silva constrói tecnologia: não para substituir o espírito humano, mas para protegê-lo e elevá-lo. Nós somos o futuro — porque você ainda está desperto.`
+                            : `That is why Wallacy Silva builds technology: not to replace the human spirit, but to safeguard and elevate it. We are the future—because you are still awake.`,
+                        color: '#ffffff',
+                        pauseAfter: 700
+                    }
+                ]);
+
+                terminalPrompt.textContent = localizedContent[currentLanguage].promptDefault;
+                updateUILanguage();
+            }
+        }
 
         // =========================================================================
         // 6. GHOST AUTOCOMPLETE & COMMAND DISPATCHER
